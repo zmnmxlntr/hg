@@ -73,9 +73,9 @@ if(window.location.hostname == "boards.4chan.org") {
 					checkbox.checked = true;
 
 					var text = document.createElement('input')
-					text.setAttribute('type', 'text')
-					text.setAttribute('maxlength', '26')
-					text.setAttribute('size', '36')
+					text.type = "text";
+					text.maxlength = 26;
+					text.size = 36;
 					text.className = "hg-field";
 					text.id = x[i].id; // ?
 					text.title = "Tribute name";
