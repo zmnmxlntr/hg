@@ -1,8 +1,7 @@
 // ==UserScript==
 // @name        HG
 // @namespace   None
-// @include     https://boards.4chan.org/b/thread/*
-// @include     https://boards.4chan.org/trash/thread/*
+// @include     https://boards.4chan.org/*/thread/*
 // @include     http://brantsteele.net/hungergames/edit.php
 // @version     1.1
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
