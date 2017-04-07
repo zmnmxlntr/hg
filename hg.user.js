@@ -1,9 +1,10 @@
 // ==UserScript==
-// @name        HG
-// @namespace   None
+// @name        Virginia's Hunger Games Script
+// @description Hunger Games hosting made easy
+// @namespace   https://github.com/zmnmxlntr
+// @version     1.1
 // @include     https://boards.4chan.org/*/thread/*
 // @include     http://brantsteele.net/hungergames/edit.php
-// @version     1.1
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @grant       GM_setValue
