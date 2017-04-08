@@ -22,6 +22,9 @@
 // @grant       GM_getValue
 // ==/UserScript==
 
+// TODO: customizable keybinds
+// TODO: option of CDN (i.4cdn.org vs is.4chan.org/is2.4chan.org)
+
 if(window.location.hostname == "boards.4chan.org") {
 	var tributes = 24;
 	var entry = 0;
@@ -257,5 +260,5 @@ if(window.location.hostname == "boards.4chan.org") {
 			document.getElementsByName("logourl")[0].value = logourl;
 		}
 	};
-	document.getElementsByTagName("body")[0].prepend(button);
+	document.getElementsByTagName("body")[0].prepend(button); // TODO: find a better place to stick this and figure out how to make it not break things
 }
