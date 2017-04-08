@@ -2,7 +2,7 @@
 // @name        Virginia's Hunger Games Script
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
-// @version     1.2
+// @version     1.3
 // @include     boards.4chan.org/*/res/*
 // @include     boards.4chan.org/*/thread/*
 // @include     http://boards.4chan.org/*/res/*
