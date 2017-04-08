@@ -210,17 +210,21 @@ if(window.location.hostname == "boards.4chan.org") {
 	button1.innerHTML = "Draw";
 	button1.onclick = function() { draw(); };
 	var button2 = document.createElement("button");
-	button2.innerHTML = "Save";
-	button2.onclick = function() { save(); };
+	button2.innerHTML = "Hide";
+	button2.onclick = function() { hide(); };
 	var button3 = document.createElement("button");
-	button3.innerHTML = "Deselect All";
-	button3.onclick = function() { deselect(); };
+	button3.innerHTML = "Save";
+	button3.onclick = function() { save(); };
+	var button4 = document.createElement("button");
+	button4.innerHTML = "Deselect All";
+	button4.onclick = function() { deselect(); };
 
 	var form = document.createElement('div');
 	form.className = "hungergames";
 	form.appendChild(button1);
 	form.appendChild(button2);
 	form.appendChild(button3);
+	form.appendChild(button4);
 	form.appendChild(t24);
 	form.appendChild(t36);
 	form.appendChild(t48);
