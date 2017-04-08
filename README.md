@@ -1,14 +1,16 @@
 This script collects entries as they're posted in a Hunger Games thread and enters them into the simulator for you.
 
-Works in Firefox and Chrome, with or without 4chan X. Not tested on anything else.
+Works in Firefox, Chrome, and Safari, with or without 4chan X. Not tested on anything else.
 
 # Installation
 ### Firefox
-Install the [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/) extension, then **[click here](https://github.com/zmnmxlntr/hg/raw/master/hg.user.js)**.
+Install the [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/) extension, then **[click here](https://github.com/zmnmxlntr/hg/raw/master/hg.user.js)**, then click "Install".
 
 ### Chrome
-Install the [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en) extension, then **[click here](https://github.com/zmnmxlntr/hg/raw/master/hg.user.js)**.
+Install the [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en) extension, then **[click here](https://github.com/zmnmxlntr/hg/raw/master/hg.user.js)**, then click "Install".
 
+### Safari
+Install the [Violent monkey](https://addons.opera.com/en/extensions/details/violent-monkey/) extension, then **[click here](https://github.com/zmnmxlntr/hg/raw/master/hg.user.js)**, then click "Confirm installation".
 
 # Usage
 To draw input fields, press F1 (or F4 for Chrome plebs) or scroll to the bottom of the page and click "Draw". To hide input fields, press F2 (they will not be lost, only hidden). Works nicely alongside automatic page updates - just press F1 (or F4) or click the "Draw" button again to add input fields to new posts (previously existing ones will not be lost/overwritten). Only posts with images will have input fields drawn.
