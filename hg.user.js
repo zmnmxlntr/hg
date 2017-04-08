@@ -16,6 +16,7 @@
 // @include     https://boards.4chan.org/*/res/*/
 // @include     https://boards.4chan.org/*/thread/*/
 // @include     http://brantsteele.net/hungergames/edit.php
+// @include     http://brantsteele.net/hungergames/personal.php
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @grant       GM_setValue
