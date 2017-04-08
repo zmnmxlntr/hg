@@ -23,7 +23,7 @@
 // @grant       GM_getValue
 // ==/UserScript==
 
-// TODO: place class names, etc. into variables you mongoloid
+// TODO: place class names, etc. into variables, finish nomenclature changes
 
 if(window.location.hostname == "boards.4chan.org") {
 	var tributes = 24;
