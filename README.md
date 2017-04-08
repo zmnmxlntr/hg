@@ -27,7 +27,7 @@ Alternatively, just watch this gif:
 
 Not visible in the demo gif is the new "Deselect All" button, which you'll probably want to use if you begin your reaping in the middle of a large thread.
 
-#Contact
+# Contact
 Please contact me for any bugs, questions, or suggestions.
 
 ### Discord
