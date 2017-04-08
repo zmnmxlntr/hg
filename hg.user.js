@@ -9,6 +9,12 @@
 // @include     http://boards.4chan.org/*/thread/*
 // @include     https://boards.4chan.org/*/res/*
 // @include     https://boards.4chan.org/*/thread/*
+// @include     boards.4chan.org/*/res/*/
+// @include     boards.4chan.org/*/thread/*/
+// @include     http://boards.4chan.org/*/res/*/
+// @include     http://boards.4chan.org/*/thread/*/
+// @include     https://boards.4chan.org/*/res/*/
+// @include     https://boards.4chan.org/*/thread/*/
 // @include     http://brantsteele.net/hungergames/edit.php
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
