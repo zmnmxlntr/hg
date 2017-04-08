@@ -1,6 +1,6 @@
 This script collects entries as they're posted in a Hunger Games thread and enters them into the simulator for you.
 
-Works in Firefox, Chrome, and Safari, with or without 4chan X. Not tested on anything else.
+Works in Firefox, Chrome, and Safari, with or without 4chan X. Not tested on anything else. Not tested on anything that isn't Windows.
 
 # Installation
 ### Firefox
