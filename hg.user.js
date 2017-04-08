@@ -2,7 +2,7 @@
 // @name        Virginia's Hunger Games Script
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
-// @version     1.3.1
+// @version     1.4
 // @include     boards.4chan.org/*/res/*
 // @include     boards.4chan.org/*/thread/*
 // @include     http://boards.4chan.org/*/res/*
@@ -23,14 +23,13 @@
 // @grant       GM_getValue
 // ==/UserScript==
 
-// TODO: customizable keybinds
-// TODO: option of CDN (i.4cdn.org vs is.4chan.org/is2.4chan.org)
+// TODO: place class names, etc. into variables you mongoloid
 
 if(window.location.hostname == "boards.4chan.org") {
 	var tributes = 24;
-	var entry = 0;
+	var hgEntry = 0;
 
-	function size() {
+	function hgSize() {
 		var e = document.getElementsByName("tributes");
 
 		if(e[0].checked) {
@@ -42,22 +41,21 @@ if(window.location.hostname == "boards.4chan.org") {
 		}
 	};
 
-	function draw() {
-		size();
-		show();
+	function hgDraw() {
+		hgSize();
+		hgShow();
 
-		var maxLength = 26;
+		var hgNameMaxLength = 26;
 
 		var x = document.getElementsByClassName("post reply"); // TODO: give a proper name
 
 		for (i = 0; i < x.length; i++) {
 			if(x[i].getElementsByClassName('hg-img').length == 0) {
-				x[i].getAttribute('id'); // ???
-
 				var y = x[i].getElementsByClassName("fileThumb")
 				if(y.length) {
-					entry += 1;
+					hgEntry += 1;
 
+					// TODO: option of CDN
 					var img = y[0].getElementsByTagName("img")[0]['src']
 					var txt = x[i].getElementsByClassName("postMessage")[0].innerText.split('\n')
 					
@@ -67,63 +65,64 @@ if(window.location.hostname == "boards.4chan.org") {
 						j++;
 					}
 					if(j < txt.length) {
-						txt = txt[j].replace(/[^ú\í\é\ç\'\.\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, maxLength);
+						txt = txt[j].replace(/[^ú\ç\.\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength);
 					} else {
-						txt = txt.join(' ').replace(/(>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?/g, '').replace(/[^ú\í\é\ç\'\.\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, maxLength);
+						txt = txt.join(' ').replace(/(>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?/g, '').replace(/[^ú\ç\.\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength);
 					}
+					// TODO: does not seem to work
 					if(txt.length > 15 && txt.match(/\s/g) == null) {
-						if(txt.length == maxLength) {
-							txt[maxLength - 1] = ' ';
+						if(txt.length == hgNameMaxLength) {
+							txt[hgNameMaxLength - 1] = ' ';
 						} else {
 							txt += ' ';
 						}
 					}
 
-					var checkbox = document.createElement('input');
-					checkbox.type = "checkbox";
-					checkbox.value = img;
-					checkbox.className = "hg-img";
-					checkbox.id = x[i].id; // ?
-					checkbox.title = "Post #" + entry;
-					checkbox.checked = true;
+					var hgEntry_checkbox = document.createElement('input');
+					hgEntry_checkbox.type = "checkbox";
+					hgEntry_checkbox.value = img;
+					hgEntry_checkbox.className = "hg-img";
+					hgEntry_checkbox.id = x[i].id; // ?
+					hgEntry_checkbox.title = "Post #" + hgEntry;
+					hgEntry_checkbox.style = "display:inline!important;"
+					hgEntry_checkbox.checked = true;
 
-					var text = document.createElement('input')
-					text.type = "text";
-					text.maxlength = 26;
-					text.size = 36;
-					text.className = "hg-field";
-					text.id = x[i].id; // ?
-					text.title = "Tribute name";
-					text.value = txt;
+					var hgName_text = document.createElement('input')
+					hgName_text.type = "text";
+					hgName_text.maxlength = 26;
+					hgName_text.size = 36;
+					hgName_text.className = "hg-field";
+					hgName_text.id = x[i].id; // ?
+					hgName_text.title = "Tribute name";
+					hgName_text.value = txt;
 
-					var m = document.createElement('input');
-					m.type = "radio";
-					m.name = "gender";
-					m.value = "M";
-					m.title = "Male";
-					m.checked = true;
-					var f = document.createElement('input');
-					f.type = "radio";
-					f.name = "gender";
-					f.value = "F";
-					f.title = "Female";
+					var hgMale_radio = document.createElement('input');
+					hgMale_radio.type = "radio";
+					hgMale_radio.name = "gender";
+					hgMale_radio.value = "M";
+					hgMale_radio.title = "Male";
+					hgMale_radio.checked = true;
+					var hgFemale_radio = document.createElement('input');
+					hgFemale_radio.type = "radio";
+					hgFemale_radio.name = "gender";
+					hgFemale_radio.value = "F";
+					hgFemale_radio.title = "Female";
 
-					var form = document.createElement('form');
-					form.className = "hg-gender"; // TODO: change this class name
-					form.id = x[i].id; // ?
+					var hgForm_form = document.createElement('form');
+					hgForm_form.className = "hg-gender"; // TODO: change this class name
+					hgForm_form.id = x[i].id; // ?
+					hgForm_form.appendChild(hgEntry_checkbox);
+					hgForm_form.appendChild(hgName_text);
+					hgForm_form.appendChild(hgMale_radio);
+					hgForm_form.appendChild(hgFemale_radio);
 
-					form.appendChild(checkbox);
-					form.appendChild(text);
-					form.appendChild(m);
-					form.appendChild(f);
-
-					x[i].prepend(form);
+					x[i].prepend(hgForm_form);
 				}
 			}
 		}
 	};
 
-	function show() {
+	function hgShow() {
 		var gens = document.getElementsByClassName("hg-gender");
 
 		for(i = 0; i < gens.length; i++) {
@@ -131,7 +130,7 @@ if(window.location.hostname == "boards.4chan.org") {
 		}
 	};
 
-	function hide() {
+	function hgHide() {
 		var gens = document.getElementsByClassName("hg-gender");
 
 		for(i = 0; i < gens.length; i++) {
@@ -139,7 +138,7 @@ if(window.location.hostname == "boards.4chan.org") {
 		}
 	};
 
-	function deselect() {
+	function hgDeselect() {
 		var imgs = document.getElementsByClassName("hg-img");
 
 		for(i = 0; i < imgs.length; i++) {
@@ -147,8 +146,8 @@ if(window.location.hostname == "boards.4chan.org") {
 		}
 	};
 
-	function save() {
-		size();
+	function hgSave() {
+		hgSize();
 
 		var imgs = document.getElementsByClassName("hg-img");
 		var txts = document.getElementsByClassName("hg-field");
@@ -180,64 +179,89 @@ if(window.location.hostname == "boards.4chan.org") {
 		GM_setValue("gens", gensStr);
 	};
 
+	// TODO: customizable keybinds
 	document.onkeydown = function(key) {
 		key = key || window.event;
 
 		if(key.keyCode == 112 || key.keyCode == 115) {
-			draw();
+			hgDraw();
 		} else if(key.keyCode == 113) {
-			hide();
+			hgHide();
 		}
 	};
 
-	var t24 = document.createElement('input');
-	t24.type = "radio";
-	t24.name = "tributes";
-	t24.value = "24";
-	t24.title = "24 Tributes";
-	t24.checked = true;
-	var t36 = document.createElement('input');
-	t36.type = "radio";
-	t36.name = "tributes";
-	t36.value = "36";
-	t36.title = "36 Tributes";
-	var t48 = document.createElement('input');
-	t48.type = "radio";
-	t48.name = "tributes";
-	t48.value = "48";
-	t48.title = "48 Tributes";
+	// TODO: change to a select
+	var hgT24_radio = document.createElement('input');
+	hgT24_radio.type = "radio";
+	hgT24_radio.name = "tributes";
+	hgT24_radio.value = "24";
+	hgT24_radio.title = "24 Tributes";
+	hgT24_radio.checked = true;
+	var hgT36_radio = document.createElement('input');
+	hgT36_radio.type = "radio";
+	hgT36_radio.name = "tributes";
+	hgT36_radio.value = "36";
+	hgT36_radio.title = "36 Tributes";
+	var hgT48_radio = document.createElement('input');
+	hgT48_radio.type = "radio";
+	hgT48_radio.name = "tributes";
+	hgT48_radio.value = "48";
+	hgT48_radio.title = "48 Tributes";
+	/*
+	var hgTributes_select = document.createElement('select');
+	hgTributes_select.name = "tributes";
+	var hgT24_option = document.createElement('option');
+	hgT24_option.text = "24";
+	hgT24_option.value = "24";
+	var hgT36_option = document.createElement('option');
+	hgT36_option.text = "36";
+	hgT36_option.value = "36";
+	var hgT48_option = document.createElement('option');
+	hgT48_option.text = "48";
+	hgT48_option.value = "48";
+	hgTributes_select.appendChild(hgT24_option);
+	hgTributes_select.appendChild(hgT36_option);
+	hgTributes_select.appendChild(hgT48_option);
+	*/
 
-	var button1 = document.createElement("button");
-	button1.innerHTML = "Draw";
-	button1.onclick = function() { draw(); };
-	var button2 = document.createElement("button");
-	button2.innerHTML = "Hide";
-	button2.onclick = function() { hide(); };
-	var button3 = document.createElement("button");
-	button3.innerHTML = "Save";
-	button3.onclick = function() { save(); };
-	var button4 = document.createElement("button");
-	button4.innerHTML = "Deselect All";
-	button4.onclick = function() { deselect(); };
+	// TODO: set button types to "button"
+	var hgDraw_btn = document.createElement("button");
+	hgDraw_btn.type = "button";
+	hgDraw_btn.innerHTML = "Draw";
+	hgDraw_btn.onclick = function() { hgDraw(); window.scrollTo(0, document.body.scrollHeight); };
+	var hgHide_btn = document.createElement("button");
+	hgHide_btn.type = "button";
+	hgHide_btn.innerHTML = "Hide";
+	hgHide_btn.onclick = function() { hgHide(); };
+	var hgSave_btn = document.createElement("button");
+	hgSave_btn.type = "button";
+	hgSave_btn.innerHTML = "Save";
+	hgSave_btn.onclick = function() { hgSave(); };
+	var hgDsel_btn = document.createElement("button");
+	hgDsel_btn.type = "button";
+	hgDsel_btn.innerHTML = "Deselect All";
+	hgDsel_btn.onclick = function() { hgDeselect(); };
 
-	var form = document.createElement('div');
-	form.className = "hungergames";
-	form.appendChild(button1);
-	form.appendChild(button2);
-	form.appendChild(button3);
-	form.appendChild(button4);
-	form.appendChild(t24);
-	form.appendChild(t36);
-	form.appendChild(t48);
+	var hgCtrls_div = document.createElement('div');
+	hgCtrls_div.className = "hungergames";
+	hgCtrls_div.appendChild(hgDraw_btn);
+	hgCtrls_div.appendChild(hgHide_btn);
+	hgCtrls_div.appendChild(hgSave_btn);
+	hgCtrls_div.appendChild(hgDsel_btn);
+	hgCtrls_div.appendChild(hgT24_radio);
+	hgCtrls_div.appendChild(hgT36_radio);
+	hgCtrls_div.appendChild(hgT48_radio);
 
-	document.getElementsByTagName("body")[0].appendChild(form);
+	document.getElementsByTagName("body")[0].appendChild(hgCtrls_div);
 } else if(window.location.hostname == "brantsteele.net") {
 	var seasonname = document.getElementsByName("seasonname")[0].value;
 	var logourl = document.getElementsByName("logourl")[0].value;
 
-	var button = document.createElement("button");
-	button.innerHTML = "Load";
-	button.onclick = function() {
+	var hgLoad_btn = document.createElement("button");
+	hgLoad_btn.type = "button";
+	//hgLoad_btn.style = "position:absolute;"; // TODO: implement alongside button move
+	hgLoad_btn.innerHTML = "Load";
+	hgLoad_btn.onclick = function() {
 		var tributes = GM_getValue("tributes");
 
 		var imgs = GM_getValue("imgs").split('|');
@@ -265,5 +289,6 @@ if(window.location.hostname == "boards.4chan.org") {
 			document.getElementsByName("logourl")[0].value = logourl;
 		}
 	};
-	document.getElementsByTagName("body")[0].prepend(button); // TODO: find a better place to stick this and figure out how to make it not break things
+	document.getElementsByTagName("body")[0].prepend(hgLoad_btn);
+	//document.getElementsByClassName("personalHG")[0].prepend(button); // TODO: implement this button location change alongside some major update
 }
