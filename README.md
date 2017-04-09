@@ -1,6 +1,6 @@
 This script collects entries as they're posted in a Hunger Games thread and enters them into the simulator for you.
 
-Works in Firefox, Chrome, and Safari, with or without 4chan X. Not tested on anything else. Not tested on anything that isn't Windows.
+Works in Firefox, Chrome, and Opera, with or without 4chan X. Not tested on anything else. Not tested on anything that isn't Windows.
 
 # Installation
 ### Firefox
@@ -9,7 +9,7 @@ Install the [Greasemonkey](https://addons.mozilla.org/en-US/firefox/addon/grease
 ### Chrome
 Install the [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en) extension, then **[click here](https://github.com/zmnmxlntr/hg/raw/master/hg.user.js)**, then click "Install".
 
-### Safari
+### Opera
 Install the [Violent monkey](https://addons.opera.com/en/extensions/details/violent-monkey/) extension, then **[click here](https://github.com/zmnmxlntr/hg/raw/master/hg.user.js)**, then click "Confirm installation".
 
 # Usage
