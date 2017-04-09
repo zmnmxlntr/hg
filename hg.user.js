@@ -2,7 +2,7 @@
 // @name        Virginia's Hunger Games Script
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
-// @version     1.4.1
+// @version     1.4.2
 // @include     boards.4chan.org/*/res/*
 // @include     boards.4chan.org/*/thread/*
 // @include     http://boards.4chan.org/*/res/*
@@ -263,7 +263,7 @@ if(window.location.hostname == "boards.4chan.org") {
 	hgCtrls_div.appendChild(hgT48_radio);
 
 	document.getElementsByTagName("body")[0].appendChild(hgCtrls_div);
-} else if(window.location.hostname == "brantsteele.net") {
+} else if(window.location.hostname == "brantsteele.net" || window.location.hostname == "www.brantsteele.net") {
 	var seasonname = document.getElementsByName("seasonname")[0].value;
 	var logourl = document.getElementsByName("logourl")[0].value;
 
