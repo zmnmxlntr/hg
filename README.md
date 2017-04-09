@@ -12,6 +12,7 @@ Install the [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonke
 ### Opera
 Install the [Violent monkey](https://addons.opera.com/en/extensions/details/violent-monkey/) extension, then **[click here](https://github.com/zmnmxlntr/hg/raw/master/hg.user.js)**, then click "Confirm installation".
 
+
 Doesn't seem to work on Safari. If you actually want it to, contact me and tell me as much and I'll give it a shot.
 
 # Usage
