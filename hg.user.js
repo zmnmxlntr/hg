@@ -2,7 +2,7 @@
 // @name        Virginia's Hunger Games Script
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
-// @version     1.4
+// @version     1.4.1
 // @include     boards.4chan.org/*/res/*
 // @include     boards.4chan.org/*/thread/*
 // @include     http://boards.4chan.org/*/res/*
@@ -15,8 +15,18 @@
 // @include     http://boards.4chan.org/*/thread/*/
 // @include     https://boards.4chan.org/*/res/*/
 // @include     https://boards.4chan.org/*/thread/*/
+// @include     www.brantsteele.net/hungergames/edit.php
+// @include     www.brantsteele.net/hungergames/personal.php
+// @include     http://www.brantsteele.net/hungergames/edit.php
+// @include     http://www.brantsteele.net/hungergames/personal.php
+// @include     https://www.brantsteele.net/hungergames/edit.php
+// @include     https://www.brantsteele.net/hungergames/personal.php
+// @include     brantsteele.net/hungergames/edit.php
+// @include     brantsteele.net/hungergames/personal.php
 // @include     http://brantsteele.net/hungergames/edit.php
 // @include     http://brantsteele.net/hungergames/personal.php
+// @include     https://brantsteele.net/hungergames/edit.php
+// @include     https://brantsteele.net/hungergames/personal.php
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @grant       GM_setValue
