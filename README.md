@@ -1,6 +1,6 @@
 This script collects entries as they're posted in a Hunger Games thread and enters them into the simulator for you.
 
-Works in Firefox, Chrome/Chromium, and Opera, with or without 4chan X. Not tested on anything else. Tested on Windows. Seems to also work on Mac. Not yet tested on Linux.
+Works in Firefox, Chrome/Chromium, and Opera, with or without 4chan X. Not tested on anything else. Tested on Windows. Seems to also work on Mac and Linux.
 
 # Installation
 ### Firefox
@@ -28,7 +28,7 @@ Alternatively, just watch this gif:
 
 ![](http://i.imgur.com/Q50rvOo.gif)
 
-Not visible in the demo gif is the new "Deselect All" button, which you'll probably want to use if you begin your reaping in the middle of a large thread.
+There are a few additions to the script that aren't visible in the demo gif. I'm sure you can figure out what they do. If you can't, contact me.
 
 # Contact
 Please contact me for any bugs, questions, or suggestions.
