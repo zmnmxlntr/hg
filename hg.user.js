@@ -2,7 +2,9 @@
 // @name        Virginia's Hunger Games Script
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
-// @version     1.4.2
+// @version     1.5
+// @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
+// @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @include     boards.4chan.org/*/res/*
 // @include     boards.4chan.org/*/thread/*
 // @include     http://boards.4chan.org/*/res/*
@@ -27,8 +29,6 @@
 // @include     http://brantsteele.net/hungergames/personal.php
 // @include     https://brantsteele.net/hungergames/edit.php
 // @include     https://brantsteele.net/hungergames/personal.php
-// @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
-// @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @grant       GM_setValue
 // @grant       GM_getValue
 // ==/UserScript==
@@ -40,15 +40,7 @@ if(window.location.hostname == "boards.4chan.org") {
 	var hgEntry = 0;
 
 	function hgSize() {
-		var e = document.getElementsByName("tributes");
-
-		if(e[0].checked) {
-			tributes = 24;
-		} else if(e[1].checked) {
-			tributes = 36;
-		} else {
-			tributes = 48;
-		}
+		tributes = document.getElementById("hgTributes").value;
 	};
 
 	function hgDraw() {
@@ -63,21 +55,20 @@ if(window.location.hostname == "boards.4chan.org") {
 			if(x[i].getElementsByClassName('hg-img').length == 0) {
 				var y = x[i].getElementsByClassName("fileThumb")
 				if(y.length) {
-					hgEntry += 1;
+					hgEntry++;
 
 					// TODO: option of CDN
 					var img = y[0].getElementsByTagName("img")[0]['src']
 					var txt = x[i].getElementsByClassName("postMessage")[0].innerText.split('\n')
 					
-					// TODO: wow this is ugly
 					var j = 0;
 					while(j < txt.length && (txt[j].match(/^(>>[0-9]+)(\s\(OP\))?/) || txt[j].trim().length == 0)) {
 						j++;
 					}
 					if(j < txt.length) {
-						txt = txt[j].replace(/[^ú\ç\.\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength);
+						txt = txt[j].replace(/[^ú\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength);
 					} else {
-						txt = txt.join(' ').replace(/(>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?/g, '').replace(/[^ú\ç\.\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength);
+						txt = txt.join(' ').replace(/(>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?/g, '').replace(/[^ú\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength);
 					}
 					// TODO: does not seem to work
 					if(txt.length > 15 && txt.match(/\s/g) == null) {
@@ -88,6 +79,7 @@ if(window.location.hostname == "boards.4chan.org") {
 						}
 					}
 
+					// Add a tag damnit
 					var hgEntry_checkbox = document.createElement('input');
 					hgEntry_checkbox.type = "checkbox";
 					hgEntry_checkbox.value = img;
@@ -95,7 +87,7 @@ if(window.location.hostname == "boards.4chan.org") {
 					hgEntry_checkbox.id = x[i].id; // ?
 					hgEntry_checkbox.title = "Post #" + hgEntry;
 					hgEntry_checkbox.style = "display:inline!important;"
-					hgEntry_checkbox.checked = true;
+					/*if(txt)*/ hgEntry_checkbox.checked = true;
 
 					var hgName_text = document.createElement('input')
 					hgName_text.type = "text";
@@ -199,27 +191,11 @@ if(window.location.hostname == "boards.4chan.org") {
 			hgHide();
 		}
 	};
-
-	// TODO: change to a select
-	var hgT24_radio = document.createElement('input');
-	hgT24_radio.type = "radio";
-	hgT24_radio.name = "tributes";
-	hgT24_radio.value = "24";
-	hgT24_radio.title = "24 Tributes";
-	hgT24_radio.checked = true;
-	var hgT36_radio = document.createElement('input');
-	hgT36_radio.type = "radio";
-	hgT36_radio.name = "tributes";
-	hgT36_radio.value = "36";
-	hgT36_radio.title = "36 Tributes";
-	var hgT48_radio = document.createElement('input');
-	hgT48_radio.type = "radio";
-	hgT48_radio.name = "tributes";
-	hgT48_radio.value = "48";
-	hgT48_radio.title = "48 Tributes";
-	/*
+	
 	var hgTributes_select = document.createElement('select');
+	hgTributes_select.id = "hgTributes";
 	hgTributes_select.name = "tributes";
+	hgTributes_select.title = "Tributes";
 	var hgT24_option = document.createElement('option');
 	hgT24_option.text = "24";
 	hgT24_option.value = "24";
@@ -232,9 +208,7 @@ if(window.location.hostname == "boards.4chan.org") {
 	hgTributes_select.appendChild(hgT24_option);
 	hgTributes_select.appendChild(hgT36_option);
 	hgTributes_select.appendChild(hgT48_option);
-	*/
 
-	// TODO: set button types to "button"
 	var hgDraw_btn = document.createElement("button");
 	hgDraw_btn.type = "button";
 	hgDraw_btn.innerHTML = "Draw";
@@ -258,9 +232,7 @@ if(window.location.hostname == "boards.4chan.org") {
 	hgCtrls_div.appendChild(hgHide_btn);
 	hgCtrls_div.appendChild(hgSave_btn);
 	hgCtrls_div.appendChild(hgDsel_btn);
-	hgCtrls_div.appendChild(hgT24_radio);
-	hgCtrls_div.appendChild(hgT36_radio);
-	hgCtrls_div.appendChild(hgT48_radio);
+	hgCtrls_div.appendChild(hgTributes_select);
 
 	document.getElementsByTagName("body")[0].appendChild(hgCtrls_div);
 } else if(window.location.hostname == "brantsteele.net" || window.location.hostname == "www.brantsteele.net") {
@@ -278,7 +250,7 @@ if(window.location.hostname == "boards.4chan.org") {
 		var txts = GM_getValue("txts").split('|');
 		var gens = GM_getValue("gens").split('|');
 
-		var capacity = (document.getElementsByTagName("select").length - 2) / 3
+		var capacity = (document.getElementsByTagName("select").length - 2) / 3;
 
 		var inputs = document.getElementsByTagName('input');
 		for(i = 2, j = 0; i < inputs.length && j < tributes && j < capacity && j < imgs.length - 1; i += 4, j++) {
