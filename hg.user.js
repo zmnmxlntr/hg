@@ -2,7 +2,7 @@
 // @name        Virginia's Hunger Games Script
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
-// @version     2.0
+// @version     2.0.1
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @include     boards.4chan.org/*/res/*
@@ -90,9 +90,9 @@ if(window.location.hostname == "boards.4chan.org") {
 					}
 					// TODO: replace common gender matches
 					if(j < txt.length) {
-						txt = txt[j].replace(/[^ú\ç\.\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength);
+						txt = txt[j].replace(/[^ú\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength);
 					} else {
-						txt = txt.join(' ').replace(/(>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?/g, '').replace(/[^ú\ç\.\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength);
+						txt = txt.join(' ').replace(/(>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?/g, '').replace(/[^ú\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength);
 					}
 					// TODO: does not seem to work
 					if(txt.length > 15 && txt.match(/\s/g) === null) {
@@ -188,6 +188,12 @@ if(window.location.hostname == "boards.4chan.org") {
 		var imgs = document.getElementsByClassName("hg-img");
 		var txts = document.getElementsByClassName("hg-field");
 		var gens = document.getElementsByClassName("hg-gender");
+
+		if(imgs.length == 0) {
+			hgDraw();
+			hgHide();
+			window.scrollTo(0, document.body.scrollHeight);
+		}
 
 		var imgsStr = "";
 		var txtsStr = "";
