@@ -178,6 +178,8 @@ if(window.location.hostname == "boards.4chan.org") {
 		for(i = 0; i < imgs.length; i++) {
 			imgs[i].checked = false;
 		}
+
+		hgNumberTributes();
 	}
 
 	function hgSave() {
