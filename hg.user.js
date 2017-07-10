@@ -2,7 +2,7 @@
 // @name        Virginia's Hunger Games Script
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
-// @version     2.1.0
+// @version     2.1.1
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @include     boards.4chan.org/*/res/*
@@ -348,7 +348,7 @@ if(window.location.hostname == "boards.4chan.org") {
 	*/
 	//hgOptions_div.appendChild(hgOptions_cdn_span);
 	var more = document.createElement("span");
-	more.innerHTML = "<br>I'm not dead. More options to come - use full images instead of thumbnails, choice of CDN, don't check image posts without text by default, etc.";
+	more.innerHTML = "<br>I'm not dead. More options to come - use full images instead of thumbnails, choice of CDN, don't select image posts without text by default, etc.";
 	hgOptions_div.appendChild(more);
 	// TODO: Option: don't check nameless images by default
 	// TODO: Option: customize keybinds
