@@ -2,7 +2,7 @@
 // @name        Virginia's Hunger Games Script
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
-// @version     2.0.1
+// @version     2.1.0
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @include     boards.4chan.org/*/res/*
@@ -34,12 +34,11 @@
 // ==/UserScript==
 
 // TODO: place class names, etc. into variables, finish nomenclature changes
+// TODO: detect gender strings
 
 if(window.location.hostname == "boards.4chan.org") {
 	var tributes = 24;
 	var hgEntry = 0;
-
-	var options_tributeCounter = true;
 
 	function hgSize() {
 		tributes = document.getElementById("hgTributes").value;
@@ -51,7 +50,7 @@ if(window.location.hostname == "boards.4chan.org") {
 		var hgForms = document.getElementsByClassName("hg-gender");
 		var count = 1;
 
-		if(options_tributeCounter === true) {
+		if(GM_getValue("options_tributeCounter", true) === true) {
 			for(i = 0; i < hgForms.length; i++) {
 				if(hgForms[i][0].checked && count <= tributes) {
 					hgForms[i].getElementsByClassName('hgTributeNumber')[0].innerHTML = " (" + count + ")";
@@ -81,7 +80,11 @@ if(window.location.hostname == "boards.4chan.org") {
 				if(y.length) {
 					hgEntry++;
 
-					var img = y[0].getElementsByTagName("img")[0].src;
+					//if(GM_getValue("options_fullImages", false) === true) {
+					//	var img = y[0].href;
+					//} else {
+						var img = y[0].getElementsByTagName("img")[0].src;
+					//}
 					var txt = x[i].getElementsByClassName("postMessage")[0].innerText.split('\n');
 
 					var j = 0;
@@ -90,9 +93,9 @@ if(window.location.hostname == "boards.4chan.org") {
 					}
 					// TODO: replace common gender matches
 					if(j < txt.length) {
-						txt = txt[j].replace(/[^ú\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength);
+						txt = txt[j].replace(/[^ú\í\é\ç\'\.\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength); // This regex somehow keeps getting gutted. Git??
 					} else {
-						txt = txt.join(' ').replace(/(>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?/g, '').replace(/[^ú\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength);
+						txt = txt.join(' ').replace(/(>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?/g, '').replace(/[^ú\í\é\ç\'\.\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength);
 					}
 					// TODO: does not seem to work
 					if(txt.length > 15 && txt.match(/\s/g) === null) {
@@ -111,7 +114,6 @@ if(window.location.hostname == "boards.4chan.org") {
 					hgEntry_checkbox.type = "checkbox";
 					hgEntry_checkbox.value = img;
 					hgEntry_checkbox.className = "hg-img";
-					//hgEntry_checkbox.id = x[i].id;
 					hgEntry_checkbox.title = "Image #" + hgEntry;
 					hgEntry_checkbox.style = "display:inline!important;";
 					/*if(txt)*/ hgEntry_checkbox.checked = true;
@@ -119,10 +121,9 @@ if(window.location.hostname == "boards.4chan.org") {
 
 					var hgName_text = document.createElement('input');
 					hgName_text.type = "text";
-					hgName_text.maxlength = hgNameMaxLength; // not working???
+					hgName_text.maxLength = hgNameMaxLength;
 					hgName_text.size = 36;
 					hgName_text.className = "hg-field";
-					//hgName_text.id = x[i].id;
 					hgName_text.title = "Tribute name";
 					hgName_text.value = txt;
 
@@ -141,7 +142,6 @@ if(window.location.hostname == "boards.4chan.org") {
 
 					var hgForm_form = document.createElement('form');
 					hgForm_form.className = "hg-gender"; // TODO: change this class name
-					//hgForm_form.id = x[i].id;
 					hgForm_form.appendChild(hgEntry_checkbox);
 					hgForm_form.appendChild(hgName_text);
 					hgForm_form.appendChild(hgMale_radio);
@@ -195,6 +195,7 @@ if(window.location.hostname == "boards.4chan.org") {
 			window.scrollTo(0, document.body.scrollHeight);
 		}
 
+		// TODO: separate loop for each concatentation
 		var imgsStr = "";
 		var txtsStr = "";
 		var gensStr = "";
@@ -231,6 +232,7 @@ if(window.location.hostname == "boards.4chan.org") {
 		}
 	};
 
+	// Show or hide options panel
 	function hgToggleOptionsPanel() {
 		var hgOptions_element = document.getElementsByClassName("hgOptions-panel");
 
@@ -243,85 +245,138 @@ if(window.location.hostname == "boards.4chan.org") {
 		window.scrollTo(0, document.body.scrollHeight);
 	}
 
+	// Load saved values for options and set their checkboxes appropriately
 	function hgLoadOptions() {
-		document.getElementById("hgOptions-newLocation").checked = GM_getValue("options_newLocation");
+		document.getElementById("hgOptions-newLocation").checked = GM_getValue("options_newLocation", false);
+		document.getElementById("hgOptions-rememberSize").checked = GM_getValue("options_rememberSize", true);
 		document.getElementById("hgOptions-tributeCounter").checked = GM_getValue("options_tributeCounter", true);
+		document.getElementById("hgOptions-fullImages").checked = GM_getValue("options_fullImages", false);
 	}
 
-	function hgSaveOptions() {
-		GM_setValue("options_newLocation", document.getElementById("hgOptions-newLocation").checked);
-		GM_setValue("options_tributeCounter", document.getElementById("hgOptions-tributeCounter").checked);
+	// TODO: create and hook standard option saving
+	function hgCreateOption_Checkbox(opt_id, opt_title, opt_text, opt_function) {
+		var hgOption_checkbox = document.createElement("input");
+		hgOption_checkbox.type = "checkbox";
+		hgOption_checkbox.id = opt_id;
+		hgOption_checkbox.title = opt_title;
+		hgOption_checkbox.style = "display:inline!important;";
+		if(opt_function) hgOption_checkbox.onchange = function() { opt_function(); };
+
+		var hgOption_anchor = document.createElement("span");
+		hgOption_anchor.innerHTML = opt_text;
+		hgOption_anchor.title = opt_title;
+
+		var hgOption_span = document.createElement("span");
+		hgOption_span.appendChild(hgOption_checkbox);
+		hgOption_span.appendChild(hgOption_anchor);
+
+		return hgOption_span;
 	}
 
-	function hgLoadOptionsVariables() {
-		options_tributeCounter = GM_getValue("options_tributeCounter", true);
-	}
-
-	// Draw options panel
-	// TODO: this is hideous
-	var hgOptions_div = document.createElement("div");
-	hgOptions_div.style = "display: none;";
-	hgOptions_div.className = "hgOptions-panel";
+	// TODO: finish abstracting into functions
+	// Options button
 	var hgOptions_button = document.createElement("button");
 	hgOptions_button.innerHTML = "Options";
 	hgOptions_button.type = "button";
 	hgOptions_button.onclick = function() { hgToggleOptionsPanel(); };
-	var hgOptions_newLocation_checkbox = document.createElement("input");
-	hgOptions_newLocation_checkbox.type = "checkbox";
-	hgOptions_newLocation_checkbox.id = "hgOptions-newLocation";
-	hgOptions_newLocation_checkbox.title = "The new location is just above the entry fields.";
-	hgOptions_newLocation_checkbox.style = "display:inline!important;";
-	hgOptions_newLocation_checkbox.onchange = function() { hgSaveOptions(); };
-	var hgOptions_newLocation_anchor = document.createElement("span");
-	hgOptions_newLocation_anchor.innerHTML = "Move \"Load\" button on BrantSteele reaping edit page to a better location";
-	hgOptions_newLocation_anchor.title = "The new location is just above the entry fields.";
-	hgOptions_button.onclick = function() { hgToggleOptionsPanel(); };
-	var hgOptions_newLocation_span = document.createElement("span");
-	hgOptions_newLocation_span.appendChild(hgOptions_newLocation_checkbox);
-	hgOptions_newLocation_span.appendChild(hgOptions_newLocation_anchor);
-	var linebreak = document.createElement("br");
-	var hgOptions_tributeCounter_checkbox = document.createElement("input");
-	hgOptions_tributeCounter_checkbox.type = "checkbox";
-	hgOptions_tributeCounter_checkbox.id = "hgOptions-tributeCounter";
-	hgOptions_tributeCounter_checkbox.title = "Displays numbers for selected tributes.";
-	hgOptions_tributeCounter_checkbox.style = "display:inline!important;";
-	hgOptions_tributeCounter_checkbox.checked = true;
-	hgOptions_tributeCounter_checkbox.onchange = function() { hgSaveOptions(); hgLoadOptionsVariables(); hgNumberTributes(); };
-	var hgOptions_tributeCounter_anchor = document.createElement("span");
-	hgOptions_tributeCounter_anchor.innerHTML = "Number the selected tributes";
-	hgOptions_tributeCounter_anchor.title = "Displays numbers for selected tributes.";
-	var hgOptions_tributeCounter_span = document.createElement("span");
-	hgOptions_tributeCounter_span.appendChild(hgOptions_tributeCounter_checkbox);
-	hgOptions_tributeCounter_span.appendChild(hgOptions_tributeCounter_anchor);
-	hgOptions_div.appendChild(hgOptions_tributeCounter_span);
-	hgOptions_div.appendChild(linebreak);
-	hgOptions_div.appendChild(hgOptions_newLocation_span);
+	// Draw options panel
+	var hgOptions_cdn_anchor = document.createElement("span");
+	hgOptions_cdn_anchor.innerHTML = "<br>&nbsp;CDN: ";
+	var hgOptions_cdn_opt1 = document.createElement("option");
+	hgOptions_cdn_opt1.id = "hgOptions-CDN0";
+	hgOptions_cdn_opt1.text = "Default CDN";
+	hgOptions_cdn_opt1.value = "0";
+	var hgOptions_cdn_opt2 = document.createElement("option");
+	hgOptions_cdn_opt2.id = "hgOptions-CDN1";
+	hgOptions_cdn_opt2.text = "i.4cdn.org";
+	hgOptions_cdn_opt2.value = "1";
+	var hgOptions_cdn_opt3 = document.createElement("option");
+	hgOptions_cdn_opt3.id = "hgOptions-CDN2";
+	hgOptions_cdn_opt3.text = "is.4chan.org";
+	hgOptions_cdn_opt3.value = "2";
+	var hgOptions_cdn_opt4 = document.createElement("option");
+	hgOptions_cdn_opt4.id = "hgOptions-CDN3";
+	hgOptions_cdn_opt4.text = "is2.4chan.org";
+	hgOptions_cdn_opt4.value = "3";
+	var hgOptions_cdn_select = document.createElement("select");
+	hgOptions_cdn_select.id = "hgOptions-CDN";
+	hgOptions_cdn_select.title = "Manually select a CDN to use.";
+	hgOptions_cdn_select.appendChild(hgOptions_cdn_opt1);
+	hgOptions_cdn_select.appendChild(hgOptions_cdn_opt2);
+	hgOptions_cdn_select.appendChild(hgOptions_cdn_opt3);
+	hgOptions_cdn_select.appendChild(hgOptions_cdn_opt4);
+	var hgOptions_cdn_span = document.createElement("span");
+	hgOptions_cdn_span.appendChild(hgOptions_cdn_anchor);
+	hgOptions_cdn_span.appendChild(hgOptions_cdn_select);
+	//
+	var hgOptions_div = document.createElement("div");
+	hgOptions_div.style = "display: none;";
+	hgOptions_div.className = "hgOptions-panel";
+	hgOptions_div.appendChild(
+		hgCreateOption_Checkbox(
+			"hgOptions-tributeCounter",
+			"Displays numbers for selected tributes",
+			"Number the selected tributes<br>",
+			function() { GM_setValue("options_tributeCounter", document.getElementById("hgOptions-tributeCounter").checked); hgNumberTributes(); }
+		)
+	);
+	hgOptions_div.appendChild(
+		hgCreateOption_Checkbox(
+			"hgOptions-rememberSize",
+			"Defaults number of tributes to previously selected number",
+			"Remember last number of tributes selected<br>",
+			function() { GM_setValue("options_rememberSize", document.getElementById("hgOptions-rememberSize").checked); }
+		)
+	);
+	hgOptions_div.appendChild(
+		hgCreateOption_Checkbox(
+			"hgOptions-newLocation",
+			"Move \"Load\" button on BrantSteele reaping edit page to just above the entry fields",
+			"Move \"Load\" button on BrantSteele reaping edit page to just above the entry fields<br>",
+			function() { GM_setValue("options_newLocation", document.getElementById("hgOptions-newLocation").checked); }
+		)
+	);
+	/*
+	hgOptions_div.appendChild(
+		hgCreateOption_Checkbox(
+			"hgOptions-fullImages",
+			"Use full-sized images instead of thumbnails",
+			"Use full-sized images instead of thumbnails<br>",
+			function() { GM_setValue("options_fullImages", document.getElementById("hgOptions-fullImages").checked); }
+		)
+	);
+	*/
+	//hgOptions_div.appendChild(hgOptions_cdn_span);
+	var more = document.createElement("span");
+	more.innerHTML = "<br>I'm not dead. More options to come - use full images instead of thumbnails, choice of CDN, don't check image posts without text by default, etc.";
+	hgOptions_div.appendChild(more);
 	// TODO: Option: don't check nameless images by default
-	// TODO: Option: choice of CDN
 	// TODO: Option: customize keybinds
 	// TODO: Option: hide "Deselect All" button
-	// TODO: Option: default number of tributes
-	var more = document.createElement("span");
-	more.innerHTML = "<br><br>More options to come - just testing the waters for now.";
-	hgOptions_div.appendChild(more);
 
 	var hgTributes_select = document.createElement('select');
 	hgTributes_select.id = "hgTributes";
 	hgTributes_select.name = "tributes";
 	hgTributes_select.title = "Tributes";
-	hgTributes_select.onchange = function() { hgNumberTributes(); };
+	hgTributes_select.onchange = function() { hgNumberTributes(); GM_setValue("options_lastSize", document.getElementById("hgTributes").value); };
 	var hgT24_option = document.createElement('option');
+	hgT24_option.id = "hg-t24";
 	hgT24_option.text = "24";
 	hgT24_option.value = "24";
 	var hgT36_option = document.createElement('option');
+	hgT36_option.id = "hg-t36";
 	hgT36_option.text = "36";
 	hgT36_option.value = "36";
 	var hgT48_option = document.createElement('option');
+	hgT48_option.id = "hg-t48";
 	hgT48_option.text = "48";
 	hgT48_option.value = "48";
 	hgTributes_select.appendChild(hgT24_option);
 	hgTributes_select.appendChild(hgT36_option);
 	hgTributes_select.appendChild(hgT48_option);
+	if(GM_getValue("options_rememberSize", true)) {
+		hgTributes_select.value = GM_getValue("options_lastSize", 24);
+	}
 
 	var hgDraw_button = document.createElement("button");
 	hgDraw_button.type = "button";
