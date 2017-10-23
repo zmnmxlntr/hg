@@ -2,7 +2,7 @@
 // @name        Virginia's Hunger Games Script
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
-// @version     2.3.0
+// @version     2.3.1
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @include     boards.4chan.org/*/res/*
@@ -96,17 +96,21 @@ if(window.location.hostname == "boards.4chan.org") {
 
                     var female = false;
 
+                    // TODO: think more about this when you're not drunk
+                    for(k = 0; k < txt.length; k++) if(txt[k].match(/(\(F\))|(\(Female\))/g)) {
+                        //if(txt[k][0] != '>') { // TODO: avoid (F) found in quotes, etc.
+                            female = true;
+                        //}
+                    }
+
                     var j = 0;
                     while(j < txt.length && (txt[j].match(/^(>>[0-9]+)(\s\(OP\))?/) || txt[j].trim().length === 0)) {
                         j++;
                     }
-                    if(j < txt.length && txt[j].length != 0 && txt[j].match(/(\(F\))|(\(Female\))/g)) {
-                        female = true;
-                    }
                     if(j < txt.length) { // if j < txt.length ??? that doesn't seem right why does this work
-                        txt = txt[j].replace(/(\(F\))|(\(Female\))/g, '').replace(/[^ú\ç\.\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength); // This regex somehow keeps getting gutted. Git/GitHub??
+                        txt = txt[j].replace(/(\(F\))|(\(Female\))/g, '').replace(/[^ú\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength); // This regex somehow keeps getting gutted. Git/GitHub??
                     } else {
-                        txt = txt.join(' ').replace(/(\(F\))|(\(Female\))/g, '').replace(/(>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?/g, '').replace(/[^ú\ç\.\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength);
+                        txt = txt.join(' ').replace(/(\(F\))|(\(Female\))/g, '').replace(/(>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?/g, '').replace(/[^ú\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength);
                     }
                     if(txt.length > 15 && txt.match(/\s/g) === null) { // TODO: does not seem to work
                         if(txt.length == hgNameMaxLength) {
