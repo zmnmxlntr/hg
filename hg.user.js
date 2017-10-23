@@ -2,7 +2,7 @@
 // @name        Virginia's Hunger Games Script
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
-// @version     2.3.1
+// @version     2.3.2
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @include     boards.4chan.org/*/res/*
@@ -110,7 +110,7 @@ if(window.location.hostname == "boards.4chan.org") {
                     if(j < txt.length) { // if j < txt.length ??? that doesn't seem right why does this work
                         txt = txt[j].replace(/(\(F\))|(\(Female\))/g, '').replace(/[^ú\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength); // This regex somehow keeps getting gutted. Git/GitHub??
                     } else {
-                        txt = txt.join(' ').replace(/(\(F\))|(\(Female\))/g, '').replace(/(>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?/g, '').replace(/[^ú\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength);
+                        txt = txt.join(' ').replace(/(\(F\))|(\(Female\))|(\(M\))|(\(Male\))/g, '').replace(/(>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?/g, '').replace(/[^ú\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength);
                     }
                     if(txt.length > 15 && txt.match(/\s/g) === null) { // TODO: does not seem to work
                         if(txt.length == hgNameMaxLength) {
