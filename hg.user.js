@@ -34,6 +34,7 @@
 // ==/UserScript==
 
 // TODO: Finish nomenclature changes
+// TODO: Remove "number of tributes" setting and simply save 48 and load as many as needed on reaping page
 
 if(window.location.hostname == "boards.4chan.org") {
     var hgReapingSize = 24;
@@ -223,7 +224,7 @@ if(window.location.hostname == "boards.4chan.org") {
             hgDraw();
         } else if(key.keyCode == 113) {
             hgHide();
-        } else if(key.ctrlKey && key.altKey && key.keyCode == 83) {
+        } else if(key.keyCode == 119) {
 			hgSave();
 		}
     };
@@ -446,29 +447,44 @@ if(window.location.hostname == "boards.4chan.org") {
 } else if(window.location.hostname == "brantsteele.net" || window.location.hostname == "www.brantsteele.net") {
     // TODO: blank entries without values to be loaded
     function hgLoad() {
-        var hgReapingSize = GM_getValue("reapingSize");
+        var seasonname = document.getElementsByName("seasonname")[0].value;
+        var logourl = document.getElementsByName("logourl")[0].value;
 
         var imgs = GM_getValue("imgsStr").split('|');
         var txts = GM_getValue("txtsStr").split('|');
         var gens = GM_getValue("gensStr").split('|');
+
+        var hgReapingSize = GM_getValue("reapingSize");
 
         var capacity = (document.getElementsByTagName("select").length - 2) / 3;
 
         var inputs = document.getElementsByTagName("input");
         var genders = document.getElementsByTagName("select");
 
+        // TODO: Always save 48, using empty strings for non-existent entries, so we can get rid of these awkward while loops and do away with the "select tribute size" option
         for(i = 2, j = 0; i < inputs.length && j < hgReapingSize && j < capacity && j < imgs.length - 1; i += 4, j++) {
             inputs[i].value = txts[j];
             inputs[i + 2].value = txts[j];
             inputs[i + 1].value = imgs[j];
             inputs[i + 3].value = "BW";
         }
-        for(i = 1, j = 0; i < hgReapingSize * 3 + 1 && j < hgReapingSize && j < capacity && j < imgs.length - 1; i += 3, j++) {
-            genders[i].value = gens[j];
+        while(i < inputs.length && j < capacity) {
+            inputs[i].value = "";
+            inputs[i + 2].value = "";
+            inputs[i + 1].value = "";
+            inputs[i + 3].value = "";
+            i += 4;
+            j++;
         }
 
-        var seasonname = document.getElementsByName("seasonname")[0].value;
-        var logourl = document.getElementsByName("logourl")[0].value;
+        for(i = 1, j = 0; i < hgReapingSize * 3 + 1 && j < hgReapingSize && j < capacity && j < imgs.length - 1; i += 3, j++) { // also check while i < genders.length? Seems to work fine without this check though, so remove similar check from previous loop?
+            genders[i].value = gens[j];
+        }
+        while(i < genders.length && j < capacity) {
+            genders[i].value = '?';
+            i += 3;
+            j++;
+        }
 
         // TODO: better check
         if(document.getElementsByName("seasonname")[0].value == "") {
@@ -483,7 +499,6 @@ if(window.location.hostname == "boards.4chan.org") {
     hgLoad_button.type = "button";
     hgLoad_button.innerHTML = "Load";
     hgLoad_button.onclick = function() { hgLoad(); };
-
     if(GM_getValue("options_newLocation") === true) {
         hgLoad_button.style.position = "absolute";
         document.getElementsByClassName("personalHG")[0].prepend(hgLoad_button);
