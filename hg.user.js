@@ -2,7 +2,7 @@
 // @name        Virginia's Hunger Games Script
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
-// @version     2.2.1
+// @version     2.3.0
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @include     boards.4chan.org/*/res/*
@@ -41,12 +41,12 @@ if(window.location.hostname == "boards.4chan.org") {
     var hgEntriesDrawn = 0;
 
     // TODO: Finish placing class names etc. into variables
-	// Class names of tribute form elements
-	var class_hgForm = "hg-form"
-	var class_hgCheckbox = "hg-checkbox"
-	var class_hgField = "hg-field"
-	var class_hgGender = "hg-gender"
-	var name_hgGender = "hg-gender"
+    // Class names of tribute form elements
+    var class_hgForm = "hg-form"
+    var class_hgCheckbox = "hg-checkbox"
+    var class_hgField = "hg-field"
+    var class_hgGender = "hg-gender"
+    var name_hgGender = "hg-gender"
 
     function hgSize() {
         hgReapingSize = document.getElementById("hgTributes").value;
@@ -57,11 +57,11 @@ if(window.location.hostname == "boards.4chan.org") {
 
         var hgForms = document.getElementsByClassName(class_hgForm);
         if(GM_getValue("options_tributeCounter", true) === true) {
-			var count = 1;
+            var count = 1;
             for(i = 0; i < hgForms.length; i++) {
                 if(hgForms[i][0].checked && count <= hgReapingSize) {
                     hgForms[i].getElementsByClassName('hgTributeNumber')[0].innerHTML = " (" + count + ")";
-					hgForms[i].getElementsByClassName('hgTributeNumber')[0].title = "Entry #" + count;
+                    hgForms[i].getElementsByClassName('hgTributeNumber')[0].title = "Entry #" + count;
                     count++;
                 } else {
                     hgForms[i].getElementsByClassName('hgTributeNumber')[0].innerHTML = "";
@@ -90,19 +90,19 @@ if(window.location.hostname == "boards.4chan.org") {
                 if(postImage.length) {
                     hgEntriesDrawn++;
 
-					var thumb = postImage[0].getElementsByTagName("img")[0].src;
+                    var thumb = postImage[0].getElementsByTagName("img")[0].src;
                     var img = postImage[0].href;
                     var txt = threadPosts[i].getElementsByClassName("postMessage")[0].innerText.split('\n');
 
-					var female = false;
+                    var female = false;
 
                     var j = 0;
                     while(j < txt.length && (txt[j].match(/^(>>[0-9]+)(\s\(OP\))?/) || txt[j].trim().length === 0)) {
                         j++;
                     }
-					if(j < txt.length && txt[j].length != 0 && txt[j].match(/(\(F\))|(\(Female\))/g)) {
-						female = true;
-					}
+                    if(j < txt.length && txt[j].length != 0 && txt[j].match(/(\(F\))|(\(Female\))/g)) {
+                        female = true;
+                    }
                     if(j < txt.length) { // if j < txt.length ??? that doesn't seem right why does this work
                         txt = txt[j].replace(/(\(F\))|(\(Female\))/g, '').replace(/[^ú\ç\.\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength); // This regex somehow keeps getting gutted. Git/GitHub??
                     } else {
@@ -125,11 +125,11 @@ if(window.location.hostname == "boards.4chan.org") {
                     hgEntry_checkbox.title = "Image #" + hgEntriesDrawn;
                     hgEntry_checkbox.style = "display:inline!important;";
                     hgEntry_checkbox.onchange = function() { hgNumberTributes(); };
-					if(skipEmpty === true) {
-						if(txt) hgEntry_checkbox.checked = true;
-					} else {
-						hgEntry_checkbox.checked = true;
-					}
+                    if(skipEmpty === true) {
+                        if(txt) hgEntry_checkbox.checked = true;
+                    } else {
+                        hgEntry_checkbox.checked = true;
+                    }
 
                     var hgName_text = document.createElement('input');
                     hgName_text.type = "text";
@@ -142,17 +142,17 @@ if(window.location.hostname == "boards.4chan.org") {
                     var hgMale_radio = document.createElement('input');
                     hgMale_radio.type = "radio";
                     hgMale_radio.name = "gender";
-					hgMale_radio.className = class_hgGender;
+                    hgMale_radio.className = class_hgGender;
                     hgMale_radio.value = "M";
                     hgMale_radio.title = "Male";
                     hgMale_radio.checked = true;
                     var hgFemale_radio = document.createElement('input');
                     hgFemale_radio.type = "radio";
                     hgFemale_radio.name = "gender";
-					hgFemale_radio.className = class_hgGender;
+                    hgFemale_radio.className = class_hgGender;
                     hgFemale_radio.value = "F";
                     hgFemale_radio.title = "Female";
-					if(detectGender === true && female === true) {
+                    if(detectGender === true && female === true) {
                         hgFemale_radio.checked = true;
                     }
 
@@ -160,8 +160,8 @@ if(window.location.hostname == "boards.4chan.org") {
                     hgForm_form.className = class_hgForm;
                     hgForm_form.appendChild(hgEntry_checkbox);
                     hgForm_form.appendChild(hgName_text);
-					hgForm_form.appendChild(hgMale_radio);
-					hgForm_form.appendChild(hgFemale_radio);
+                    hgForm_form.appendChild(hgMale_radio);
+                    hgForm_form.appendChild(hgFemale_radio);
                     hgForm_form.appendChild(hgNumber_span);
 
                     threadPosts[i].prepend(hgForm_form);
@@ -172,50 +172,50 @@ if(window.location.hostname == "boards.4chan.org") {
         hgNumberTributes();
     }
 
-	function hgSave() {
-		hgSize();
+    function hgSave() {
+        hgSize();
 
-		var tributeForms = document.getElementsByClassName(class_hgForm);
+        var tributeForms = document.getElementsByClassName(class_hgForm);
 
         if(tributeForms.length == 0) {
             hgDraw();
             hgHide();
-			tributeForms = document.getElementsByClassName(class_hgForm);
+            tributeForms = document.getElementsByClassName(class_hgForm);
             window.scrollTo(0, document.body.scrollHeight);
         }
 
-		// TODO: Separate into three loops
+        // TODO: Separate into three loops
         var imgsStr = "";
         var txtsStr = "";
         var gensStr = "";
-		var useFullImgs = GM_getValue("options_fullImages", false);
-		for(i = 0, count = 0; i < tributeForms.length && count < hgReapingSize; i++) {
-			if(tributeForms[i].getElementsByClassName(class_hgCheckbox)[0].checked === true) {
-				count++;
+        var useFullImgs = GM_getValue("options_fullImages", false);
+        for(i = 0, count = 0; i < tributeForms.length && count < hgReapingSize; i++) {
+            if(tributeForms[i].getElementsByClassName(class_hgCheckbox)[0].checked === true) {
+                count++;
 
-				// TODO: Store image URLs in memory instead of DOM or some shit
-				// TODO: Possibly change retrieval from getElementByEtc() to simple index accesses since we have a set order of elements
-				if(useFullImgs === true) {
-					imgsStr += tributeForms[i].parentElement.getElementsByClassName("fileThumb")[0].href + "|";
-				} else {
-					imgsStr += tributeForms[i].parentElement.getElementsByTagName("img")[0].src + "|";
-				}
+                // TODO: Store image URLs in memory instead of DOM or some shit
+                // TODO: Possibly change retrieval from getElementByEtc() to simple index accesses since we have a set order of elements
+                if(useFullImgs === true) {
+                    imgsStr += tributeForms[i].parentElement.getElementsByClassName("fileThumb")[0].href + "|";
+                } else {
+                    imgsStr += tributeForms[i].parentElement.getElementsByTagName("img")[0].src + "|";
+                }
 
-				txtsStr += tributeForms[i].getElementsByClassName(class_hgField)[0].value + "|";
+                txtsStr += tributeForms[i].getElementsByClassName(class_hgField)[0].value + "|";
 
-				if(tributeForms[i].getElementsByClassName(class_hgGender)[0].checked === true) {
-					gensStr += "1|";
-				} else {
-					gensStr += "0|";
-				}
-			}
-		}
+                if(tributeForms[i].getElementsByClassName(class_hgGender)[0].checked === true) {
+                    gensStr += "1|";
+                } else {
+                    gensStr += "0|";
+                }
+            }
+        }
 
         GM_setValue("reapingSize", hgReapingSize);
         GM_setValue("imgsStr", imgsStr);
         GM_setValue("txtsStr", txtsStr);
         GM_setValue("gensStr", gensStr);
-	}
+    }
 
     document.onkeydown = function(key) {
         key = key || window.event;
@@ -225,8 +225,8 @@ if(window.location.hostname == "boards.4chan.org") {
         } else if(key.keyCode == 113) {
             hgHide();
         } else if(key.keyCode == 119) {
-			hgSave();
-		}
+            hgSave();
+        }
     };
 
     function hgShow() {
@@ -270,21 +270,21 @@ if(window.location.hostname == "boards.4chan.org") {
 
     // Load saved values for options and set their checkboxes appropriately
     function hgLoadOptions() {
-		document.getElementById("hgOptions-skipEmpty").checked = GM_getValue("options_skipEmpty", false);
+        document.getElementById("hgOptions-skipEmpty").checked = GM_getValue("options_skipEmpty", false);
         document.getElementById("hgOptions-fullImages").checked = GM_getValue("options_fullImages", false);
         document.getElementById("hgOptions-newLocation").checked = GM_getValue("options_newLocation", false);
         document.getElementById("hgOptions-rememberSize").checked = GM_getValue("options_rememberSize", true);
-		document.getElementById("hgOptions-detectGender").checked = GM_getValue("options_detectGender", true);
-		document.getElementById("hgOptions-tributeCounter").checked = GM_getValue("options_tributeCounter", true);
+        document.getElementById("hgOptions-detectGender").checked = GM_getValue("options_detectGender", true);
+        document.getElementById("hgOptions-tributeCounter").checked = GM_getValue("options_tributeCounter", true);
     }
 
-	function hgCreateElement_Div(className, style) {
-		var hgElement_div = document.createElement("div");
-		hgElement_div.className = className;
-		if(style) hgElement_div.style = style;
+    function hgCreateElement_Div(className, style) {
+        var hgElement_div = document.createElement("div");
+        hgElement_div.className = className;
+        if(style) hgElement_div.style = style;
 
-		return hgElement_div;
-	}
+        return hgElement_div;
+    }
 
     // TODO: create and use standard option saving
     function hgCreateElement_Checkbox(element_id, element_title, element_text, element_function) {
@@ -306,44 +306,44 @@ if(window.location.hostname == "boards.4chan.org") {
         return hgElement_span;
     }
 
-	function hgCreateElement_Button(innerHTML, onclick) {
-		var hgElement_button = document.createElement("button");
-		hgElement_button.type = "button";
-		hgElement_button.innerHTML = innerHTML;
-		hgElement_button.onclick = onclick;
+    function hgCreateElement_Button(innerHTML, onclick) {
+        var hgElement_button = document.createElement("button");
+        hgElement_button.type = "button";
+        hgElement_button.innerHTML = innerHTML;
+        hgElement_button.onclick = onclick;
 
-		return hgElement_button;
-	}
+        return hgElement_button;
+    }
 
-	function hgCreateElement_Select(id, name, title, onchange) {
-		var hgElement_select = document.createElement('select');
-		hgElement_select.id = id;
-		hgElement_select.name = name;
-		hgElement_select.title = title;
-		hgElement_select.onchange = onchange;
+    function hgCreateElement_Select(id, name, title, onchange) {
+        var hgElement_select = document.createElement('select');
+        hgElement_select.id = id;
+        hgElement_select.name = name;
+        hgElement_select.title = title;
+        hgElement_select.onchange = onchange;
 
-		return hgElement_select;
-	}
+        return hgElement_select;
+    }
 
-	function hgCreateElement_Option(id, value) {
-		var hgElement_option = document.createElement("option");
-		hgElement_option.id = id;
-		hgElement_option.text = value;
-		hgElement_option.value = value;
+    function hgCreateElement_Option(id, value) {
+        var hgElement_option = document.createElement("option");
+        hgElement_option.id = id;
+        hgElement_option.text = value;
+        hgElement_option.value = value;
 
-		return hgElement_option;
-	}
+        return hgElement_option;
+    }
 
-	// TODO: finish changing "hgOptions*" to appropriate names
+    // TODO: finish changing "hgOptions*" to appropriate names
     // TODO: finish abstracting into functions
     // TODO: Option: don't check nameless images by default
     // TODO: Option: customize keybinds
     // TODO: Option: hide "Deselect All" button
-	// TODO: Option: don't truncate names to 26 characters
+    // TODO: Option: don't truncate names to 26 characters
     // Settings button
-	// Create settings button, div for settings, and the settings themselves
-	var hgSettings_button = hgCreateElement_Button("Settings", function() { hgToggleOptionsPanel(); }); // Control button that expands/collapses settings panel
-	var hgSettings_div = hgCreateElement_Div("hgOptions-panel", "display: none;"); // Div in which settings elements are placed
+    // Create settings button, div for settings, and the settings themselves
+    var hgSettings_button = hgCreateElement_Button("Settings", function() { hgToggleOptionsPanel(); }); // Control button that expands/collapses settings panel
+    var hgSettings_div = hgCreateElement_Div("hgOptions-panel", "display: none;"); // Div in which settings elements are placed
     hgSettings_div.appendChild(
         hgCreateElement_Checkbox(
             "hgOptions-tributeCounter",
@@ -371,7 +371,7 @@ if(window.location.hostname == "boards.4chan.org") {
     hgSettings_div.appendChild(
         hgCreateElement_Checkbox(
             "hgOptions-skipEmpty",
-			"If an image is posted but is not accompanied by text (e.g. a name), don't automatically select it for entry",
+            "If an image is posted but is not accompanied by text (e.g. a name), don't automatically select it for entry",
             "Don't automatically check entries with no post text<br>",
             function() { GM_setValue("options_skipEmpty", document.getElementById("hgOptions-skipEmpty").checked); }
         )
@@ -393,7 +393,7 @@ if(window.location.hostname == "boards.4chan.org") {
         )
     );
     // Create CDN setting
-	/*
+    /*
     var hgSettings_cdn_anchor = document.createElement("span");
     hgSettings_cdn_anchor.innerHTML = "<br>&nbsp;CDN: ";
     var hgSettings_cdn_opt1 = document.createElement("option");
@@ -423,20 +423,20 @@ if(window.location.hostname == "boards.4chan.org") {
     hgSettings_cdn_span.appendChild(hgSettings_cdn_anchor);
     hgSettings_cdn_span.appendChild(hgSettings_cdn_select);
     hgSettings_div.appendChild(hgSettings_cdn_span);
-	*/
+    */
 
-	// Control: "Select" type element for number of tributes to be saved
-	var hgTributes_select = hgCreateElement_Select("hgTributes", "tributes", "Tributes", function() { hgNumberTributes(); GM_setValue("options_lastSize", document.getElementById("hgTributes").value); }); // TODO: change name from "tributes" to something more specific
-	hgTributes_select.appendChild(hgCreateElement_Option("hg-t24", "24"));
-	hgTributes_select.appendChild(hgCreateElement_Option("hg-t36", "36"));
-	hgTributes_select.appendChild(hgCreateElement_Option("hg-t48", "48"));
+    // Control: "Select" type element for number of tributes to be saved
+    var hgTributes_select = hgCreateElement_Select("hgTributes", "tributes", "Tributes", function() { hgNumberTributes(); GM_setValue("options_lastSize", document.getElementById("hgTributes").value); }); // TODO: change name from "tributes" to something more specific
+    hgTributes_select.appendChild(hgCreateElement_Option("hg-t24", "24"));
+    hgTributes_select.appendChild(hgCreateElement_Option("hg-t36", "36"));
+    hgTributes_select.appendChild(hgCreateElement_Option("hg-t48", "48"));
     if(GM_getValue("options_rememberSize", true)) hgTributes_select.value = GM_getValue("options_lastSize", 24);
-	// Controls div that contains controls and the settings button
-	var hgCtrls_div = hgCreateElement_Div("hungergames", null);
+    // Controls div that contains controls and the settings button
+    var hgCtrls_div = hgCreateElement_Div("hungergames", null);
     hgCtrls_div.appendChild(hgCreateElement_Button("Draw", function() { hgDraw(); window.scrollTo(0, document.body.scrollHeight); }));
-	hgCtrls_div.appendChild(hgCreateElement_Button("Hide", function() { hgHide(); }));
+    hgCtrls_div.appendChild(hgCreateElement_Button("Hide", function() { hgHide(); }));
     hgCtrls_div.appendChild(hgCreateElement_Button("Save", function() { hgSave(); }));
-	hgCtrls_div.appendChild(hgCreateElement_Button("Deselect All", function() { hgDeselect(); }));
+    hgCtrls_div.appendChild(hgCreateElement_Button("Deselect All", function() { hgDeselect(); }));
     hgCtrls_div.appendChild(hgTributes_select);
     hgCtrls_div.appendChild(hgSettings_button);
     hgCtrls_div.appendChild(hgSettings_div);
