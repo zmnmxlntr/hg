@@ -3,7 +3,7 @@
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
 // @author      Virginia
-// @version     3.0.0
+// @version     3.0.1
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @include     /^(https?://)?boards\.4chan(nel)?\.org/.*/(res|thread)/.*$/
@@ -65,9 +65,9 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
         var hgNameMaxLength = 26;
 
-        var skipEmpty     = GM_getValue("options_skipEmpty", false);
+        var skipEmpty     = GM_getValue("options_skipEmpty", true);
         var detectGender  = GM_getValue("options_detectGender", true);
-        var unlimitLength = GM_getValue("options_unlimitLength", false);
+        var unlimitLength = GM_getValue("options_unlimitLength", true);
 
         // ToDO: Relax form validation
         var validRegex  = /[^úóãíáéêç,'.\:\-\sa-zA-Z0-9]+/g // Turns out it was Brantsteele who fucked up the regex, from whom I blindly copied it
@@ -219,7 +219,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         var imgsStr = "";
         var nomsStr = "";
         var gensStr = "";
-        var useFullImgs = GM_getValue("options_fullImages", false);
+        var useFullImgs = GM_getValue("options_fullImages", true);
         for(var i = 0, count = 0; i < tributeForms.length && count < hgReapingSize; i++) {
             if(tributeForms[i].getElementsByClassName(class_hgCheckbox)[0].checked === true) {
                 count++;
@@ -315,9 +315,9 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     // ToDO: Create structure to store these relationships
     // Load saved values for options and set their checkboxes appropriately
     function hgLoadOptions() {
-        document.getElementById("hgOptions-skipEmpty").checked = GM_getValue("options_skipEmpty", false);
-        document.getElementById("hgOptions-fullImages").checked = GM_getValue("options_fullImages", false);
-        document.getElementById("hgOptions-newLocation").checked = GM_getValue("options_newLocation", false);
+        document.getElementById("hgOptions-skipEmpty").checked = GM_getValue("options_skipEmpty", true);
+        document.getElementById("hgOptions-fullImages").checked = GM_getValue("options_fullImages", true);
+        document.getElementById("hgOptions-newLocation").checked = GM_getValue("options_newLocation", true);
         document.getElementById("hgOptions-rememberSize").checked = GM_getValue("options_rememberSize", true);
         document.getElementById("hgOptions-detectGender").checked = GM_getValue("options_detectGender", true);
         document.getElementById("hgOptions-unlimitLength").checked = GM_getValue("options_unlimitLength", true);
@@ -533,7 +533,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
     function unlimitLengths() {
         // ToDO: Instead of simply returning when option is false, reinstate maxLength attribute
-        if(GM_getValue("options_unlimitLength", false) === false) {
+        if(GM_getValue("options_unlimitLength", false) === true) {
             return;
         }
 
