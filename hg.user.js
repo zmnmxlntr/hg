@@ -3,7 +3,7 @@
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
 // @author      Virginia
-// @version     3.0.1
+// @version     3.1.0
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @include     /^(https?://)?boards\.4chan(nel)?\.org/.*/(res|thread)/.*$/
@@ -80,122 +80,126 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         // ToDO: WEBMs break shit. Figure out how to deal with that. Addendum: apparently I figured that shit out?
         var threadPosts = document.getElementsByClassName("post reply");
         for(var i = 0; i < threadPosts.length; i++) {
-            if(threadPosts[i].getElementsByClassName(class_hgCheckbox).length === 0) {
-                var postNumber = threadPosts[i].getElementsByClassName("postNum desktop")[0].childNodes[1].innerHTML; // ToDO: A getElementsByTag('a')[1].innerHTML might be more robust
-                var postImage = threadPosts[i].getElementsByClassName("fileThumb");
-                if(postImage.length) {
-                    if(postImage[0].href.match(/(\.webm$)|(\.pdf$)/i)) {
-                        continue;
-                    }
+            try {
+                if(threadPosts[i].getElementsByClassName(class_hgCheckbox).length === 0) {
+                    var postNumber = threadPosts[i].getElementsByClassName("postNum desktop")[0].childNodes[1].innerHTML; // ToDO: A getElementsByTag('a')[1].innerHTML might be more robust
+                    var postImage = threadPosts[i].getElementsByClassName("fileThumb");
+                    if(postImage.length) {
+                        if(postImage[0].href.match(/(\.webm$)|(\.pdf$)/i)) {
+                            continue;
+                        }
 
-                    hgEntriesDrawn++;
+                        hgEntriesDrawn++;
 
-                    var thumb = postImage[0].getElementsByTagName("img")[0].src; // ToDO: not used?
-                    var img = postImage[0].href;
-                    var nom = threadPosts[i].getElementsByClassName("postMessage")[0].innerText.split('\n');
+                        var thumb = postImage[0].getElementsByTagName("img")[0].src; // ToDO: not used?
+                        var img = postImage[0].href;
+                        var nom = threadPosts[i].getElementsByClassName("postMessage")[0].innerText.split('\n');
 
-                    var female = false;
+                        var female = false;
 
-                    // ToDO: think more about this when you're not drunk.
-                    if(detectGender === true) { // ToDO: can't remember if I was doing this later in the loop for an actual reason, should probably investigate
-                        for(var k = 0; k < nom.length; k++) {
-                            // ToDO: search for (F) in filename, avoid (F) found in quotes and etc.
-                            //if(nom[k][0] != '>') OPENCURLYBRACKET // ToDO: avoid (F) found in quotes, etc.
-                            if(nom[k].match(/(\(F\))|(\(Female\))/g)) {
-                                female = true;
+                        // ToDO: think more about this when you're not drunk.
+                        if(detectGender === true) { // ToDO: can't remember if I was doing this later in the loop for an actual reason, should probably investigate
+                            for(var k = 0; k < nom.length; k++) {
+                                // ToDO: search for (F) in filename, avoid (F) found in quotes and etc.
+                                //if(nom[k][0] != '>') OPENCURLYBRACKET // ToDO: avoid (F) found in quotes, etc.
+                                if(nom[k].match(/(\(F\))|(\(Female\))/g)) {
+                                    female = true;
+                                }
                             }
                         }
-                    }
 
-                    // Generate default tribute name:
-                    var j = 0;
-                    // Don't overwrite existing tributes whose names might have been edited.
-                    //while(j < nom.length && (nom[j].match(/^(>>[0-9]+)(\s\(OP\))?/) || nom[j].trim().length === 0)) OPENCURLYBRACKET // ToDO: might need to make these combined checks in opposite order?
-                    while(j < nom.length && (nom[j].match(quoteRegex1) || nom[j].trim().length === 0)) {
-                        j++;
-                    }
-                    // Strip gender identifiers, quotes, and invalid characters from names.
-                    if(j < nom.length) { // ToDO: if j < nom.length ??? that doesn't seem right, why does this work
-                        //nom = nom[j].replace(/(\(F\))|(\(Female\))/g, '').replace(/[^ú\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength); // This regex somehow keeps getting gutted. Git/GitHub??
-                        nom = nom[j].replace(genderRegex, '').replace(validRegex, '').trim();
-                    } else {
-                        //nom = nom.join(' ').replace(/(\(F\))|(\(Female\))|(\(M\))|(\(Male\))/g, '').replace(/(>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?/g, '').replace(/[^ú\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength);
-                        nom = nom.join(' ').replace(genderRegex, '').replace(quoteRegex2, '').replace(validRegex, '').trim();
-                    }
-                    // NOTE: Not sure if this is still necessary, or perhaps now implemented in a stupid way.
-                    if(unlimitLength === false) {
-                        nom = nom.substring(0, hgNameMaxLength - 1); // ToDO: maybe hgNameMaxLength - 1?
-                    }
-                    /*
-                    if(nom.length > 15 && nom.match(/\s/g) === null) { // ToDO: does not seem to work
-                        if(nom.length >= hgNameMaxLength - 1) {
-                            nom[hgNameMaxLength - 1] = ' ';
-                        } else {
-                            nom += ' ';
+                        // Generate default tribute name:
+                        var j = 0;
+                        // Don't overwrite existing tributes whose names might have been edited.
+                        //while(j < nom.length && (nom[j].match(/^(>>[0-9]+)(\s\(OP\))?/) || nom[j].trim().length === 0)) OPENCURLYBRACKET // ToDO: might need to make these combined checks in opposite order?
+                        while(j < nom.length && (nom[j].match(quoteRegex1) || nom[j].trim().length === 0)) {
+                            j++;
                         }
-                        //nom.length >= hgNameMaxLength - 1 ? nom[hgNameMaxLength - 1] = ' ' : nom += ' ';
+                        // Strip gender identifiers, quotes, and invalid characters from names.
+                        if(j < nom.length) { // ToDO: if j < nom.length ??? that doesn't seem right, why does this work
+                            //nom = nom[j].replace(/(\(F\))|(\(Female\))/g, '').replace(/[^ú\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength); // This regex somehow keeps getting gutted. Git/GitHub??
+                            nom = nom[j].replace(genderRegex, '').replace(validRegex, '').trim();
+                        } else {
+                            //nom = nom.join(' ').replace(/(\(F\))|(\(Female\))|(\(M\))|(\(Male\))/g, '').replace(/(>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?/g, '').replace(/[^ú\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength);
+                            nom = nom.join(' ').replace(genderRegex, '').replace(quoteRegex2, '').replace(validRegex, '').trim();
+                        }
+                        // NOTE: Not sure if this is still necessary, or perhaps now implemented in a stupid way.
+                        if(unlimitLength === false) {
+                            nom = nom.substring(0, hgNameMaxLength - 1); // ToDO: maybe hgNameMaxLength - 1?
+                        }
+                        //if(nom.length > 15 && nom.match(/\s/g) === null) { // ToDO: does not seem to work
+                            /*
+                            if(nom.length >= hgNameMaxLength - 1) {
+                                nom[hgNameMaxLength - 1] = ' ';
+                            } else {
+                                nom += ' ';
+                            }
+                            */
+                            //nom.length >= hgNameMaxLength - 1 ? nom[hgNameMaxLength - 1] = ' ' : nom += ' ';
+                        //}
+
+                        // ???
+                        var hgNumber_span = document.createElement('span');
+                        hgNumber_span.className = "hgTributeNumber";
+
+                        // Checkbox for entry
+                        var hgEntry_checkbox = document.createElement('input');
+                        hgEntry_checkbox.type = "checkbox";
+                        hgEntry_checkbox.className = class_hgCheckbox;
+                        hgEntry_checkbox.title = "Image #" + hgEntriesDrawn;
+                        hgEntry_checkbox.style = "display:inline!important;";
+                        hgEntry_checkbox.onchange = function() { hgNumberTributes(); };
+                        if(skipEmpty === true) {
+                            if(nom) hgEntry_checkbox.checked = true;
+                        } else {
+                            hgEntry_checkbox.checked = true;
+                        }
+
+                        // Text input field for tribute name
+                        var hgName_text = document.createElement('input');
+                        hgName_text.type = "text";
+                        hgName_text.size = 36;
+                        hgName_text.className = class_hgField;
+                        hgName_text.title = "Tribute name";
+                        hgName_text.value = nom;
+                        if(unlimitLength === false) {
+                            hgName_text.maxLength = hgNameMaxLength;
+                        }
+
+                        // Radio buttons for gender
+                        var hgMale_radio = document.createElement('input');
+                        hgMale_radio.type = "radio";
+                        hgMale_radio.name = "gender";
+                        hgMale_radio.className = class_hgGender;
+                        hgMale_radio.value = "M";
+                        hgMale_radio.title = "Male";
+                        var hgFemale_radio = document.createElement('input');
+                        hgFemale_radio.type = "radio";
+                        hgFemale_radio.name = "gender";
+                        hgFemale_radio.className = class_hgGender;
+                        hgFemale_radio.value = "F";
+                        hgFemale_radio.title = "Female";
+                        if(detectGender === true && (female === true || grills.includes(nom.toLowerCase()))) {
+                            hgFemale_radio.checked = true;
+                        } else {
+                            hgMale_radio.checked = true;
+                        }
+
+                        // Tribute form that contains previous elements
+                        var hgForm_form = document.createElement('form');
+                        hgForm_form.className = class_hgForm;
+                        hgForm_form.setAttribute("postNumber", postNumber);
+                        hgForm_form.appendChild(hgEntry_checkbox);
+                        hgForm_form.appendChild(hgName_text);
+                        hgForm_form.appendChild(hgMale_radio);
+                        hgForm_form.appendChild(hgFemale_radio);
+                        hgForm_form.appendChild(hgNumber_span);
+
+                        threadPosts[i].prepend(hgForm_form);
                     }
-                    */
-
-                    // ???
-                    var hgNumber_span = document.createElement('span');
-                    hgNumber_span.className = "hgTributeNumber";
-
-                    // Checkbox for entry
-                    var hgEntry_checkbox = document.createElement('input');
-                    hgEntry_checkbox.type = "checkbox";
-                    hgEntry_checkbox.className = class_hgCheckbox;
-                    hgEntry_checkbox.title = "Image #" + hgEntriesDrawn;
-                    hgEntry_checkbox.style = "display:inline!important;";
-                    hgEntry_checkbox.onchange = function() { hgNumberTributes(); };
-                    if(skipEmpty === true) {
-                        if(nom) hgEntry_checkbox.checked = true;
-                    } else {
-                        hgEntry_checkbox.checked = true;
-                    }
-
-                    // Text input field for tribute name
-                    var hgName_text = document.createElement('input');
-                    hgName_text.type = "text";
-                    hgName_text.size = 36;
-                    hgName_text.className = class_hgField;
-                    hgName_text.title = "Tribute name";
-                    hgName_text.value = nom;
-                    if(unlimitLength === false) {
-                        hgName_text.maxLength = hgNameMaxLength;
-                    }
-
-                    // Radio buttons for gender
-                    var hgMale_radio = document.createElement('input');
-                    hgMale_radio.type = "radio";
-                    hgMale_radio.name = "gender";
-                    hgMale_radio.className = class_hgGender;
-                    hgMale_radio.value = "M";
-                    hgMale_radio.title = "Male";
-                    var hgFemale_radio = document.createElement('input');
-                    hgFemale_radio.type = "radio";
-                    hgFemale_radio.name = "gender";
-                    hgFemale_radio.className = class_hgGender;
-                    hgFemale_radio.value = "F";
-                    hgFemale_radio.title = "Female";
-                    if(detectGender === true && female === true) {
-                        hgFemale_radio.checked = true;
-                    } else {
-                        hgMale_radio.checked = true;
-                    }
-
-                    // Tribute form that contains previous elements
-                    var hgForm_form = document.createElement('form');
-                    hgForm_form.className = class_hgForm;
-                    hgForm_form.setAttribute("postNumber", postNumber);
-                    hgForm_form.appendChild(hgEntry_checkbox);
-                    hgForm_form.appendChild(hgName_text);
-                    hgForm_form.appendChild(hgMale_radio);
-                    hgForm_form.appendChild(hgFemale_radio);
-                    hgForm_form.appendChild(hgNumber_span);
-
-                    threadPosts[i].prepend(hgForm_form);
                 }
+            } catch(e) {
+                console.log("Exception encountered at i=" + i); // ToDO: Better debugging
             }
         }
 
@@ -286,6 +290,12 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
     // Deselect all selected tributes
     function hgDeselect() {
+        if(document.getElementsByClassName(class_hgForm).length == 0) {
+            hgDraw();
+            hgHide();
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+
         var imgs = document.getElementsByClassName(class_hgCheckbox);
         for(var i = 0; i < imgs.length; i++) {
             imgs[i].checked = false;
@@ -397,6 +407,12 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     }
 
     //================================================================================================================//
+    //== Tributes known to be grills =================================================================================//
+    //================================================================================================================//
+
+    var grills = [ "megumi", "megumin", "sakuya", "unlucky girl", "unfortunate girl", "guild girl", "queen boo" ];
+
+    //================================================================================================================//
     //== Options and Settings Creation ===============================================================================//
     //================================================================================================================//
 
@@ -424,7 +440,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
             function() { GM_setValue("options_rememberSize", document.getElementById("hgOptions-rememberSize").checked); }
         )
     );
-    hgSettings_div.appendChild( // Note: default setting in ccd0's 4chan X seems to replace thumbnail link with full image regardless
+    hgSettings_div.appendChild( // Note: Default setting in ccd0's 4chan X seems to replace thumbnail link with full image regardless
         hgCreateElement_Checkbox(
             "hgOptions-fullImages",
             "Sorry this took so long",
@@ -468,7 +484,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     // ToDO: Can we instead pass to the function the element as we already have it above? Doubt it, but worth looking into.
     var hgUpcoming_button = hgCreateElement_Button("Upcoming", "Upcoming features and changes", function() {  hgHidePanel("hgOptions-panel"); hgTogglePanel("hgUpcoming-panel"); }); // Control button that expands/collapses panel
     var hgUpcoming_div = hgCreateElement_Div("hgUpcoming-panel", "display: none;"); // Div in which elements are placed
-    hgUpcoming_div.innerHTML = "Upcoming features:<br>&nbsp;- Customize keybinds<br>&nbsp;- Retain edited forms through page refreshes<br>&nbsp;- Reset forms to original<br>&nbsp;- Retain page position when drawing new forms<br>&nbsp;- Safely relax input validation to be equally permissive to the simulator's back end<br>&nbsp;- Additional code refactoring for the sake of maintainability and readability (not that you care)<br><br>For bugs/suggestions/questions/feedback, contact me on Discord: ZMNMXLNTR#6271<br>Alternatively, submit an issue to the <a href='https://github.com/zmnmxlntr/hg' target='_blank'>repository</a>.";
+    hgUpcoming_div.innerHTML = "Upcoming features:<br>&nbsp;- Customize keybinds<br>&nbsp;- Retain edited forms through page refreshes<br>&nbsp;- Reset forms to original<br>&nbsp;- Retain page position when drawing new forms<br>&nbsp;- Safely relax input validation to be equally permissive to the simulator's back end<br>&nbsp;- Use original tribute image rather than greyscale image for death screen<br>&nbsp;- Additional code refactoring for the sake of maintainability and readability (not that you care)<br><br>For bugs/suggestions/questions/feedback, contact me on Discord: ZMNMXLNTR#6271<br>Alternatively, submit an issue to the <a href='https://github.com/zmnmxlntr/hg' target='_blank'>repository</a>.";
 
     /*
     // Create CDN setting
@@ -504,7 +520,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     */
 
     // Control: "Select" type element for number of tributes to be saved
-    var hgTributes_select = hgCreateElement_Select("hgTributes", "tributes", "Tributes", function() { hgNumberTributes(); GM_setValue("options_lastSize", document.getElementById("hgTributes").value); }); // ToDO: change name from "tributes" to something more specific
+    var hgTributes_select = hgCreateElement_Select("hgTributes", "tributes", "Number of tributes", function() { hgNumberTributes(); GM_setValue("options_lastSize", document.getElementById("hgTributes").value); }); // ToDO: change name from "tributes" to something more specific
     hgTributes_select.appendChild(hgCreateElement_Option("hg-t24", "24"));
     hgTributes_select.appendChild(hgCreateElement_Option("hg-t36", "36"));
     hgTributes_select.appendChild(hgCreateElement_Option("hg-t48", "48"));
@@ -515,8 +531,8 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     hgCtrls_div.appendChild(hgCreateElement_Button("Hide", "Hide the entry forms", function() { hgHide(); }));
     hgCtrls_div.appendChild(hgCreateElement_Button("Save", "Save the entries", function() { hgSave(); }));
     hgCtrls_div.appendChild(hgCreateElement_Button("Deselect All", "Deselect all entry forms", function() { hgDeselect(); }));
-    hgCtrls_div.appendChild(hgCreateElement_Button("Reaping", "Open the reaping page on Brantsteele's website", function() { window.open("http://brantsteele.net/hungergames/reaping.php"); }));
     hgCtrls_div.appendChild(hgTributes_select);
+    hgCtrls_div.appendChild(hgCreateElement_Button("Reaping", "Open the reaping page on Brantsteele's website", function() { window.open("http://brantsteele.net/hungergames/reaping.php"); }));
     hgCtrls_div.appendChild(hgSettings_button);
     hgCtrls_div.appendChild(hgUpcoming_button);
     hgCtrls_div.appendChild(hgSettings_div);
@@ -584,21 +600,21 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
             genders[i].value = '?';
         }
 
-        var seasonName = document.getElementsByName("seasonname")[0].value
-        if(seasonName === "" || !seasonName.match(/\S/)) {
-            document.getElementsByName("seasonname")[0].value = seasonname;
+        var seasonName = document.getElementsByName("seasonname")[0];
+        if(seasonName.value === "" || !seasonName.value.match(/\S/) || seasonName.value.length < 1) {
+            seasonName.value = defaultSeasonName;
         }
-        var logoUrl = document.getElementsByName("logourl")[0].value;
-        if(logoUrl === "" || !logoUrl.match(/\S/)) {
-            document.getElementsByName("logourl")[0].value = logourl;
+        var logoUrl = document.getElementsByName("logourl")[0];
+        if(logoUrl.value === "" || !logoUrl.value.match(/\S/) || logoUrl.value.length < 1) {
+            logoUrl.value = defaultLogoUrl;
         }
     }
 
     unlimitLengths();
 
     // Default values of Season Name and Logo URL fields
-    var seasonname = document.getElementsByName("seasonname")[0].value;
-    var logourl    = document.getElementsByName("logourl")[0].value;
+    var defaultSeasonName = document.getElementsByName("seasonname")[0].value;
+    var defaultLogoUrl    = document.getElementsByName("logourl")[0].value;
 
     var hgLoad_button = document.createElement("button");
     hgLoad_button.type = "button";
