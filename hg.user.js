@@ -3,7 +3,7 @@
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
 // @author      Virginia
-// @version     3.1.2
+// @version     3.1.3
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @include     /^(https?://)?boards\.4chan(nel)?\.org/.*/(res|thread)/.*$/
@@ -410,7 +410,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     //== Tributes known to be grills =================================================================================//
     //================================================================================================================//
 
-    var grills = [ "megumi", "megumin", "sakuya", "unlucky girl", "unfortunate girl", "guild girl", "queen boo", "madotsuki", "hedenia" ];
+    var grills = [ "megumi", "megumin", "sakuya", "unlucky girl", "unfortunate girl", "guild girl", "queen boo", "madotsuki", "hedenia", "reimu", "dorothy haze" ];
 
     //================================================================================================================//
     //== Options and Settings Creation ===============================================================================//
