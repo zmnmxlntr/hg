@@ -249,7 +249,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
         hgSize();
 
-        const tributeForms = document.getElementsByClassName(class_hgForm);
+        let tributeForms = document.getElementsByClassName(class_hgForm);
 
         if(real === false) {
             var hgReapingSizeReal = hgReapingSize;
