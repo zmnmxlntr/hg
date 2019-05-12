@@ -1,4 +1,4 @@
-// ==UserScript==
+﻿// ==UserScript==
 // @name        Virginia's Hunger Games Script
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
@@ -19,7 +19,7 @@
 // ToDO: Automatically draw entry forms for new entries upon page update done in-pace by extensions if draw is shown
 // ToDO: Retain page position when pressing draw keyboard shortcut
 // ToDO: Add contact info/instructions in GUI itself for purposes of feedback/bug reports
-// ToDO: Async/thread?
+// ToDO: Async
 // ToDO: Minify
 // ToDO: Lol this shit runs on Firefox Android
 
@@ -27,18 +27,14 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     var hgReapingSize = 24;
     var hgEntriesDrawn = 0;
 
-    // Autosave timer
-    var timer;
-
     // ToDO: Finish placing class names etc. into variables
     // Tribute form elements
-    const class_hgForm     = "hg-form";
-    const class_hgCheckbox = "hg-checkbox";
-    const class_hgField    = "hg-field";
-    const class_hgGender   = "hg-gender";
-    const class_hgTributeNumber = "hgTributeNumber"; // make consistent
+    var class_hgForm     = "hg-form";
+    var class_hgCheckbox = "hg-checkbox";
+    var class_hgField    = "hg-field";
+    var class_hgGender   = "hg-gender";
+    var name_hgGender    = "hg-gender";
 
-    // ToDO: Pretty sure this can just be a global assignment instead of a function, the value will change if the element does
     function hgSize() {
         hgReapingSize = document.getElementById("hgTributes").value;
     }
@@ -46,91 +42,69 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     function hgNumberTributes() {
         hgSize();
 
-        let hgForms = document.getElementsByClassName(class_hgForm);
+        var hgForms = document.getElementsByClassName(class_hgForm);
         if(GM_getValue("options_tributeCounter", true) === true) {
-            for(let i = 0, count = 1; i < hgForms.length; i++) {
-                if(hgForms[i][0].checked && count <= hgReapingSize) { // ToDO: Separate loops rather than an if/else every time
+            var count = 1;
+            for(var i = 0; i < hgForms.length; i++) {
+                if(hgForms[i][0].checked && count <= hgReapingSize) {
                     // ToDO: Do this more efficiently, rather than checking every fucking time when we know it's always the last one
-                    hgForms[i].getElementsByClassName(class_hgTributeNumber)[0].innerHTML = (count == hgReapingSize) ? " <b>(" + count + ")</b>" : " (" + count + ")";
-                    hgForms[i].getElementsByClassName(class_hgTributeNumber)[0].title = "Entry #" + count;
+                    hgForms[i].getElementsByClassName('hgTributeNumber')[0].innerHTML = (count == hgReapingSize) ? " <b>(" + count + ")</b>" : " (" + count + ")";
+                    hgForms[i].getElementsByClassName('hgTributeNumber')[0].title = "Entry #" + count;
                     count++;
                 } else {
-                    hgForms[i].getElementsByClassName(class_hgTributeNumber)[0].innerHTML = "";
+                    hgForms[i].getElementsByClassName('hgTributeNumber')[0].innerHTML = "";
                 }
             }
         } else {
-            for(let i = 0; i < hgForms.length; i++) {
-                hgForms[i].getElementsByClassName(class_hgTributeNumber)[0].innerHTML = "";
+            for(i = 0; i < hgForms.length; i++) {
+                hgForms[i].getElementsByClassName('hgTributeNumber')[0].innerHTML = "";
             }
         }
     }
 
     function hgDraw() {
-        let start = new Date().getTime();
-
         hgSize();
         hgShow();
 
-        const hgNameMaxLength = 26;
+        var hgNameMaxLength = 26;
 
-        let skipEmpty     = GM_getValue("options_skipEmpty", true);
-        let detectGender  = GM_getValue("options_detectGender", true);
-        let unlimitLength = GM_getValue("options_unlimitLength", true);
+        var skipEmpty     = GM_getValue("options_skipEmpty", true);
+        var detectGender  = GM_getValue("options_detectGender", true);
+        var unlimitLength = GM_getValue("options_unlimitLength", true);
 
-        let threadNoAuto = GM_getValue("threadNoAuto", "");
-        let threadNo     = document.getElementsByClassName("postContainer opContainer")[0].id;
-
-        // ToDO: Relax form validation, combine quote regexes
-        let validRegex  = /[^úóãíáéêç,'.\:\-\sa-zA-Z0-9]+/g // Turns out it was Brantsteele who fucked up the regex, from whom I blindly copied it
-        let genderRegex = /(\([FfMm]\))|(\([Ff]emale\))|(\([Mm]ale\))/g
-        let quoteRegex1 = /^(>>[0-9]+)(\s\(OP\))?/
-        let quoteRegex2 = /(>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?/g
-
-        let recover = false;
-
-        if(document.getElementsByClassName(class_hgForm).length === 0 && threadNoAuto === threadNo) {
-            recover = true;
-
-            var nomsStrAuto = GM_getValue("nomsStrAuto", "").split('|');
-            var gensStrAuto = GM_getValue("gensStrAuto", "").split('|');
-            var imgsStrAuto = GM_getValue("imgsStrAuto", "").split('|');
-
-            var postElements = Array();
-            var postNumbers  = GM_getValue("postsStrAuto", "").split('|');
-
-            for(let i = 0; i < postNumbers.length; i++) {
-                if(postNumbers[i] !== "") {
-                    postElements.push(document.getElementById(postNumbers[i]));
-                }
-            }
-        }
+        // ToDO: Relax form validation
+        var validRegex  = /[^úóãíáéêç,'.\:\-\sa-zA-Z0-9]+/g // Turns out it was Brantsteele who fucked up the regex, from whom I blindly copied it
+        var genderRegex = /(\([FfMm]\))|(\([Ff]emale\))|(\([Mm]ale\))/g
+        // ToDO: Combine
+        var quoteRegex1 = /^(>>[0-9]+)(\s\(OP\))?/
+        var quoteRegex2 = /(>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?/g
 
         // ToDO: Find escape codes for fancy characters in the regex.
         // ToDO: WEBMs break shit. Figure out how to deal with that. Addendum: apparently I figured that shit out?
-        let threadPosts = document.getElementsByClassName("post reply");
-        for(let i = 0; i < threadPosts.length; i++) {
+        var threadPosts = document.getElementsByClassName("post reply");
+        for(var i = 0; i < threadPosts.length; i++) {
             try {
                 if(threadPosts[i].getElementsByClassName(class_hgCheckbox).length === 0) {
-                    //let postNumber = threadPosts[i].getElementsByClassName("postNum desktop")[0].childNodes[1].innerHTML; // ToDO: getElementsByTag('a')[1].innerHTML might be more robust.. or just do it like we do above
-                    //let postNumber = threadPosts[i].getElementsByClassName("post reply")[0].id;
-                    let postNumber = threadPosts[i].id;
-                    let postImage  = threadPosts[i].getElementsByClassName("fileThumb");
+                    var postNumber = threadPosts[i].getElementsByClassName("postNum desktop")[0].childNodes[1].innerHTML; // ToDO: A getElementsByTag('a')[1].innerHTML might be more robust
+                    var postImage = threadPosts[i].getElementsByClassName("fileThumb");
                     if(postImage.length) {
-                        if(!postImage[0].href || postImage[0].href.match(/(\.webm$)|(\.pdf$)/i)) continue;
+                        if(postImage[0].href.match(/(\.webm$)|(\.pdf$)/i)) {
+                            continue;
+                        }
 
                         hgEntriesDrawn++;
 
-                        let thumb = postImage[0].getElementsByTagName("img")[0].src; // ToDO: not used?
-                        let img = postImage[0].href;
-                        let nom = threadPosts[i].getElementsByClassName("postMessage")[0].innerText.split('\n');
+                        var thumb = postImage[0].getElementsByTagName("img")[0].src; // ToDO: not used?
+                        var img = postImage[0].href;
+                        var nom = threadPosts[i].getElementsByClassName("postMessage")[0].innerText.split('\n');
 
-                        let female = false;
+                        var female = false;
 
                         // ToDO: think more about this when you're not drunk.
                         if(detectGender === true) { // ToDO: can't remember if I was doing this later in the loop for an actual reason, should probably investigate
-                            for(let k = 0; k < nom.length; k++) {
+                            for(var k = 0; k < nom.length; k++) {
                                 // ToDO: search for (F) in filename, avoid (F) found in quotes and etc.
-                                //if(nom[k][0] != '>') // ToDO: avoid (F) found in quotes, etc.
+                                //if(nom[k][0] != '>') OPENCURLYBRACKET // ToDO: avoid (F) found in quotes, etc.
                                 if(nom[k].match(/(\(F\))|(\(Female\))/g)) {
                                     female = true;
                                 }
@@ -138,7 +112,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
                         }
 
                         // Generate default tribute name:
-                        let j = 0;
+                        var j = 0;
                         // Don't overwrite existing tributes whose names might have been edited.
                         //while(j < nom.length && (nom[j].match(/^(>>[0-9]+)(\s\(OP\))?/) || nom[j].trim().length === 0)) OPENCURLYBRACKET // ToDO: might need to make these combined checks in opposite order?
                         while(j < nom.length && (nom[j].match(quoteRegex1) || nom[j].trim().length === 0)) {
@@ -167,165 +141,123 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
                             //nom.length >= hgNameMaxLength - 1 ? nom[hgNameMaxLength - 1] = ' ' : nom += ' ';
                         //}
 
-                        // Span in which tribute number is displayed
-                        let hgNumber_span = document.createElement('span');
-                        hgNumber_span.className = class_hgTributeNumber;
+                        // ???
+                        var hgNumber_span = document.createElement('span');
+                        hgNumber_span.className = "hgTributeNumber";
 
                         // Checkbox for entry
-                        let hgEntry_checkbox = document.createElement('input');
+                        var hgEntry_checkbox = document.createElement('input');
                         hgEntry_checkbox.type = "checkbox";
                         hgEntry_checkbox.className = class_hgCheckbox;
                         hgEntry_checkbox.title = "Image #" + hgEntriesDrawn;
                         hgEntry_checkbox.style = "display:inline!important;";
-                        hgEntry_checkbox.onchange = function() { hgNumberTributes(); hgSave(); };
+                        hgEntry_checkbox.onchange = function() { hgNumberTributes(); };
+                        if(skipEmpty === true) {
+                            if(nom) hgEntry_checkbox.checked = true;
+                        } else {
+                            hgEntry_checkbox.checked = true;
+                        }
 
                         // Text input field for tribute name
-                        let hgName_text = document.createElement('input');
+                        var hgName_text = document.createElement('input');
                         hgName_text.type = "text";
                         hgName_text.size = 36;
                         hgName_text.className = class_hgField;
                         hgName_text.title = "Tribute name";
-                        hgName_text.onkeydown = function() { clearTimeout(timer); };
-                        hgName_text.onkeyup = function () { clearTimeout(timer); timer = setTimeout(function() { hgSave(); }, 1000); };
-                        if(unlimitLength === false) hgName_text.maxLength = hgNameMaxLength;
+                        hgName_text.value = nom;
+                        if(unlimitLength === false) {
+                            hgName_text.maxLength = hgNameMaxLength;
+                        }
 
                         // Radio buttons for gender
-                        let hgMale_radio = document.createElement('input');
+                        var hgMale_radio = document.createElement('input');
                         hgMale_radio.type = "radio";
+                        hgMale_radio.name = "gender";
                         hgMale_radio.className = class_hgGender;
-                        hgMale_radio.name = class_hgGender;
                         hgMale_radio.value = "M";
                         hgMale_radio.title = "Male";
-                        hgMale_radio.onclick = function() { hgSave(); };
-                        let hgFemale_radio = document.createElement('input');
+                        var hgFemale_radio = document.createElement('input');
                         hgFemale_radio.type = "radio";
+                        hgFemale_radio.name = "gender";
                         hgFemale_radio.className = class_hgGender;
-                        hgFemale_radio.name = class_hgGender;
                         hgFemale_radio.value = "F";
                         hgFemale_radio.title = "Female";
-                        hgFemale_radio.onclick = function() { hgSave(); };
+                        if(detectGender === true && (female === true || grills.includes(nom.toLowerCase()))) {
+                            hgFemale_radio.checked = true;
+                        } else {
+                            hgMale_radio.checked = true;
+                        }
 
                         // Tribute form that contains previous elements
-                        let hgForm_form = document.createElement('form');
+                        var hgForm_form = document.createElement('form');
                         hgForm_form.className = class_hgForm;
-                        //hgForm_form.setAttribute("postNumber", postNumber); // ToDO: Use this somewhere to make things more efficient?? Or just access this info through parent.id
+                        hgForm_form.setAttribute("postNumber", postNumber);
                         hgForm_form.appendChild(hgEntry_checkbox);
                         hgForm_form.appendChild(hgName_text);
                         hgForm_form.appendChild(hgMale_radio);
                         hgForm_form.appendChild(hgFemale_radio);
                         hgForm_form.appendChild(hgNumber_span);
 
-                        // Load default values or recover autosaved values
-                        if(recover === true) {
-                            let index = postNumbers.indexOf(postNumber);
-                            if(index != -1) {
-                                hgEntry_checkbox.checked = true;
-                                hgName_text.value = nomsStrAuto[index];
-                                gensStrAuto[index] == '1' ? hgMale_radio.checked = true : hgFemale_radio.checked = true;
-                            }
-                        } else {
-                            hgName_text.value = nom;
-                            detectGender === true && (female === true || grills.includes(nom.toLowerCase())) ? hgFemale_radio.checked = true : hgMale_radio.checked = true;
-                            if((skipEmpty === true && nom === "") === false) hgEntry_checkbox.checked = true;
-                        }
-
                         threadPosts[i].prepend(hgForm_form);
                     }
                 }
             } catch(e) {
-                console.log("Exception encountered at i=" + i + ": " + e.toString());
+                console.log("Exception encountered at i=" + i); // ToDO: Better debugging
             }
         }
 
         hgNumberTributes();
-
-        console.log(new Date().getTime() - start);
     }
 
-    function hgSave(real = false) {
-        let start = new Date().getTime();
-
+    function hgSave() {
         hgSize();
 
-        let tributeForms = document.getElementsByClassName(class_hgForm);
-
-        if(real === false) {
-            var hgReapingSizeReal = hgReapingSize;
-            hgReapingSize = 999;
-
-            var threadNo = document.getElementsByClassName("postContainer opContainer")[0].id;
-            var postsStr = "";
-
-            for(let i = 0, count = 0; i < tributeForms.length; i++) {
-                if(tributeForms[i].getElementsByClassName(class_hgCheckbox)[0].checked === true) {
-                    postsStr += tributeForms[i].parentElement.id + "|";
-                }
-            }
-        }
+        var tributeForms = document.getElementsByClassName(class_hgForm);
 
         // If some dumbass clicks save before having drawn forms yet, then draw and hide the forms and save all default values so he doesn't bitch about being a pea-brained illiterate.
-        if(tributeForms.length === 0) {
+        if(tributeForms.length == 0) {
             hgDraw();
             hgHide();
             tributeForms = document.getElementsByClassName(class_hgForm);
             window.scrollTo(0, document.body.scrollHeight);
         }
 
-        let nomsStr = "";
-        let gensStr = "";
-        let imgsStr = "";
-
         // ToDO: Separate into three loops
-        let useFullImgs = GM_getValue("options_fullImages", true);
-        for(let i = 0, count = 0; i < tributeForms.length && count < hgReapingSize; i++) {
+        var imgsStr = "";
+        var nomsStr = "";
+        var gensStr = "";
+        var useFullImgs = GM_getValue("options_fullImages", true);
+        for(var i = 0, count = 0; i < tributeForms.length && count < hgReapingSize; i++) {
             if(tributeForms[i].getElementsByClassName(class_hgCheckbox)[0].checked === true) {
-                // ToDO: Possibly change retrieval from getElementByWhatever to simple index accesses since we have a set order of elements
-                nomsStr += tributeForms[i].getElementsByClassName(class_hgField)[0].value + "|";
-                tributeForms[i].getElementsByClassName(class_hgGender)[0].checked === true ? gensStr += "1|" : gensStr += "0|";
+                count++;
+
+                // ToDO: Store image URLs in memory instead of DOM or some shit
+                // ToDO: Possibly change retrieval from getElementByEtc() to simple index accesses since we have a set order of elements
                 if(useFullImgs === true) {
                     imgsStr += tributeForms[i].parentElement.getElementsByClassName("fileThumb")[0].href + "|";
                 } else {
                     imgsStr += tributeForms[i].parentElement.getElementsByTagName("img")[0].src + "|";
                 }
 
-                count++;
+                nomsStr += tributeForms[i].getElementsByClassName(class_hgField)[0].value + "|";
+
+                if(tributeForms[i].getElementsByClassName(class_hgGender)[0].checked === true) {
+                    gensStr += "1|";
+                } else {
+                    gensStr += "0|";
+                }
             }
         }
 
-        if(real === true) {
-            GM_setValue("reapingSize", hgReapingSize);
-            GM_setValue("nomsStr", nomsStr);
-            GM_setValue("gensStr", gensStr);
-            GM_setValue("imgsStr", imgsStr);
-        } else { // ToDO: Save all forms, checked or not, in case of autosave
-            GM_setValue("reapingSizeAuto", hgReapingSize); // ToDO: Probably doesn't need to exist. With current logic, always saved as 999 regardless
-            GM_setValue("threadNoAuto", threadNo);
-            GM_setValue("postsStrAuto", postsStr);
-            GM_setValue("nomsStrAuto", nomsStr);
-            GM_setValue("gensStrAuto", gensStr);
-            GM_setValue("imgsStrAuto", imgsStr); // Probably doesn't need to exist either
+        GM_setValue("reapingSize", hgReapingSize);
+        GM_setValue("imgsStr", imgsStr);
+        GM_setValue("nomsStr", nomsStr);
+        GM_setValue("gensStr", gensStr);
 
-            hgReapingSize = hgReapingSizeReal;
-        }
-
-        console.log(new Date().getTime() - start);
-    }
-
-    function hgReset() { // ToDO: Somehow doesn't reset second form, also any unsaved interim forms are blanked
-        let tributeForms = document.getElementsByClassName(class_hgForm);
-        for(let i = 0; i < tributeForms.length; i++) {
-            tributeForms[i].parentElement.removeChild(tributeForms[i]);
-        }
-
-        GM_setValue("reapingSizeAuto", "48");
-        GM_setValue("threadNoAuto", "");
-        GM_setValue("postsStrAuto", "");
-        GM_setValue("nomsStrAuto", "");
-        GM_setValue("gensStrAuto", "");
-        GM_setValue("imgsStrAuto", "");
-
-        hgDraw();
-        window.scrollTo(0, document.body.scrollHeight);
+        // TEST
+        //var thread = [hgReapingSize, imgStr, nomsStr, gensStr];
+        //GM_setValue("thread1", JSON.stringify(thread));
+        //alert(JSON.parse(GM_getValue("thread1")));
     }
 
     //================================================================================================================//
@@ -340,9 +272,78 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         } else if(key.keyCode == 113) {
             hgHide();
         } else if(key.keyCode == 119) {
-            hgSave(true);
+            hgSave();
         }
     };
+
+    var modkeys = [ 16, 17, 18, 91 ]; // TD: find cross-platform, cross-browser way to do this consistently. e.code?
+    var bindStr = "F1";
+    var keyEvts = {};
+
+    // ToDO: revert functionality of old key combination if it had one before
+    function bindKey(e) {
+        console.log(Object.keys(e));
+        if(e.type === "keydown" && !modkeys.includes(e.keyCode)) { // TD: check for metaKey doesn't seem to work for Windows key
+            keyEvts.draw = e;
+
+            /*
+            // ???
+            document.onkeydown = function(evt) {
+                //evt = evt || window.event;
+                //key = evt.which || evt.keyCode;
+                for(var key in keyEvts) {
+                    if(evt.keyCode === keyEvts[key].keyCode && evt.ctrlKey === keyEvts[key].ctrlKey && evt.altKey === keyEvts[key].altKey && evt.metaKey === keyEvts[key].metaKey && evt.shiftKey === keyEvts[key].shiftKey) {
+                        //alert("ye");
+                    }
+                }
+            };
+            */
+
+            var output = e.key.toUpperCase();
+            if(e.shiftKey) output = "Shift + " + output;
+            if(e.metaKey)  output = "Super + " + output;
+            if(e.altKey)   output = "Alt + "   + output;
+            if(e.ctrlKey)  output = "Ctrl + "  + output;
+            bindStr = output;
+            document.getElementById("hgOptions-rebindDraw").blur();
+
+            /* NOTE: Retrieved from "trash.user.js" where it was used rather than the following invocation of GM_setValue. Not sure what was wrong with it so holding on to it for now.
+            // Store keybinding as saved value in Greasemonkey
+            GM_setValue("drawBinding", JSON.stringify({ "shift" : e.shiftKey, "meta" : e.metaKey, "alt" : e.altKey, "ctrl" : e.ctrlKey, "key" : e.key.toUpperCase() }));
+
+            document.onkeydown = function(key) {
+                key = key || window.event;
+                if(key.keyCode == 112 || key.keyCode == 115 || key == e) {
+                    hgDraw();
+                } else if(key.keyCode == 113) {
+                    hgHide();
+                } else if(key.keyCode == 119) {
+                    hgSave();
+                }
+            };
+            */
+            GM_setValue("drawBinding", bindStr);
+        }
+
+        e && e.stopPropagation ? e.stopPropagation() : window.event.cancelBubble = true;
+        e.preventDefault();
+    }
+
+    // NOTE: Retrieved from "trash.user.js/firefox.user.js". Not sure what was wrong with it so holding on to it for now.
+    /*
+    function hgStringifyBinding(obj) { // TODO: Caused crash: "obj.key is undefined"
+        try {
+            var binding = obj.key.toUpperCase();
+            if(obj.shiftKey) binding = "Shift + " + binding;
+            if(obj.metaKey)  binding = "Super + " + binding;
+            if(obj.altKey)   binding = "Alt + "   + binding;
+            if(obj.ctrlKey)  binding = "Ctrl + "  + binding;
+            return binding;
+        } catch(e) {
+            return "Error";
+        }
+    }
+    */
 
     //================================================================================================================//
     //== Controls ====================================================================================================//
@@ -350,16 +351,16 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
     // Show tribute forms
     function hgShow() {
-        let gens = document.getElementsByClassName(class_hgForm);
-        for(let i = 0; i < gens.length; i++) {
+        var gens = document.getElementsByClassName(class_hgForm);
+        for(var i = 0; i < gens.length; i++) {
             gens[i].hidden = false;
         }
     }
 
     // Hide tribute forms
     function hgHide() {
-        let gens = document.getElementsByClassName(class_hgForm);
-        for(let i = 0; i < gens.length; i++) {
+        var gens = document.getElementsByClassName(class_hgForm);
+        for(var i = 0; i < gens.length; i++) {
             gens[i].hidden = true;
         }
     }
@@ -372,8 +373,8 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
             window.scrollTo(0, document.body.scrollHeight);
         }
 
-        let imgs = document.getElementsByClassName(class_hgCheckbox);
-        for(let i = 0; i < imgs.length; i++) {
+        var imgs = document.getElementsByClassName(class_hgCheckbox);
+        for(var i = 0; i < imgs.length; i++) {
             imgs[i].checked = false;
         }
 
@@ -382,7 +383,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
     // Show or hide options panel
     function hgTogglePanel(panel) {
-        let hgOptions_element = document.getElementsByClassName(panel);
+        var hgOptions_element = document.getElementsByClassName(panel);
         if(hgOptions_element[0].style.display === "block") {
             hgOptions_element[0].style.display = "none";
         } else {
@@ -401,7 +402,6 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     // ToDO: Create structure to store these relationships
     // Load saved values for options and set their checkboxes appropriately
     function hgLoadOptions() {
-        document.getElementById("hgOptions-greyDead").checked = GM_getValue("options_greyDead", true);
         document.getElementById("hgOptions-skipEmpty").checked = GM_getValue("options_skipEmpty", true);
         document.getElementById("hgOptions-fullImages").checked = GM_getValue("options_fullImages", true);
         document.getElementById("hgOptions-newLocation").checked = GM_getValue("options_newLocation", true);
@@ -416,7 +416,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     //================================================================================================================//
 
     function hgCreateElement_Div(className, style = null) {
-        let hgElement_div = document.createElement("div");
+        var hgElement_div = document.createElement("div");
         hgElement_div.className = className;
         if(style) hgElement_div.style = style; // ToDO: this is shit
 
@@ -425,7 +425,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
     // ToDO: create and use standard option saving
     function hgCreateElement_Checkbox(element_id, element_title, element_text, element_function) {
-        let hgElement_checkbox = document.createElement("input");
+        var hgElement_checkbox = document.createElement("input");
         hgElement_checkbox.type = "checkbox";
         hgElement_checkbox.id = element_id;
         hgElement_checkbox.title = element_title;
@@ -433,11 +433,11 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         if(element_function) hgElement_checkbox.onchange = function() { element_function(); };
 
         // ToDO: rename hgElement_anchor to hgElement_span or something?
-        let hgElement_anchor = document.createElement("span");
+        var hgElement_anchor = document.createElement("span");
         hgElement_anchor.innerHTML = element_text;
         hgElement_anchor.title = element_title;
 
-        let hgElement_span = document.createElement("span");
+        var hgElement_span = document.createElement("span");
         hgElement_span.appendChild(hgElement_checkbox);
         hgElement_span.appendChild(hgElement_anchor);
 
@@ -445,7 +445,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     }
 
     function hgCreateElement_Button(innerHTML, title, onclick, id = null) {
-        let hgElement_button = document.createElement("button");
+        var hgElement_button = document.createElement("button");
         hgElement_button.type = "button";
         hgElement_button.title = title;
         hgElement_button.innerHTML = innerHTML;
@@ -456,7 +456,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     }
 
     function hgCreateElement_Select(id, name, title, onchange) {
-        let hgElement_select = document.createElement('select');
+        var hgElement_select = document.createElement('select');
         hgElement_select.id = id;
         hgElement_select.name = name;
         hgElement_select.title = title;
@@ -466,7 +466,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     }
 
     function hgCreateElement_Option(id, value) {
-        let hgElement_option = document.createElement("option");
+        var hgElement_option = document.createElement("option");
         hgElement_option.id = id;
         hgElement_option.text = value;
         hgElement_option.value = value;
@@ -476,7 +476,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
     // ToDO: Not being used?
     function hgCreateElement_Span(id, action, value) {
-        let hgElement_span = document.createElement("span");
+        var hgElement_span = document.createElement("span");
         hgElement_span.id = id;
         hgElement_span.innerHTML = action + ": " + value;
 
@@ -487,7 +487,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     //== Tributes known to be grills =================================================================================//
     //================================================================================================================//
 
-    var grills = [ "megumi", "megumin", "sakuya", "unlucky girl", "unfortunate girl", "guild girl", "queen boo", "madotsuki", "hedenia", "reimu", "dorothy haze", "lain", "rebecca", "marin", "alien queen", "frisk", "kaokuma", "sayori", "dog tier jade" ];
+    var grills = [ "megumi", "megumin", "sakuya", "unlucky girl", "unfortunate girl", "guild girl", "queen boo", "madotsuki", "hedenia", "reimu", "dorothy haze", "lain", "rebecca", "marin", "alien queen", "frisk", "kaokuma" ];
 
     //================================================================================================================//
     //== Options and Settings Creation ===============================================================================//
@@ -557,19 +557,32 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
             function() { GM_setValue("options_newLocation", document.getElementById("hgOptions-newLocation").checked); }
         )
     );
-    hgSettings_div.appendChild(
-        hgCreateElement_Checkbox(
-            "hgOptions-greyDead",
-            "BW dead",
-            "BW dead<br>",
-            function() { GM_setValue("options_greyDead", document.getElementById("hgOptions-greyDead").checked); }
-        )
-    );
 
     // ToDO: Can we instead pass to the function the element as we already have it above? Doubt it, but worth looking into.
     var hgUpcoming_button = hgCreateElement_Button("Upcoming", "Upcoming features and changes", function() {  hgHidePanel("hgOptions-panel"); hgTogglePanel("hgUpcoming-panel"); }); // Control button that expands/collapses panel
     var hgUpcoming_div = hgCreateElement_Div("hgUpcoming-panel", "display: none;"); // Div in which elements are placed
-    hgUpcoming_div.innerHTML = "Upcoming features:<br>&nbsp;- Customize keybinds<br>&nbsp;- Retain edited forms through page refreshes<br>&nbsp;- Reset forms to original<br>&nbsp;- Retain page position when drawing new forms<br>&nbsp;- Safely relax input validation to be equally permissive to the simulator's back end<br>&nbsp;- Use original tribute image rather than greyscale image for death screen (option)<br>&nbsp;- Additional code refactoring for the sake of maintainability and readability (not that you care)<br><br>For bugs/suggestions/questions/feedback, contact me on Discord: ZMNMXLNTR#6271<br>Alternatively, submit an issue to the <a href='https://github.com/zmnmxlntr/hg' target='_blank'>repository</a>.";
+    hgUpcoming_div.innerHTML = "Upcoming features:<br>&nbsp;- Customize keybinds<br>&nbsp;- Retain edited forms through page refreshes<br>&nbsp;- Reset forms to original<br>&nbsp;- Retain page position when drawing new forms<br>&nbsp;- Safely relax input validation to be equally permissive to the simulator's back end<br>&nbsp;- Use original tribute image rather than greyscale image for death screen<br>&nbsp;- Additional code refactoring for the sake of maintainability and readability (not that you care)<br><br>For bugs/suggestions/questions/feedback, contact me on Discord: ZMNMXLNTR#6271<br>Alternatively, submit an issue to the <a href='https://github.com/zmnmxlntr/hg' target='_blank'>repository</a>.";
+
+    /*
+    // NOTE: Commented out as per found in "firefox.user.js"
+    var hgKeybinds_button = hgCreateElement_Button("Keybinds", function() { hgTogglePanel("hgKeybinds-panel"); }); // Control button that expands/collapses settings panel
+    var hgKeybinds_div = hgCreateElement_Div("hgKeybinds-panel", "display: none;"); // Div in which settings elements are placed
+    hgKeybinds_div.appendChild(
+        hgCreateElement_Button(
+            "Rebind",
+            function() { bindKey(); },
+            "hgOptions-rebindDraw"
+        )
+    );
+    hgKeybinds_div.appendChild(
+        hgCreateElement_Span(
+            "hgOptions-drawBinding",
+            "&nbsp;Draw",
+            //hgStringifyBinding(JSON.stringify(GM_getValue("drawBinding", "F1"))) // NOTE: Retrieved from "trash.user.js", holding onto it just in case.
+            "F1<br>"
+        )
+    );
+    */
 
     /*
     // Create CDN setting
@@ -614,17 +627,29 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     var hgCtrls_div = hgCreateElement_Div("hungergames");
     hgCtrls_div.appendChild(hgCreateElement_Button("Draw", "Draw the entry forms", function() { hgDraw(); window.scrollTo(0, document.body.scrollHeight); }));
     hgCtrls_div.appendChild(hgCreateElement_Button("Hide", "Hide the entry forms", function() { hgHide(); }));
-    hgCtrls_div.appendChild(hgCreateElement_Button("Save", "Save the entries", function() { hgSave(true); }));
-    hgCtrls_div.appendChild(hgCreateElement_Button("Reset", "Reset the entries to default values", function() { if(confirm("Reset all entry forms to default values?")) hgReset(); }));
-    hgCtrls_div.appendChild(hgCreateElement_Button("Deselect All", "Deselect all tribute entry checkboxes", function() { hgDeselect(); }));
+    hgCtrls_div.appendChild(hgCreateElement_Button("Save", "Save the entries", function() { hgSave(); }));
+    hgCtrls_div.appendChild(hgCreateElement_Button("Deselect All", "Deselect all entry forms", function() { hgDeselect(); }));
     hgCtrls_div.appendChild(hgTributes_select);
-    hgCtrls_div.appendChild(hgCreateElement_Button("Reaping", "Open the reaping page on Brantsteele's website in a new tab", function() { window.open("http://brantsteele.net/hungergames/reaping.php"); }));
+    hgCtrls_div.appendChild(hgCreateElement_Button("Reaping", "Open the reaping page on Brantsteele's website", function() { window.open("http://brantsteele.net/hungergames/reaping.php"); }));
     hgCtrls_div.appendChild(hgSettings_button);
+    //hgCtrls_div.appendChild(hgKeybinds_button); // NOTE: Commented out as per found in "firefox.user.js"
     hgCtrls_div.appendChild(hgUpcoming_button);
     hgCtrls_div.appendChild(hgSettings_div);
+    //hgCtrls_div.appendChild(hgKeybinds_div); // NOTE: Commented out as per found in "firefox.user.js"
     hgCtrls_div.appendChild(hgUpcoming_div);
 
     document.getElementsByTagName("body")[0].appendChild(hgCtrls_div);
+
+    /*
+    // TODO: Put all controls within a named div or something, so we can getElement from that scope instead of searching whole document
+    // NOTE: Commented out as per found in "firefox.user.js"
+    // Rebind "Draw" hotkey
+    var rebindDraw_buttonElement = document.getElementById("hgOptions-rebindDraw");
+    var drawBinding_anchorElement = document.getElementById("hgOptions-drawBinding");
+    rebindDraw_buttonElement.onkeydown = rebindDraw_buttonElement.onkeyup = bindKey;
+    rebindDraw_buttonElement.onfocus = function() { drawBinding_anchorElement.innerHTML = "&nbsp;Press a key"; };
+    rebindDraw_buttonElement.onblur = function() { drawBinding_anchorElement.innerHTML = "&nbsp;Draw: " + bindStr; };
+    */
 
     hgLoadOptions();
 } else if(window.location.hostname == "brantsteele.net" || window.location.hostname == "www.brantsteele.net") {
@@ -639,10 +664,10 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
             return;
         }
 
-        let capacity = (document.getElementsByTagName("select").length - 2) / 3;
-        let inputs   = document.getElementsByTagName("input");
+        var capacity = (document.getElementsByTagName("select").length - 2) / 3;
+        var inputs   = document.getElementsByTagName("input");
 
-        for(let i = 2, j = 0; i < inputs.length && j < capacity; i += 4, j++) { // ToDO: Checking against capacity is probably redundant and unnecessary
+        for(var i = 2, j = 0; i < inputs.length && j < capacity; i += 4, j++) { // ToDO: Checking against capacity is probably redundant and unnecessary
             // ToDO: check to make sure doing removeAttribute on an attribute that's not there doesn't break shit
             inputs[i].removeAttribute("maxLength");
             inputs[i + 2].removeAttribute("maxLength");
@@ -650,29 +675,28 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     }
 
     function hgLoad() {
-        let hgReapingSize = GM_getValue("reapingSize", 24);
+        var imgs = GM_getValue("imgsStr").split('|');
+        var noms = GM_getValue("nomsStr").split('|');
+        var gens = GM_getValue("gensStr").split('|');
 
-        let noms = GM_getValue("nomsStr").split('|');
-        let gens = GM_getValue("gensStr").split('|');
-        let imgs = GM_getValue("imgsStr").split('|');
+        var hgReapingSize = GM_getValue("reapingSize", 24);
 
-        let greyDead = GM_getValue("options_greyDead", true);
+        var capacity = (document.getElementsByTagName("select").length - 2) / 3;
 
-        let capacity = (document.getElementsByTagName("select").length - 2) / 3;
-
-        let inputs  = document.getElementsByTagName("input");
-        let genders = document.getElementsByTagName("select");
+        var inputs  = document.getElementsByTagName("input");
+        var genders = document.getElementsByTagName("select");
 
         unlimitLengths();
 
-        // ToDO: Always save 48
-        let i, j;
+        var i, j;
+        // ToDO: Always save 48, using empty strings for non-existent entries, so we can get rid of these awkward while loops and do away with the "select tribute size" option
         // Populate all saved values into the reaping form
         for(i = 2, j = 0; i < inputs.length && j < hgReapingSize && j < capacity && j < imgs.length - 1; i += 4, j++) {
             // ToDO: check to make sure doing removeAttribute on an attribute that's not there doesn't break shit
             // ToDO: unlimit length immediately upon page load if option is set, rather than waiting for Load
             inputs[i + 2].value = inputs[i].value = noms[j];
-            inputs[i + 3].value = inputs[i + 1].value = imgs[j];
+            inputs[i + 1].value = imgs[j];
+            inputs[i + 3].value = "BW";
         }
         // Blank any entry forms that do not yet have a corresponding saved value
         for(null; i < inputs.length && j < capacity; i += 4, j++) {
@@ -686,18 +710,12 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         for(null; i < genders.length && j < capacity; i += 3, j++) {
             genders[i].value = '?';
         }
-        // Set dead tribute images to BW if enabled
-        if(greyDead === true) {
-            for(i = 2, j = 0; i < inputs.length && j < hgReapingSize && j < capacity && j < imgs.length - 1; i += 4, j++) {
-                inputs[i + 3].value = "BW";
-            }
-        }
 
-        let seasonName = document.getElementsByName("seasonname")[0];
+        var seasonName = document.getElementsByName("seasonname")[0];
         if(seasonName.value === "" || !seasonName.value.match(/\S/) || seasonName.value.length < 1) {
             seasonName.value = defaultSeasonName;
         }
-        let logoUrl = document.getElementsByName("logourl")[0];
+        var logoUrl = document.getElementsByName("logourl")[0];
         if(logoUrl.value === "" || !logoUrl.value.match(/\S/) || logoUrl.value.length < 1) {
             logoUrl.value = defaultLogoUrl;
         }
