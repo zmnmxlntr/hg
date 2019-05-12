@@ -145,11 +145,11 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
                         //}
 
                         // Span in which tribute number is displayed
-                        let hgNumber_span = document.createElement('span');
+                        const hgNumber_span = document.createElement('span');
                         hgNumber_span.className = class_hgTributeNumber;
 
                         // Checkbox for entry
-                        let hgEntry_checkbox = document.createElement('input');
+                        const hgEntry_checkbox = document.createElement('input');
                         hgEntry_checkbox.type = "checkbox";
                         hgEntry_checkbox.className = class_hgCheckbox;
                         hgEntry_checkbox.title = "Image #" + hgEntriesDrawn;
@@ -158,7 +158,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
                         if((skipEmpty === true && nom === "") === false) hgEntry_checkbox.checked = true;
 
                         // Text input field for tribute name
-                        let hgName_text = document.createElement('input');
+                        const hgName_text = document.createElement('input');
                         hgName_text.type = "text";
                         hgName_text.size = 36;
                         hgName_text.className = class_hgField;
@@ -167,13 +167,13 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
                         if(unlimitLength === false) hgName_text.maxLength = hgNameMaxLength;
 
                         // Radio buttons for gender
-                        let hgMale_radio = document.createElement('input');
+                        const hgMale_radio = document.createElement('input');
                         hgMale_radio.type = "radio";
                         hgMale_radio.name = class_hgGender;
                         hgMale_radio.className = class_hgGender;
                         hgMale_radio.value = "M";
                         hgMale_radio.title = "Male";
-                        let hgFemale_radio = document.createElement('input');
+                        const hgFemale_radio = document.createElement('input');
                         hgFemale_radio.type = "radio";
                         hgFemale_radio.name = class_hgGender;
                         hgFemale_radio.className = class_hgGender;
@@ -182,7 +182,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
                         detectGender === true && (female === true || grills.includes(nom.toLowerCase())) ? hgFemale_radio.checked = true : hgMale_radio.checked = true;
 
                         // Tribute form that contains previous elements
-                        let hgForm_form = document.createElement('form');
+                        const hgForm_form = document.createElement('form');
                         hgForm_form.className = class_hgForm;
                         //hgForm_form.setAttribute("postNumber", postNumber); // ToDO: Use this somewhere to make things more efficient?? Or just access this info through parent.id
                         hgForm_form.appendChild(hgEntry_checkbox);
@@ -205,11 +205,11 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     }
 
     function hgSave() {
-        let start = new Date().getTime();
+        const start = new Date().getTime();
 
         hgSize();
 
-        let tributeForms = document.getElementsByClassName(class_hgForm);
+        const tributeForms = document.getElementsByClassName(class_hgForm);
 
         // If some dumbass clicks save before having drawn forms yet, then draw and hide the forms and save all default values so he doesn't bitch about being a pea-brained illiterate.
         if(tributeForms.length === 0) {
@@ -534,7 +534,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     hgCtrls_div.appendChild(hgCreateElement_Button("Draw", "Draw the entry forms", function() { hgDraw(); window.scrollTo(0, document.body.scrollHeight); }));
     hgCtrls_div.appendChild(hgCreateElement_Button("Hide", "Hide the entry forms", function() { hgHide(); }));
     hgCtrls_div.appendChild(hgCreateElement_Button("Save", "Save the entries", function() { hgSave(); }));
-    hgCtrls_div.appendChild(hgCreateElement_Button("Deselect All", "Deselect all tribute entry form checkboxes", function() { hgDeselect(); }));
+    hgCtrls_div.appendChild(hgCreateElement_Button("Deselect All", "Deselect all tribute entry form checkboxes", hgDeselect));
     hgCtrls_div.appendChild(hgTributes_select);
     hgCtrls_div.appendChild(hgCreateElement_Button("Reaping", "Open the reaping page on Brantsteele's website in a new tab", function() { window.open("http://brantsteele.net/hungergames/reaping.php"); }));
     hgCtrls_div.appendChild(hgSettings_button);
