@@ -20,7 +20,7 @@
 // ToDO: Retain page position when pressing draw keyboard shortcut
 // ToDO: Add contact info/instructions in GUI itself for purposes of feedback/bug reports
 // ToDO: Async/thread?
-// ToDO: Minify
+// ToDO: Minify?
 // ToDO: Lol this shit runs on Firefox Android
 
 if(window.location.hostname === "boards.4chan.org" || window.location.hostname === "boards.4channel.org") {
@@ -46,7 +46,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     function hgNumberTributes() {
         hgSize();
 
-        let hgForms = document.getElementsByClassName(class_hgForm);
+        const hgForms = document.getElementsByClassName(class_hgForm);
         if(GM_getValue("options_tributeCounter", true) === true) {
             for(let i = 0, count = 1; i < hgForms.length; i++) {
                 if(hgForms[i][0].checked && count <= hgReapingSize) { // ToDO: Separate loops rather than an if/else every time
@@ -73,18 +73,18 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
         const hgNameMaxLength = 26;
 
-        let skipEmpty = GM_getValue("options_skipEmpty", true);
-        let detectGender = GM_getValue("options_detectGender", true);
-        let unlimitLength = GM_getValue("options_unlimitLength", true);
+        const skipEmpty = GM_getValue("options_skipEmpty", true);
+        const detectGender = GM_getValue("options_detectGender", true);
+        const unlimitLength = GM_getValue("options_unlimitLength", true);
 
-        let threadNoAuto = GM_getValue("threadNoAuto", "");
-        let threadNo = document.getElementsByClassName("postContainer opContainer")[0].id;
+        const threadNoAuto = GM_getValue("threadNoAuto", "");
+        const threadNo = document.getElementsByClassName("postContainer opContainer")[0].id;
 
         // ToDO: Relax form validation, combine quote regexes
-        let validRegex = /[^úóãíáéêç,'.\:\-\sa-zA-Z0-9]+/g // Turns out it was Brantsteele who fucked up the regex, from whom I blindly copied it
-        let genderRegex = /(\([FfMm]\))|(\([Ff]emale\))|(\([Mm]ale\))/g
-        let quoteRegex1 = /^(>>[0-9]+)(\s\(OP\))?/
-        let quoteRegex2 = /(>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?/g
+        const validRegex = /[^úóãíáéêç,'.\:\-\sa-zA-Z0-9]+/g // Turns out it was Brantsteele who fucked up the regex, from whom I blindly copied it
+        const genderRegex = /(\([FfMm]\))|(\([Ff]emale\))|(\([Mm]ale\))/g
+        const quoteRegex1 = /^(>>[0-9]+)(\s\(OP\))?/
+        const quoteRegex2 = /(>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?/g
 
         let recover = false;
 
@@ -107,7 +107,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
         // ToDO: Find escape codes for fancy characters in the regex.
         // ToDO: WEBMs break shit. Figure out how to deal with that. Addendum: apparently I figured that shit out?
-        let threadPosts = document.getElementsByClassName("post reply");
+        const threadPosts = document.getElementsByClassName("post reply");
         for(let i = 0; i < threadPosts.length; i++) {
             try {
                 if(threadPosts[i].getElementsByClassName(class_hgCheckbox).length === 0) {
@@ -168,19 +168,19 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
                         //}
 
                         // Span in which tribute number is displayed
-                        let hgNumber_span = document.createElement('span');
+                        const hgNumber_span = document.createElement('span');
                         hgNumber_span.className = class_hgTributeNumber;
 
                         // Checkbox for entry
-                        let hgEntry_checkbox = document.createElement('input');
+                        const hgEntry_checkbox = document.createElement('input');
                         hgEntry_checkbox.type = "checkbox";
                         hgEntry_checkbox.className = class_hgCheckbox;
                         hgEntry_checkbox.title = "Image #" + hgEntriesDrawn;
                         hgEntry_checkbox.style = "display:inline!important;";
-                        hgEntry_checkbox.onchange = function() { hgNumberTributes(); hgSave(); };
+                        hgEntry_checkbox.onchange = hgOnChange;
 
                         // Text input field for tribute name
-                        let hgName_text = document.createElement('input');
+                        const hgName_text = document.createElement('input');
                         hgName_text.type = "text";
                         hgName_text.size = 36;
                         hgName_text.className = class_hgField;
@@ -190,23 +190,23 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
                         if(unlimitLength === false) hgName_text.maxLength = hgNameMaxLength;
 
                         // Radio buttons for gender
-                        let hgMale_radio = document.createElement('input');
+                        const hgMale_radio = document.createElement('input');
                         hgMale_radio.type = "radio";
-                        hgMale_radio.className = class_hgGender;
                         hgMale_radio.name = class_hgGender;
+                        hgMale_radio.className = class_hgGender;
                         hgMale_radio.value = "M";
                         hgMale_radio.title = "Male";
-                        hgMale_radio.onclick = function() { hgSave(); };
-                        let hgFemale_radio = document.createElement('input');
+                        hgMale_radio.onclick = hgSave;
+                        const hgFemale_radio = document.createElement('input');
                         hgFemale_radio.type = "radio";
-                        hgFemale_radio.className = class_hgGender;
                         hgFemale_radio.name = class_hgGender;
+                        hgFemale_radio.className = class_hgGender;
                         hgFemale_radio.value = "F";
                         hgFemale_radio.title = "Female";
-                        hgFemale_radio.onclick = function() { hgSave(); };
+                        hgFemale_radio.onclick = hgSave;
 
                         // Tribute form that contains previous elements
-                        let hgForm_form = document.createElement('form');
+                        const hgForm_form = document.createElement('form');
                         hgForm_form.className = class_hgForm;
                         //hgForm_form.setAttribute("postNumber", postNumber); // ToDO: Use this somewhere to make things more efficient?? Or just access this info through parent.id
                         hgForm_form.appendChild(hgEntry_checkbox);
@@ -217,7 +217,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
                         // Load default values or recover autosaved values
                         if(recover === true) {
-                            let index = postNumbers.indexOf(postNumber);
+                            const index = postNumbers.indexOf(postNumber);
                             if(index != -1) {
                                 hgEntry_checkbox.checked = true;
                                 hgName_text.value = nomsStrAuto[index];
@@ -243,11 +243,11 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     }
 
     function hgSave(real = false) {
-        let start = new Date().getTime();
+        const start = new Date().getTime();
 
         hgSize();
 
-        let tributeForms = document.getElementsByClassName(class_hgForm);
+        const tributeForms = document.getElementsByClassName(class_hgForm);
 
         if(real === false) {
             var hgReapingSizeReal = hgReapingSize;
@@ -354,6 +354,11 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         timer = setTimeout(hgSave, 1000);
     }
 
+    function hgOnChange() {
+        hgNumberTributes();
+        hgSave();
+    }
+
     //================================================================================================================//
     //== Controls ====================================================================================================//
     //================================================================================================================//
@@ -405,7 +410,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     // ToDO: Change functionality to hide all panels, and just stick it at the beginning of hgTogglePanel instead
     // Hide a given panel
     function hgHidePanel(panel) {
-        document.getElementsByClassName(panel)[0].style.display = "none"
+        document.getElementsByClassName(panel)[0].style.display = "none";
     }
 
     // ToDO: Create structure to store these relationships
@@ -484,7 +489,6 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         return hgElement_option;
     }
 
-    // ToDO: Not being used?
     function hgCreateElement_Span(id, action, value) {
         let hgElement_span = document.createElement("span");
         hgElement_span.id = id;
@@ -497,7 +501,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     //== Tributes known to be grills =================================================================================//
     //================================================================================================================//
 
-    var grills = [ "megumi", "megumin", "sakuya", "unlucky girl", "unfortunate girl", "guild girl", "queen boo", "madotsuki", "hedenia", "reimu", "dorothy haze", "lain", "rebecca", "marin", "alien queen", "frisk", "kaokuma", "sayori", "dog tier jade" ];
+    const grills = [ "megumi", "megumin", "sakuya", "unlucky girl", "unfortunate girl", "guild girl", "queen boo", "madotsuki", "hedenia", "reimu", "dorothy haze", "lain", "rebecca", "marin", "alien queen", "frisk", "kaokuma", "sayori", "dog tier jade" ];
 
     //================================================================================================================//
     //== Options and Settings Creation ===============================================================================//
@@ -579,7 +583,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     // ToDO: Can we instead pass to the function the element as we already have it above? Doubt it, but worth looking into.
     var hgUpcoming_button = hgCreateElement_Button("Upcoming", "Upcoming features and changes", function() { hgHidePanel("hgOptions-panel"); hgTogglePanel("hgUpcoming-panel"); }); // Control button that expands/collapses panel
     var hgUpcoming_div = hgCreateElement_Div("hgUpcoming-panel", "display: none;"); // Div in which elements are placed
-    hgUpcoming_div.innerHTML = "Upcoming features:<br>&nbsp;- Customize keybinds<br>&nbsp;- Retain edited forms through page refreshes<br>&nbsp;- Reset forms to original<br>&nbsp;- Retain page position when drawing new forms<br>&nbsp;- Safely relax input validation to be equally permissive to the simulator's back end<br>&nbsp;- Use original tribute image rather than greyscale image for death screen (option)<br>&nbsp;- Additional code refactoring for the sake of maintainability and readability (not that you care)<br><br>For bugs/suggestions/questions/feedback, contact me on Discord: ZMNMXLNTR#6271<br>Alternatively, submit an issue to the <a href='https://github.com/zmnmxlntr/hg' target='_blank'>repository</a>.";
+    hgUpcoming_div.innerHTML = "Upcoming features:<br>&nbsp;- Customize keybinds<br>&nbsp;- Retain edited forms through page refreshes<br>&nbsp;- Reset forms to original<br>&nbsp;- Retain page position when drawing new forms<br>&nbsp;- Safely relax input validation to be equally permissive to the simulator's back end<br>&nbsp;- Additional code refactoring for the sake of maintainability and readability (not that you care)<br><br>For bugs/suggestions/questions/feedback, contact me on Discord: ZMNMXLNTR#6271<br>Alternatively, submit an issue to the <a href='https://github.com/zmnmxlntr/hg' target='_blank'>repository</a>.";
 
     /*
     // Create CDN setting
@@ -626,7 +630,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     hgCtrls_div.appendChild(hgCreateElement_Button("Hide", "Hide the entry forms", function() { hgHide(); }));
     hgCtrls_div.appendChild(hgCreateElement_Button("Save", "Save the entries", function() { hgSave(true); }));
     hgCtrls_div.appendChild(hgCreateElement_Button("Reset", "Reset the entries to default values", function() { if(confirm("Reset all entry forms to default values?")) hgReset(); }));
-    hgCtrls_div.appendChild(hgCreateElement_Button("Deselect All", "Deselect all tribute entry checkboxes", function() { hgDeselect(); }));
+    hgCtrls_div.appendChild(hgCreateElement_Button("Deselect All", "Deselect all tribute entry form checkboxes", hgDeselect));
     hgCtrls_div.appendChild(hgTributes_select);
     hgCtrls_div.appendChild(hgCreateElement_Button("Reaping", "Open the reaping page on Brantsteele's website in a new tab", function() { window.open("http://brantsteele.net/hungergames/reaping.php"); }));
     hgCtrls_div.appendChild(hgSettings_button);
@@ -641,7 +645,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     // Apparently we can use whatever fucking name we want, there is no back end validation.
     unsafeWindow.validateForm = function() {
         return true;
-    }
+    };
 
     function unlimitLengths() {
         // ToDO: Instead of simply returning when option is false, reinstate maxLength attribute
