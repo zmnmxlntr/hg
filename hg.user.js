@@ -36,7 +36,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     const class_hgCheckbox = "hg-checkbox";
     const class_hgField    = "hg-field";
     const class_hgGender   = "hg-gender";
-    const class_hgTributeNumber = "hgTributeNumber"; // make consistent
+    const class_hgTributeNumber = "hgTributeNumber"; // ToDO: make consistent
 
     // ToDO: Pretty sure this can just be a global assignment instead of a function, the value will change if the element does
     function hgSize() {

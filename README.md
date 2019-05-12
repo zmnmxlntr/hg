@@ -1,20 +1,23 @@
 This script collects entries as they're posted in a Hunger Games thread and enters them into the simulator for you.
 
 Works in Firefox, Chrome/Chromium, and Opera, with or without 4chan X. Not tested in anything else. Works on Windows, Mac, and Linux.
+#
 
 # Installation
 ### Firefox
-Install the [Tampermonkey](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/) extension, then **[click here](https://github.com/zmnmxlntr/hg/raw/master/hg.user.js)**, then click "Install".
-<br/>*NOTE: It is recommended to install Tampermonkey rather than Greasemonkey, as the latter is currently bugged.*
+Install the [Tampermonkey](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/) extension, click **[here](https://github.com/zmnmxlntr/hg/raw/master/hg.user.js)**, then click "Install".
+<br/>*NOTE: It is recommended to use Tampermonkey rather than Greasemonkey, as the latter is currently bugged.*
+#
 
 ### Chrome/Chromium
-Install the [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en) extension, then **[click here](https://github.com/zmnmxlntr/hg/raw/master/hg.user.js)**, then click "Install".
+Install the [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en) extension, click **[here](https://github.com/zmnmxlntr/hg/raw/master/hg.user.js)**, then click "Install".
 
 ### Opera
-Install the [Violent monkey](https://addons.opera.com/en/extensions/details/violent-monkey/) extension, then **[click here](https://github.com/zmnmxlntr/hg/raw/master/hg.user.js)**, then click "Confirm installation".
+Install the [Violent monkey](https://addons.opera.com/en/extensions/details/violent-monkey/) extension, click **[here](https://github.com/zmnmxlntr/hg/raw/master/hg.user.js)**, then click "Confirm installation".
 
 #
-Doesn't seem to work on Safari. If you actually want it to, contact me and tell me as much and I'll give it a shot.
+Doesn't seem to work on Safari. If you can't bear using a superior browser, let me know as much and I'll look into it.
+#
 
 # Usage
 To draw input fields, press F1 (or F4 for Chrome plebs) or scroll to the bottom of the page and click "Draw". To hide input fields, press F2 (they will not be lost, only hidden). Works nicely alongside automatic page updates - just press F1 (or F4) or click the "Draw" button again to add input fields to new posts (previously existing ones will not be lost/overwritten). Only posts with images will have input fields drawn.
@@ -29,7 +32,8 @@ Alternatively, just watch this gif:
 
 ![](http://i.imgur.com/Q50rvOo.gif)
 
-There are a few additions to the script that aren't visible in the demo gif. I'm sure you can figure out what they do. If you can't, contact me.
+There are ~~a few~~ several additions to the script that aren't visible in the demo gif. I'm sure you can figure out what they do. If you can't, contact me.
+#
 
 # Contact
 Feel free to contact me regarding any bugs, questions, or suggestions.
