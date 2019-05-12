@@ -22,6 +22,7 @@
 // ToDO: Async/thread?
 // ToDO: Minify?
 // ToDO: Lol this shit runs on Firefox Android
+// ToDO: Review unused stuff
 
 if(window.location.hostname === "boards.4chan.org" || window.location.hostname === "boards.4channel.org") {
     var hgReapingSize = 24;
@@ -81,10 +82,11 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         const threadNo = document.getElementsByClassName("postContainer opContainer")[0].id;
 
         // ToDO: Relax form validation, combine quote regexes
-        const validRegex = /[^úóãíáéêç,'.\:\-\sa-zA-Z0-9]+/g // Turns out it was Brantsteele who fucked up the regex, from whom I blindly copied it
-        const genderRegex = /(\([FfMm]\))|(\([Ff]emale\))|(\([Mm]ale\))/g
-        const quoteRegex1 = /^(>>[0-9]+)(\s\(OP\))?/
-        const quoteRegex2 = /(>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?/g
+        //const validRegex = /[^úóãíáéêç,'.:\-\sa-zA-Z0-9]+/g; // Turns out it was Brantsteele who fucked up the regex, from whom I blindly copied it
+        const validRegex = /[^a-zA-Z0-9úóãíáéêç.,:'\-\s]+/g; // Turns out it was Brantsteele who fucked up the regex, from whom I blindly copied it
+        const genderRegex = /(\([FfMm]\))|(\([Ff]emale\))|(\([Mm]ale\))/g;
+        const quoteRegex1 = /^(>>[0-9]+)(\s\(OP\))?/;
+        const quoteRegex2 = /(>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?/g;
 
         let recover = false;
 
