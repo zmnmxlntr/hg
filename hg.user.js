@@ -3,7 +3,7 @@
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
 // @author      Virginia
-// @version     3.1.4
+// @version     3.2.0
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @include     /^(https?://)?boards\.4chan(nel)?\.org/.*/(res|thread)/.*$/
@@ -577,7 +577,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         hgCreateElement_Checkbox(
             "hgOptions-newLocation",
             "Moves load button on simulator's reaping edit page to a more sensible location",
-            "Move \"Load\" button on simulator's \"Edit Cast\" page to just above the entry fields<br>",
+            "Move <i>Load</i> button on simulator's <i>Edit Cast</i> page to just above the entry fields<br>",
             function() { GM_setValue("options_newLocation", document.getElementById("hgOptions-newLocation").checked); }
         )
     );
