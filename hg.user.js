@@ -209,7 +209,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
         hgSize();
 
-        const tributeForms = document.getElementsByClassName(class_hgForm);
+        let tributeForms = document.getElementsByClassName(class_hgForm);
 
         // If some dumbass clicks save before having drawn forms yet, then draw and hide the forms and save all default values so he doesn't bitch about being a pea-brained illiterate.
         if(tributeForms.length === 0) {
