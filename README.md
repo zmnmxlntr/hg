@@ -29,7 +29,7 @@ Alternatively, just watch this gif:
 
 ![](http://i.imgur.com/Q50rvOo.gif)
 
-There are a few additions to the script that aren't visible in the demo gif. I'm sure you can figure out what they do. If you can't, contact me.
+There are ~~a few~~ several additions to the script that aren't visible in the demo gif. I'm sure you can figure out what they do. If you can't, contact me.
 
 # Contact
 Feel free to contact me regarding any bugs, questions, or suggestions.
