@@ -32,10 +32,10 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
     // ToDO: Finish placing class names etc. into variables
     // Tribute form elements
-    const class_hgForm     = "hg-form";
+    const class_hgForm = "hg-form";
     const class_hgCheckbox = "hg-checkbox";
-    const class_hgField    = "hg-field";
-    const class_hgGender   = "hg-gender";
+    const class_hgField = "hg-field";
+    const class_hgGender = "hg-gender";
     const class_hgTributeNumber = "hgTributeNumber"; // ToDO: make consistent
 
     // ToDO: Pretty sure this can just be a global assignment instead of a function, the value will change if the element does
@@ -73,15 +73,15 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
         const hgNameMaxLength = 26;
 
-        let skipEmpty     = GM_getValue("options_skipEmpty", true);
-        let detectGender  = GM_getValue("options_detectGender", true);
+        let skipEmpty = GM_getValue("options_skipEmpty", true);
+        let detectGender = GM_getValue("options_detectGender", true);
         let unlimitLength = GM_getValue("options_unlimitLength", true);
 
         let threadNoAuto = GM_getValue("threadNoAuto", "");
-        let threadNo     = document.getElementsByClassName("postContainer opContainer")[0].id;
+        let threadNo = document.getElementsByClassName("postContainer opContainer")[0].id;
 
         // ToDO: Relax form validation, combine quote regexes
-        let validRegex  = /[^úóãíáéêç,'.\:\-\sa-zA-Z0-9]+/g // Turns out it was Brantsteele who fucked up the regex, from whom I blindly copied it
+        let validRegex = /[^úóãíáéêç,'.\:\-\sa-zA-Z0-9]+/g // Turns out it was Brantsteele who fucked up the regex, from whom I blindly copied it
         let genderRegex = /(\([FfMm]\))|(\([Ff]emale\))|(\([Mm]ale\))/g
         let quoteRegex1 = /^(>>[0-9]+)(\s\(OP\))?/
         let quoteRegex2 = /(>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?/g
@@ -96,7 +96,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
             var imgsStrAuto = GM_getValue("imgsStrAuto", "").split('|');
 
             var postElements = Array();
-            var postNumbers  = GM_getValue("postsStrAuto", "").split('|');
+            var postNumbers = GM_getValue("postsStrAuto", "").split('|');
 
             for(let i = 0; i < postNumbers.length; i++) {
                 if(postNumbers[i] !== "") {
@@ -114,7 +114,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
                     //let postNumber = threadPosts[i].getElementsByClassName("postNum desktop")[0].childNodes[1].innerHTML; // ToDO: getElementsByTag('a')[1].innerHTML might be more robust.. or just do it like we do above
                     //let postNumber = threadPosts[i].getElementsByClassName("post reply")[0].id;
                     let postNumber = threadPosts[i].id;
-                    let postImage  = threadPosts[i].getElementsByClassName("fileThumb");
+                    let postImage = threadPosts[i].getElementsByClassName("fileThumb");
                     if(postImage.length) {
                         if(!postImage[0].href || postImage[0].href.match(/(\.webm$)|(\.pdf$)/i)) continue;
 
@@ -185,8 +185,8 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
                         hgName_text.size = 36;
                         hgName_text.className = class_hgField;
                         hgName_text.title = "Tribute name";
-                        hgName_text.onkeydown = function() { clearTimeout(timer); };
-                        hgName_text.onkeyup = function () { clearTimeout(timer); timer = setTimeout(function() { hgSave(); }, 1000); };
+                        hgName_text.onkeydown = hgOnKeyDown;
+                        hgName_text.onkeyup = hgOnKeyUp;
                         if(unlimitLength === false) hgName_text.maxLength = hgNameMaxLength;
 
                         // Radio buttons for gender
@@ -343,6 +343,16 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
             hgSave(true);
         }
     };
+
+    function hgOnKeyDown() {
+        clearTimeout(timer);
+    }
+
+    function hgOnKeyUp() {
+        clearTimeout(timer);
+        //timer = setTimeout(function() { hgSave(); }, 1000);
+        timer = setTimeout(hgSave, 1000);
+    }
 
     //================================================================================================================//
     //== Controls ====================================================================================================//
@@ -560,14 +570,14 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     hgSettings_div.appendChild(
         hgCreateElement_Checkbox(
             "hgOptions-greyDead",
-            "BW dead",
-            "BW dead<br>",
+            "On Fallen Tributes pages, display the fallen tributes' images in black and white",
+            "Display images of eliminated tributes in black and white<br>",
             function() { GM_setValue("options_greyDead", document.getElementById("hgOptions-greyDead").checked); }
         )
     );
 
     // ToDO: Can we instead pass to the function the element as we already have it above? Doubt it, but worth looking into.
-    var hgUpcoming_button = hgCreateElement_Button("Upcoming", "Upcoming features and changes", function() {  hgHidePanel("hgOptions-panel"); hgTogglePanel("hgUpcoming-panel"); }); // Control button that expands/collapses panel
+    var hgUpcoming_button = hgCreateElement_Button("Upcoming", "Upcoming features and changes", function() { hgHidePanel("hgOptions-panel"); hgTogglePanel("hgUpcoming-panel"); }); // Control button that expands/collapses panel
     var hgUpcoming_div = hgCreateElement_Div("hgUpcoming-panel", "display: none;"); // Div in which elements are placed
     hgUpcoming_div.innerHTML = "Upcoming features:<br>&nbsp;- Customize keybinds<br>&nbsp;- Retain edited forms through page refreshes<br>&nbsp;- Reset forms to original<br>&nbsp;- Retain page position when drawing new forms<br>&nbsp;- Safely relax input validation to be equally permissive to the simulator's back end<br>&nbsp;- Use original tribute image rather than greyscale image for death screen (option)<br>&nbsp;- Additional code refactoring for the sake of maintainability and readability (not that you care)<br><br>For bugs/suggestions/questions/feedback, contact me on Discord: ZMNMXLNTR#6271<br>Alternatively, submit an issue to the <a href='https://github.com/zmnmxlntr/hg' target='_blank'>repository</a>.";
 
@@ -640,7 +650,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         }
 
         let capacity = (document.getElementsByTagName("select").length - 2) / 3;
-        let inputs   = document.getElementsByTagName("input");
+        let inputs = document.getElementsByTagName("input");
 
         for(let i = 2, j = 0; i < inputs.length && j < capacity; i += 4, j++) { // ToDO: Checking against capacity is probably redundant and unnecessary
             // ToDO: check to make sure doing removeAttribute on an attribute that's not there doesn't break shit
@@ -660,7 +670,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
         let capacity = (document.getElementsByTagName("select").length - 2) / 3;
 
-        let inputs  = document.getElementsByTagName("input");
+        let inputs = document.getElementsByTagName("input");
         let genders = document.getElementsByTagName("select");
 
         unlimitLengths();
@@ -707,7 +717,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
     // Default values of Season Name and Logo URL fields
     var defaultSeasonName = document.getElementsByName("seasonname")[0].value;
-    var defaultLogoUrl    = document.getElementsByName("logourl")[0].value;
+    var defaultLogoUrl = document.getElementsByName("logourl")[0].value;
 
     var hgLoad_button = document.createElement("button");
     hgLoad_button.type = "button";
