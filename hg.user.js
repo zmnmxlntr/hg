@@ -551,6 +551,14 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     );
     hgSettings_div.appendChild(
         hgCreateElement_Checkbox(
+            "hgOptions-greyDead",
+            "On Fallen Tributes pages, display the fallen tributes' images in black and white",
+            "Display images of eliminated tributes in black and white<br>",
+            function() { GM_setValue("options_greyDead", document.getElementById("hgOptions-greyDead").checked); }
+        )
+    );
+    hgSettings_div.appendChild(
+        hgCreateElement_Checkbox(
             "hgOptions-unlimitLength",
             "Uncaps the name length restriction on both 4chan and BrantSteele",
             "Remove the 26 character restriction on tribute name lengths<br>",
@@ -571,14 +579,6 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
             "Moves load button on simulator's reaping edit page to a more sensible location",
             "Move \"Load\" button on simulator's \"Edit Cast\" page to just above the entry fields<br>",
             function() { GM_setValue("options_newLocation", document.getElementById("hgOptions-newLocation").checked); }
-        )
-    );
-    hgSettings_div.appendChild(
-        hgCreateElement_Checkbox(
-            "hgOptions-greyDead",
-            "On Fallen Tributes pages, display the fallen tributes' images in black and white",
-            "Display images of eliminated tributes in black and white<br>",
-            function() { GM_setValue("options_greyDead", document.getElementById("hgOptions-greyDead").checked); }
         )
     );
 
