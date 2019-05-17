@@ -23,6 +23,7 @@
 // ToDO: Minify?
 // ToDO: Lol this shit runs on Firefox Android
 // ToDO: Review unused stuff
+// ToDO: Denote genders on reaping page
 
 if(window.location.hostname === "boards.4chan.org" || window.location.hostname === "boards.4channel.org") {
     var hgReapingSize = 24;
@@ -93,6 +94,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         if(document.getElementsByClassName(class_hgForm).length === 0 && threadNoAuto === threadNo) {
             recover = true;
 
+            var entrStrAuto = GM_getValue("entrStrAuto", "").split('|');
             var nomsStrAuto = GM_getValue("nomsStrAuto", "").split('|');
             var gensStrAuto = GM_getValue("gensStrAuto", "").split('|');
             var imgsStrAuto = GM_getValue("imgsStrAuto", "").split('|');
@@ -108,9 +110,8 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         }
 
         // ToDO: Find escape codes for fancy characters in the regex.
-        // ToDO: WEBMs break shit. Figure out how to deal with that. Addendum: apparently I figured that shit out?
         const threadPosts = document.getElementsByClassName("post reply");
-        for(let i = 0; i < threadPosts.length; i++) {
+        for(let i = 0, k = 0; i < threadPosts.length; i++) {
             try {
                 if(threadPosts[i].getElementsByClassName(class_hgCheckbox).length === 0) {
                     //let postNumber = threadPosts[i].getElementsByClassName("postNum desktop")[0].childNodes[1].innerHTML; // ToDO: getElementsByTag('a')[1].innerHTML might be more robust.. or just do it like we do above
@@ -217,14 +218,18 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
                         hgForm_form.appendChild(hgFemale_radio);
                         hgForm_form.appendChild(hgNumber_span);
 
+                        // ToDO: try to hook page refresh or exit to autosave
                         // Load default values or recover autosaved values
-                        if(recover === true) {
-                            const index = postNumbers.indexOf(postNumber);
+                        if(recover === true && k < entrStrAuto.length - 1) { // ToDO: New entries drawn upon recovery are incorrect, maybe one-off error?
+                            //const index = postNumbers.indexOf(postNumber);
+                            const index = k;
                             if(index != -1) {
-                                hgEntry_checkbox.checked = true;
+                                //hgEntry_checkbox.checked = entrStrAuto[index]; // ToDO: Does not appear to work, box is always checked
+                                if(entrStrAuto[index] === '1') hgEntry_checkbox.checked = true;
                                 hgName_text.value = nomsStrAuto[index];
                                 gensStrAuto[index] == '1' ? hgMale_radio.checked = true : hgFemale_radio.checked = true;
                             }
+                            k++;
                         } else {
                             hgName_text.value = nom;
                             detectGender === true && (female === true || grills.includes(nom.toLowerCase())) ? hgFemale_radio.checked = true : hgMale_radio.checked = true;
@@ -273,6 +278,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
             window.scrollTo(0, document.body.scrollHeight);
         }
 
+        let entrStr = "";
         let nomsStr = "";
         let gensStr = "";
         let imgsStr = "";
@@ -280,8 +286,9 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         // ToDO: Separate into three loops
         let useFullImgs = GM_getValue("options_fullImages", true);
         for(let i = 0, count = 0; i < tributeForms.length && count < hgReapingSize; i++) {
-            if(tributeForms[i].getElementsByClassName(class_hgCheckbox)[0].checked === true) {
+            if(real === false || tributeForms[i].getElementsByClassName(class_hgCheckbox)[0].checked === true) {
                 // ToDO: Possibly change retrieval from getElementByWhatever to simple index accesses since we have a set order of elements
+                tributeForms[i].getElementsByClassName(class_hgCheckbox)[0].checked === true ? entrStr += "1|" : entrStr += "0|";
                 nomsStr += tributeForms[i].getElementsByClassName(class_hgField)[0].value + "|";
                 tributeForms[i].getElementsByClassName(class_hgGender)[0].checked === true ? gensStr += "1|" : gensStr += "0|";
                 if(useFullImgs === true) {
@@ -303,6 +310,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
             GM_setValue("reapingSizeAuto", hgReapingSize); // ToDO: Probably doesn't need to exist. With current logic, always saved as 999 regardless
             GM_setValue("threadNoAuto", threadNo);
             GM_setValue("postsStrAuto", postsStr);
+            GM_setValue("entrStrAuto", entrStr);
             GM_setValue("nomsStrAuto", nomsStr);
             GM_setValue("gensStrAuto", gensStr);
             GM_setValue("imgsStrAuto", imgsStr); // Probably doesn't need to exist either
@@ -313,10 +321,10 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         console.log(new Date().getTime() - start);
     }
 
-    function hgReset() { // ToDO: Somehow doesn't reset second form, also any unsaved interim forms are blanked
+    function hgReset() { // ToDO: Any unsaved interim forms are blanked. Not sure if this is still the case.
         let tributeForms = document.getElementsByClassName(class_hgForm);
-        for(let i = 0; i < tributeForms.length; i++) {
-            tributeForms[i].parentElement.removeChild(tributeForms[i]);
+        while(tributeForms.length > 0) {
+            tributeForms[0].remove();
         }
 
         GM_setValue("reapingSizeAuto", "48");
@@ -327,6 +335,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         GM_setValue("imgsStrAuto", "");
 
         hgDraw();
+        hgSave();
         window.scrollTo(0, document.body.scrollHeight);
     }
 
@@ -432,10 +441,11 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     //== Element Creation Wrappers ===================================================================================//
     //================================================================================================================//
 
-    function hgCreateElement_Div(className, style = null) {
+    function hgCreateElement_Div(className, style = null, innerHTML = null) {
         let hgElement_div = document.createElement("div");
         hgElement_div.className = className;
         if(style) hgElement_div.style = style; // ToDO: this is shit
+        if(innerHTML) hgElement_div.innerHTML = innerHTML; // so is this, are the checks even necessary?
 
         return hgElement_div;
     }
@@ -461,7 +471,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         return hgElement_span;
     }
 
-    function hgCreateElement_Button(innerHTML, title, onclick, id = null) {
+    function hgCreateElement_Button(innerHTML, title, onclick, id = null) { // ToDO: Doesn't look like we ever create a button with an ID
         let hgElement_button = document.createElement("button");
         hgElement_button.type = "button";
         hgElement_button.title = title;
@@ -568,7 +578,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     hgSettings_div.appendChild( // ToDO: Make it to where we can execute without refreshing upon checking
         hgCreateElement_Checkbox(
             "hgOptions-detectGender",
-            "For example, if a player wishes to enter a female tribute they would type \"Name (F)\" or \"Name (Female)\" (without quotation marks, where \"Name\" is the desired entry name of the tribute)",
+            "For example, if a player wishes to enter a female tribute they would type <i>Name (F)</i> or <i>Name (Female)</i>, where <i>Name</i> is the desired entry name of the tribute",
             "Scan tribute posts for gender specifiers and automatically select them<br>",
             function() { GM_setValue("options_detectGender", document.getElementById("hgOptions-detectGender").checked); }
         )
@@ -584,8 +594,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
     // ToDO: Can we instead pass to the function the element as we already have it above? Doubt it, but worth looking into.
     var hgUpcoming_button = hgCreateElement_Button("Upcoming", "Upcoming features and changes", function() { hgHidePanel("hgOptions-panel"); hgTogglePanel("hgUpcoming-panel"); }); // Control button that expands/collapses panel
-    var hgUpcoming_div = hgCreateElement_Div("hgUpcoming-panel", "display: none;"); // Div in which elements are placed
-    hgUpcoming_div.innerHTML = "Upcoming features and changes:<br>&nbsp;- Customize keybinds<br>&nbsp;- Retain edited forms through page refreshes<br>&nbsp;- Reset forms to original<br>&nbsp;- Retain page position when drawing new forms<br>&nbsp;- Safely relax input validation to be equally permissive to the simulator's back end<br>&nbsp;- Additional code refactoring for the sake of maintainability and readability (not that you care)<br><br>For bugs/suggestions/questions/feedback, contact me on Discord: ZMNMXLNTR#6271<br>Alternatively, submit an issue to the <a href='https://github.com/zmnmxlntr/hg' target='_blank'>repository</a>.";
+    var hgUpcoming_div = hgCreateElement_Div("hgUpcoming-panel", "display: none;", "Upcoming features and changes:<br>&nbsp;- Customize keybinds<br>&nbsp;- Retain edited forms through page refreshes<br>&nbsp;- Reset forms to original<br>&nbsp;- Retain page position when drawing new forms<br>&nbsp;- Safely relax input validation to be equally permissive to the simulator's back end<br>&nbsp;- Additional code refactoring for the sake of maintainability and readability (not that you care)<br><br>For bugs/suggestions/questions/feedback, contact me on Discord: ZMNMXLNTR#6271<br>Alternatively, submit an issue to the <a href='https://github.com/zmnmxlntr/hg' target='_blank'>repository</a>.");
 
     /*
     // Create CDN setting
@@ -632,7 +641,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     hgCtrls_div.appendChild(hgCreateElement_Button("Hide", "Hide the entry forms", function() { hgHide(); }));
     hgCtrls_div.appendChild(hgCreateElement_Button("Save", "Save the entries", function() { hgSave(true); }));
     hgCtrls_div.appendChild(hgCreateElement_Button("Reset", "Reset the entries to default values", function() { if(confirm("Reset all entry forms to default values?")) hgReset(); }));
-    hgCtrls_div.appendChild(hgCreateElement_Button("Deselect All", "Deselect all tribute entry form checkboxes", hgDeselect));
+    hgCtrls_div.appendChild(hgCreateElement_Button("Deselect All", "Deselect all tribute entry form checkboxes", function() { if(confirm("Deselect all tribute entry checkboxes?")) hgDeselect(); }));
     hgCtrls_div.appendChild(hgTributes_select);
     hgCtrls_div.appendChild(hgCreateElement_Button("Reaping", "Open the reaping page on Brantsteele's website in a new tab", function() { window.open("http://brantsteele.net/hungergames/reaping.php"); }));
     hgCtrls_div.appendChild(hgSettings_button);
