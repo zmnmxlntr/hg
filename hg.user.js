@@ -3,7 +3,7 @@
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
 // @author      Virginia
-// @version     3.2.1
+// @version     3.3.0
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @include     /^(https?://)?boards\.4chan(nel)?\.org/.*/(res|thread)/.*$/
@@ -28,13 +28,15 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     var hgReapingSize = 24;
     var hgEntriesDrawn = 0;
 
+    const boundKeys = [ 112, 113, 115, 119 ];
+
     // ToDO: Finish placing class names etc. into variables
     // Tribute form elements
-    const class_hgForm = "hg-form";
-    const class_hgCheckbox = "hg-checkbox";
-    const class_hgField = "hg-field";
-    const class_hgGender = "hg-gender";
-    const class_hgTributeNumber = "hgTributeNumber"; // ToDO: make consistent
+    const class_hgForm      = "hg-form";
+    const class_hgCheckbox  = "hg-checkbox";
+    const class_hgField     = "hg-field";
+    const class_hgGender    = "hg-gender";
+    const class_hgTributeNo = "hg-tributeNo"; // ToDO: make consistent
 
     // ToDO: Pretty sure this can just be a global assignment instead of a function, the value will change if the element does
     function hgSize() {
@@ -47,18 +49,28 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         const hgForms = document.getElementsByClassName(class_hgForm);
         if(GM_getValue("options_tributeCounter", true) === true) {
             for(let i = 0, count = 1; i < hgForms.length; i++) {
-                if(hgForms[i][0].checked && count <= hgReapingSize) { // ToDO: Separate loops rather than an if/else every time
+                //if(hgForms[i][0].checked && count <= hgReapingSize) { // ToDO: Separate loops rather than an if/else every time
                     // ToDO: Do this more efficiently, rather than checking every fucking time when we know it's always the last one
-                    hgForms[i].getElementsByClassName(class_hgTributeNumber)[0].innerHTML = (count == hgReapingSize) ? " <b>(" + count + ")</b>" : " (" + count + ")";
-                    hgForms[i].getElementsByClassName(class_hgTributeNumber)[0].title = "Entry #" + count;
-                    count++;
+                    //hgForms[i].getElementsByClassName(class_hgTributeNo)[0].innerHTML = (count == hgReapingSize) ? " <span style='color:green;'><b>(" + count + ")</b></span>" : " <span style='color:green;'>(" + count + ")</span>";
+                    //hgForms[i].getElementsByClassName(class_hgTributeNo)[0].innerHTML = " <span style='color:lime;'><b>(" + count + ")</b></span>";
+                    //hgForms[i].getElementsByClassName(class_hgTributeNo)[0].innerHTML = " <span style='color:lime;'>(" + count + ")</span>";
+                    hgForms[i].getElementsByClassName(class_hgTributeNo)[0].innerHTML = count <= hgReapingSize ? " <span style='color:lime;'>(" + count + ")</span>" : " <span style='color:orangered;'><i>(" + count + ")</i></span>";
+                    hgForms[i].getElementsByClassName(class_hgTributeNo)[0].title = "Entry #" + count;
+                    if(count > hgReapingSize) hgForms[i].getElementsByClassName(class_hgTributeNo)[0].title += " (only " + hgReapingSize + " tributes will be reaped)";
+                    //++count;
+                /*
                 } else {
-                    hgForms[i].getElementsByClassName(class_hgTributeNumber)[0].innerHTML = "";
+                    //hgForms[i].getElementsByClassName(class_hgTributeNo)[0].innerHTML = "";
+                    hgForms[i].getElementsByClassName(class_hgTributeNo)[0].innerHTML = " <span style='color:orangered;'><i>(" + count + ")</i></span>";
+                    hgForms[i].getElementsByClassName(class_hgTributeNo)[0].title = "Entry #" + count + " (Reaping size is " + hgReapingSize + ")";
+                    //++count;
                 }
+                */
+                ++count;
             }
         } else {
             for(let i = 0; i < hgForms.length; i++) {
-                hgForms[i].getElementsByClassName(class_hgTributeNumber)[0].innerHTML = "";
+                hgForms[i].getElementsByClassName(class_hgTributeNo)[0].innerHTML = "";
             }
         }
     }
@@ -78,7 +90,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         // ToDO: Relax form validation, combine quote regexes
         //const validRegex = /[^úóãíáéêç,'.:\-\sa-zA-Z0-9]+/g; // Turns out it was Brantsteele who fucked up the regex, from whom I blindly copied it
         const validRegex = /[^a-zA-Z0-9úóãíáéêç.,:'\-\s]+/g; // Turns out it was Brantsteele who fucked up the regex, from whom I blindly copied it
-        const genderRegex = /(\([FfMm]\))|(\([Ff]emale\))|(\([Mm]ale\))/g;
+        const genderRegex = /(\([FM]\))|(\(Female\))|(\(Male\))/gi;
         const quoteRegex1 = /^(>>[0-9]+)(\s\(OP\))?/;
         const quoteRegex2 = /(>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?/g;
 
@@ -108,7 +120,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
                             for(let k = 0; k < nom.length; k++) {
                                 // ToDO: search for (F) in filename, avoid (F) found in quotes and etc.
                                 //if(nom[k][0] != '>') // ToDO: avoid (F) found in quotes, etc.
-                                if(nom[k].match(/(\(F\))|(\(Female\))/g)) {
+                                if(nom[k].match(/(\(F\))|(\(Female\))/gi)) {
                                     female = true;
                                 }
                             }
@@ -146,7 +158,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
                         // Span in which tribute number is displayed
                         const hgNumber_span = document.createElement('span');
-                        hgNumber_span.className = class_hgTributeNumber;
+                        hgNumber_span.className = class_hgTributeNo;
 
                         // Checkbox for entry
                         const hgEntry_checkbox = document.createElement('input');
@@ -255,13 +267,22 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     document.onkeydown = function(key) {
         key = key || window.event;
 
-        if(key.keyCode == 112 || key.keyCode == 115) {
-            hgDraw();
-        } else if(key.keyCode == 113) {
-            hgHide();
-        } else if(key.keyCode == 119) {
-            hgSave();
+        switch(key.keyCode) {
+            case 112:
+            case 115:
+                hgDraw();
+                break;
+            case 113:
+                hgHide();
+                break;
+            case 119:
+                hgSave();
+                break;
+            default:
+                return;
         }
+
+        window.event.preventDefault();
     };
 
     //================================================================================================================//
