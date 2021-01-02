@@ -27,28 +27,17 @@
 // ToDO: Implement data binding to simplify option values and displays and reduce room for error
 // ToDO: Make a CSS file or section
 
-    function hgCreateElement_Button(innerHTML, title, onclick, id = null, style = null) {
-        let hgElement_button = document.createElement("button");
-        hgElement_button.type = "button";
-        hgElement_button.title = title;
-        hgElement_button.innerHTML = innerHTML;
-        hgElement_button.onclick = onclick;
-        if(id) hgElement_button.id = id;
-        if(style) hgElement_button.style = style;
-
-        return hgElement_button;
-    }
-
 if(window.location.hostname === "boards.4chan.org" || window.location.hostname === "boards.4channel.org") {
     var hgReapingSize = 24;
     var hgEntriesDrawn = 0;
 
+    // ToDO: Insufficiently descriptive to the point of sometimes being misleading
     // Tribute form elements
     const class_hgForm      = "hg-form";
     const class_hgCheckbox  = "hg-checkbox";
     const class_hgField     = "hg-field";
     const class_hgGender    = "hg-gender";
-    const class_hgTributeNo = "hg-tributeNo"; // ToDO: make consistent
+    const class_hgTributeNo = "hg-tributeNo";
 
     // ToDO: Pretty sure this can just be a global assignment instead of a function, the value will change if the element does
     function hgSize() {
@@ -63,13 +52,14 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
         if(GM_getValue("options_tributeCounter", true) === true) {
             for(let i = 0, count = 1; i < hgForms.length; i++) {
+                let hgForm = hgForms[i].getElementsByClassName(class_hgTributeNo)[0];
                 if(hgForms[i][0].checked) {
-                    hgForms[i].getElementsByClassName(class_hgTributeNo)[0].innerHTML = count <= hgReapingSize ? " <span style='color:lime;'>(" + count + ")</span>" : " <span style='color:orangered;'><i>(" + count + ")</i></span>";
-                    hgForms[i].getElementsByClassName(class_hgTributeNo)[0].title = "Entry #" + count;
-                    if(count > hgReapingSize) hgForms[i].getElementsByClassName(class_hgTributeNo)[0].title += " (only " + hgReapingSize + " tributes will be reaped)";
+                    hgForm.innerHTML = count <= hgReapingSize ? " <span style='color:white;'>(" + count + ")</span>" : " <span style='color:gray;'><i>(" + count + ")</i></span>";
+                    hgForm.title = "Tribute #" + count;
+                    if(count > hgReapingSize) hgForm.title += " (Currently only " + hgReapingSize + " tributes are to be Reaped)";
                     count++;
                 } else {
-                    hgForms[i].getElementsByClassName(class_hgTributeNo)[0].innerHTML = "";
+                    hgForm.innerHTML = "";
                 }
             }
         } else {
@@ -102,7 +92,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         for(let i = 0; i < threadPosts.length; i++) {
             try {
                 if(threadPosts[i].getElementsByClassName(class_hgCheckbox).length === 0) {
-                    //let postNumber = threadPosts[i].getElementsByClassName("postNum desktop")[0].childNodes[1].innerHTML; // ToDO: getElementsByTag('a')[1].innerHTML might be more robust.. or just do it like we do above
+                    //let postNumber = threadPosts[i].getElementsByClassName("postNum desktop")[0].childNodes[1].innerHTML; // ToDO: getElementsByTag('a')[1].innerHTML might be more robust... or just do it like we do above
                     //let postNumber = threadPosts[i].getElementsByClassName("post reply")[0].id;
                     let postNumber = threadPosts[i].id;
                     let postImage = threadPosts[i].getElementsByClassName("fileThumb");
@@ -128,35 +118,39 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
                             }
                         }
 
-                        // Generate default tribute name:
+                        // Generate default tribute name
                         let j = 0;
-                        // Don't overwrite existing tributes whose names might have been edited.
-                        //while(j < nom.length && (nom[j].match(/^(>>[0-9]+)(\s\(OP\))?/) || nom[j].trim().length === 0)) OPENCURLYBRACKET // ToDO: might need to make these combined checks in opposite order?
+
+                        // Don't overwrite existing tributes as there's no reason to and their names might have been edited.
+                        // ToDO: might want to make these combined checks in opposite order?
                         while(j < nom.length && (nom[j].match(quoteRegex1) || nom[j].trim().length === 0)) {
                             j++;
                         }
+
                         // Strip gender identifiers, quotes, and invalid characters from names.
-                        if(j < nom.length) { // ToDO: if j < nom.length ??? that doesn't seem right, why does this work
-                            //nom = nom[j].replace(/(\(F\))|(\(Female\))/g, '').replace(/[^ú\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength); // This regex somehow keeps getting gutted. Git/GitHub??
+                        // ToDO: if j < nom.length ??? that doesn't seem right, why does this work
+                        if(j < nom.length) {
                             nom = nom[j].replace(genderRegex, '').replace(validRegex, '').trim();
                         } else {
-                            //nom = nom.join(' ').replace(/(\(F\))|(\(Female\))|(\(M\))|(\(Male\))/g, '').replace(/(>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?/g, '').replace(/[^ú\:\-\sa-zA-Z-z0-9]/g, '').trim().substring(0, hgNameMaxLength);
                             nom = nom.join(' ').replace(genderRegex, '').replace(quoteRegex2, '').replace(validRegex, '').trim();
                         }
-                        // NOTE: Not sure if this is still necessary, or perhaps now implemented in a stupid way.
+
+                        // ToDO: Not sure if this is still necessary, or perhaps now implemented in a stupid way.
+                        // ToDO: Ensure this use of hgNameMaxLength doesn't result in one-off errors
                         if(optUnlimitLength === false) {
-                            nom = nom.substring(0, hgNameMaxLength - 1); // ToDO: maybe hgNameMaxLength - 1?
+                            nom = nom.substring(0, hgNameMaxLength - 1);
                         }
+
+                        /*
                         //if(nom.length > 15 && nom.match(/\s/g) === null) { // ToDO: does not seem to work
-                            /*
                             if(nom.length >= hgNameMaxLength - 1) {
                                 nom[hgNameMaxLength - 1] = ' ';
                             } else {
                                 nom += ' ';
                             }
-                            */
                             //nom.length >= hgNameMaxLength - 1 ? nom[hgNameMaxLength - 1] = ' ' : nom += ' ';
                         //}
+                        */
 
                         // Span in which tribute number is displayed
                         const hgNumber_span = document.createElement('span');
@@ -198,7 +192,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
                         // Tribute form that contains previous elements
                         const hgForm_form = document.createElement('form');
                         hgForm_form.className = class_hgForm;
-                        //hgForm_form.setAttribute("postNumber", postNumber); // ToDO: Use this somewhere to make things more efficient?? Or just access this info through parent.id
+                        //hgForm_form.setAttribute("postNumber", postNumber); // ToDO: Use this somewhere to make things more efficient? Or just access this info through parent.id
                         hgForm_form.appendChild(hgEntry_checkbox);
                         hgForm_form.appendChild(hgName_text);
                         hgForm_form.appendChild(hgMale_radio);
@@ -326,6 +320,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     // Show or hide options panel
     function hgTogglePanel(panel) {
         let hgOptions_elementStyle = document.getElementsByClassName(panel)[0].style;
+
         if(hgOptions_elementStyle.display === "none") {
             hgOptions_elementStyle.display = "block";
         } else {
@@ -344,12 +339,12 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     // ToDO: Create structure to store these relationships
     // Load saved values for options and set their checkboxes appropriately
     function hgLoadOptions() {
-        document.getElementById("hgOptions-greyDead").checked       = GM_getValue("options_greyDead", true);
-        document.getElementById("hgOptions-skipEmpty").checked      = GM_getValue("options_skipEmpty", true);
-        document.getElementById("hgOptions-fullImages").checked     = GM_getValue("options_fullImages", true);
-        document.getElementById("hgOptions-rememberSize").checked   = GM_getValue("options_rememberSize", true);
-        document.getElementById("hgOptions-detectGender").checked   = GM_getValue("options_detectGender", true);
-        document.getElementById("hgOptions-unlimitLength").checked  = GM_getValue("options_unlimitLength", true);
+        document.getElementById("hgOptions-greyDead").checked = GM_getValue("options_greyDead", true);
+        document.getElementById("hgOptions-skipEmpty").checked = GM_getValue("options_skipEmpty", true);
+        document.getElementById("hgOptions-fullImages").checked = GM_getValue("options_fullImages", true);
+        document.getElementById("hgOptions-rememberSize").checked = GM_getValue("options_rememberSize", true);
+        document.getElementById("hgOptions-detectGender").checked = GM_getValue("options_detectGender", true);
+        document.getElementById("hgOptions-unlimitLength").checked = GM_getValue("options_unlimitLength", true);
         document.getElementById("hgOptions-tributeCounter").checked = GM_getValue("options_tributeCounter", true);
     }
 
@@ -359,10 +354,41 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
     function hgCreateElement_Div(className, style = null) {
         let hgElement_div = document.createElement("div");
+
         hgElement_div.className = className;
         if(style) hgElement_div.style = style; // ToDO: This is shit. Does style assignment append instead of overwrite? If so, we can lose the check.
 
         return hgElement_div;
+    }
+
+    function hgCreateElement_Select(id, name, title, onchange) {
+        let hgElement_select = document.createElement("select");
+
+        hgElement_select.id = id;
+        hgElement_select.name = name;
+        hgElement_select.title = title;
+        hgElement_select.onchange = onchange;
+
+        return hgElement_select;
+    }
+
+    function hgCreateElement_Option(id, value) {
+        let hgElement_option = document.createElement("option");
+
+        hgElement_option.id = id;
+        hgElement_option.text = value;
+        hgElement_option.value = value;
+
+        return hgElement_option;
+    }
+
+    function hgCreateElement_Span(id, action, value) {
+        let hgElement_span = document.createElement("span");
+
+        hgElement_span.id = id;
+        hgElement_span.innerHTML = action + ": " + value;
+
+        return hgElement_span;
     }
 
     // ToDO: Create and use standard option saving
@@ -388,33 +414,6 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         return hgElement_outerSpan;
     }
 
-    function hgCreateElement_Select(id, name, title, onchange) {
-        let hgElement_select = document.createElement("select");
-        hgElement_select.id = id;
-        hgElement_select.name = name;
-        hgElement_select.title = title;
-        hgElement_select.onchange = onchange;
-
-        return hgElement_select;
-    }
-
-    function hgCreateElement_Option(id, value) {
-        let hgElement_option = document.createElement("option");
-        hgElement_option.id = id;
-        hgElement_option.text = value;
-        hgElement_option.value = value;
-
-        return hgElement_option;
-    }
-
-    function hgCreateElement_Span(id, action, value) {
-        let hgElement_span = document.createElement("span");
-        hgElement_span.id = id;
-        hgElement_span.innerHTML = action + ": " + value;
-
-        return hgElement_span;
-    }
-
     //================================================================================================================//
     //== Tributes known to be grills =================================================================================//
     //================================================================================================================//
@@ -434,9 +433,9 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     // ToDO: Option: Customize keybinds
     // ToDO: Option: Hide "Deselect All" button
 
-    // Create settings button, div for settings, and the settings themselves
-    var hgSettings_button = hgCreateElement_Button("Settings", "Settings panel", function() { hgHidePanel("hgUpcoming-panel"); hgTogglePanel("hgOptions-panel"); }); // Control button that expands/collapses settings panel
-    var hgSettings_div = hgCreateElement_Div("hgOptions-panel", "display:none;"); // Div in which settings elements are placed
+    // Create button to open settings, div to contain settings, and the settings themselves
+    var hgSettings_button = hgCreateElement_Button("Settings", "Settings panel", function() { hgHidePanel("hgUpcoming-panel"); hgHidePanel("hgChangelog-panel"); hgTogglePanel("hgOptions-panel"); });
+    var hgSettings_div = hgCreateElement_Div("hgOptions-panel", "display:none;");
     hgSettings_div.appendChild(
         hgCreateElement_Checkbox(
             "hgOptions-tributeCounter",
@@ -495,49 +494,23 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     );
 
     // ToDO: Can we instead pass to the function the element as we already have it above? Doubt it, but worth looking into.
-    var hgUpcoming_button    = hgCreateElement_Button("Upcoming", "Upcoming features and changes", function() { hgHidePanel("hgOptions-panel"); hgTogglePanel("hgUpcoming-panel"); }); // Control button that expands/collapses panel
-    var hgUpcoming_div       = hgCreateElement_Div("hgUpcoming-panel", "display:none;"); // Div in which elements are placed
-    hgUpcoming_div.innerHTML = "Upcoming features and changes:<br>&nbsp;- Customize keybinds<br>&nbsp;- Retain edited forms through page refreshes<br>&nbsp;- Reset forms to original<br>&nbsp;- Retain page position when drawing new forms<br>&nbsp;- Safely relax input validation to be equally permissive to the simulator's back end<br>&nbsp;- Additional code refactoring for the sake of maintainability and readability (not that you care)<br><br>For bugs/suggestions/questions/feedback, contact me on Discord: ZMNMXLNTR#6271<br>Alternatively, submit an issue to the <a href='https://github.com/zmnmxlntr/hg' target='_blank'>repository</a>.";
+    var hgUpcoming_button     = hgCreateElement_Button("Upcoming", "Upcoming features and changes", function() { hgHidePanel("hgOptions-panel"); hgHidePanel("hgChangelog-panel"); hgTogglePanel("hgUpcoming-panel"); });
+    var hgUpcoming_div        = hgCreateElement_Div("hgUpcoming-panel", "display:none;");
+    hgUpcoming_div.innerHTML  = "Upcoming features and changes:<br>&nbsp;- Customize keybinds<br>&nbsp;- Retain edited forms through page refreshes<br>&nbsp;- Reset forms to original<br>&nbsp;- Retain page position when drawing new forms<br>&nbsp;- Safely relax input validation to be equally permissive to the simulator's back end<br>&nbsp;- Additional code refactoring for the sake of maintainability and readability (not that you care)<br><br>For bugs/suggestions/questions/feedback, contact me on Discord: ZMNMXLNTR#6271<br>Alternatively, submit an issue to the <a href='https://github.com/zmnmxlntr/hg' target='_blank'>repository</a>.";
 
-    /*
-    // Create CDN setting
-    var hgSettings_cdn_anchor = document.createElement("span");
-    hgSettings_cdn_anchor.innerHTML = "<br>&nbsp;CDN: ";
-    var hgSettings_cdn_opt1 = document.createElement("option");
-    hgSettings_cdn_opt1.id = "hgOptions-CDN0";
-    hgSettings_cdn_opt1.text = "Default CDN";
-    hgSettings_cdn_opt1.value = "0";
-    var hgSettings_cdn_opt2 = document.createElement("option");
-    hgSettings_cdn_opt2.id = "hgOptions-CDN1";
-    hgSettings_cdn_opt2.text = "i.4cdn.org";
-    hgSettings_cdn_opt2.value = "1";
-    var hgSettings_cdn_opt3 = document.createElement("option");
-    hgSettings_cdn_opt3.id = "hgOptions-CDN2";
-    hgSettings_cdn_opt3.text = "is.4chan.org";
-    hgSettings_cdn_opt3.value = "2";
-    var hgSettings_cdn_opt4 = document.createElement("option");
-    hgSettings_cdn_opt4.id = "hgOptions-CDN3";
-    hgSettings_cdn_opt4.text = "is2.4chan.org";
-    hgSettings_cdn_opt4.value = "3";
-    var hgSettings_cdn_select = document.createElement("select");
-    hgSettings_cdn_select.id = "hgOptions-CDN";
-    hgSettings_cdn_select.title = "Manually select a CDN to use.";
-    hgSettings_cdn_select.appendChild(hgSettings_cdn_opt1);
-    hgSettings_cdn_select.appendChild(hgSettings_cdn_opt2);
-    hgSettings_cdn_select.appendChild(hgSettings_cdn_opt3);
-    hgSettings_cdn_select.appendChild(hgSettings_cdn_opt4);
-    var hgSettings_cdn_span = document.createElement("span");
-    hgSettings_cdn_span.appendChild(hgSettings_cdn_anchor);
-    hgSettings_cdn_span.appendChild(hgSettings_cdn_select);
-    hgSettings_div.appendChild(hgSettings_cdn_span);
-    */
+    // ToDO: Same note as above.
+    var hgChangelog_button    = hgCreateElement_Button("Changelog", "A log of recent changes per version", function() { hgHidePanel("hgOptions-panel"); hgHidePanel("hgUpcoming-panel"); hgTogglePanel("hgChangelog-panel"); });
+    var hgChangelog_div       = hgCreateElement_Div("hgChangelog-panel", "display:none;");
+    hgChangelog_div.innerHTML = "3.3.0:<br>&nbsp;- Discovered the existence of event.preventDefault (friendly reminder that I am not a web developer), so now Chrome users can use the F1 key without opening a help page. Rejoice! For legacy reasons, F4 will continue to invoke Draw<br>&nbsp;- Fixed an issue where the Load button on the Reaping page wouldn't default to the correct location, and then removed the option entirely as the original location is nonsensical<br>&nbsp;- Moved a bunch of half-finished functionality to a dev branch to allow for an easier update release process (yes, it is indeed revolting that I didn't do this from the beginning)<br>&nbsp;- Further cleanup/restructuring to eventually make this project less of a pain to update<br>&nbsp;- This log!<br><br>As for what hasn't changed: I'm not dead, just transient. Your old pal Virginia will drop by soon&trade; to catch up.";
 
+    // ToDO: Do away with the Name field? We don't seem to be using it.
     // Control: "Select" type element for number of tributes to be saved
-    var hgTributes_select = hgCreateElement_Select("hgTribsNo", "tributes", "Number of tributes", function() { hgNumberTributes(); GM_setValue("options_lastSize", document.getElementById("hgTribsNo").value); }); // ToDO: change name from "tributes" to something more specific
+    var hgTributes_select = hgCreateElement_Select("hgTribsNo", "tributes", "Number of tributes", function() { hgNumberTributes(); GM_setValue("options_lastSize", document.getElementById("hgTribsNo").value); });
     hgTributes_select.appendChild(hgCreateElement_Option("hg-t24", "24"));
     hgTributes_select.appendChild(hgCreateElement_Option("hg-t36", "36"));
     hgTributes_select.appendChild(hgCreateElement_Option("hg-t48", "48"));
     if(GM_getValue("options_rememberSize", true)) hgTributes_select.value = GM_getValue("options_lastSize", 24);
+
     // Controls div that contains controls and the settings button
     var hgCtrls_div = hgCreateElement_Div("hungergames");
     hgCtrls_div.appendChild(hgCreateElement_Button("Draw", "Draw the entry forms", function() { hgDraw(); window.scrollTo(0, document.body.scrollHeight); }));
@@ -545,17 +518,19 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     hgCtrls_div.appendChild(hgCreateElement_Button("Save", "Save the entries", hgSave));
     hgCtrls_div.appendChild(hgCreateElement_Button("Deselect All", "Deselect all tribute entry form checkboxes", hgDeselect));
     hgCtrls_div.appendChild(hgTributes_select);
-    hgCtrls_div.appendChild(hgCreateElement_Button("Reaping", "Open the reaping page on Brantsteele's website in a new tab", function() { window.open("http://brantsteele.net/hungergames/reaping.php"); }));
+    hgCtrls_div.appendChild(hgCreateElement_Button("Reaping", "Open the reaping page on Brantsteele's website in a new tab", function() { window.open("https://brantsteele.net/hungergames/reaping.php"); }));
     hgCtrls_div.appendChild(hgSettings_button);
     hgCtrls_div.appendChild(hgUpcoming_button);
+    hgCtrls_div.appendChild(hgChangelog_button);
     hgCtrls_div.appendChild(hgSettings_div);
     hgCtrls_div.appendChild(hgUpcoming_div);
+    hgCtrls_div.appendChild(hgChangelog_div);
 
     document.getElementsByTagName("body")[0].appendChild(hgCtrls_div);
 
     hgLoadOptions();
 } else if(window.location.hostname === "brantsteele.net" || window.location.hostname === "www.brantsteele.net") {
-    // Apparently we can use whatever fucking name we want, there is no back end validation.
+    // Apparently we can use whatever fucking name we want, there is no back end validation
     unsafeWindow.validateForm = function() {
         return true;
     };
@@ -594,8 +569,8 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
         // Populate all saved values into the reaping form
         for(i = 2, j = 0; i < inputs.length && j < hgReapingSize && j < capacity && j < imgs.length - 1; i += 4, j++) {
-            // ToDO: check to make sure doing removeAttribute on an attribute that's not there doesn't break shit
-            // ToDO: unlimit length immediately upon page load if option is set, rather than waiting for Load
+            // ToDO: Check to make sure doing removeAttribute on an attribute that's not there doesn't break shit
+            // ToDO: Unlimit length immediately upon page load if option is set, rather than waiting for Load
             inputs[i + 2].value = inputs[i].value = noms[j];
             inputs[i + 3].value = inputs[i + 1].value = imgs[j];
         }
@@ -605,8 +580,9 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
             inputs[i + 3].value = inputs[i + 2].value = inputs[i + 1].value = inputs[i].value = "";
         }
 
+        // ToDO: Also check while i < genders.length? Seems to work fine without this check though, so remove similar check from previous loop?
         // Assign genders to all saved tributes
-        for(i = 1, j = 0; i < hgReapingSize * 3 + 1 && j < hgReapingSize && j < capacity && j < imgs.length - 1; i += 3, j++) { // also check while i < genders.length? Seems to work fine without this check though, so remove similar check from previous loop?
+        for(i = 1, j = 0; i < hgReapingSize * 3 + 1 && j < hgReapingSize && j < capacity && j < imgs.length - 1; i += 3, j++) {
             genders[i].value = gens[j];
         }
 
@@ -643,4 +619,17 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
     // Button to load tribute data into simulator
     document.getElementsByClassName("personalHG")[0].prepend(hgCreateElement_Button("Load", "Load them tributes", hgLoad, null, "position:absolute;"));
+}
+
+function hgCreateElement_Button(innerHTML, title, onclick, id = null, style = null) {
+    let hgElement_button = document.createElement("button");
+
+    hgElement_button.type = "button";
+    hgElement_button.title = title;
+    hgElement_button.innerHTML = innerHTML;
+    hgElement_button.onclick = onclick;
+    if(id) hgElement_button.id = id;
+    if(style) hgElement_button.style = style;
+
+    return hgElement_button;
 }
