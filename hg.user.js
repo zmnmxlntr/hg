@@ -63,10 +63,14 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
         if(GM_getValue("options_tributeCounter", true) === true) {
             for(let i = 0, count = 1; i < hgForms.length; i++) {
-                hgForms[i].getElementsByClassName(class_hgTributeNo)[0].innerHTML = count <= hgReapingSize ? " <span style='color:lime;'>(" + count + ")</span>" : " <span style='color:orangered;'><i>(" + count + ")</i></span>";
-                hgForms[i].getElementsByClassName(class_hgTributeNo)[0].title = "Entry #" + count;
-                if(count > hgReapingSize) hgForms[i].getElementsByClassName(class_hgTributeNo)[0].title += " (only " + hgReapingSize + " tributes will be reaped)";
-                ++count;
+                if(hgForms[i][0].checked) {
+                    hgForms[i].getElementsByClassName(class_hgTributeNo)[0].innerHTML = count <= hgReapingSize ? " <span style='color:lime;'>(" + count + ")</span>" : " <span style='color:orangered;'><i>(" + count + ")</i></span>";
+                    hgForms[i].getElementsByClassName(class_hgTributeNo)[0].title = "Entry #" + count;
+                    if(count > hgReapingSize) hgForms[i].getElementsByClassName(class_hgTributeNo)[0].title += " (only " + hgReapingSize + " tributes will be reaped)";
+                    count++;
+                } else {
+                    hgForms[i].getElementsByClassName(class_hgTributeNo)[0].innerHTML = "";
+                }
             }
         } else {
             for(let i = 0; i < hgForms.length; i++) {
@@ -211,7 +215,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
         hgNumberTributes();
 
-        console.info(new Date().getTime() - start);
+        console.log(new Date().getTime() - start);
     }
 
     function hgSave() {
@@ -255,7 +259,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         GM_setValue("gensStr", gensStr);
         GM_setValue("imgsStr", imgsStr);
 
-        console.info(new Date().getTime() - start);
+        console.log(new Date().getTime() - start);
     }
 
     //================================================================================================================//
