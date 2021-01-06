@@ -91,19 +91,19 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
         // ToDO: Find escape codes for fancy characters in the regex.
         const threadPosts = document.getElementsByClassName("post reply");
-		console.log(new Date().getTime() - start);
         for(let i = 0; i < threadPosts.length; i++) {
             try {
                 if(threadPosts[i].getElementsByClassName(class_hgCheckbox).length === 0) {
                     const postNumber = threadPosts[i].id;
-                    const postImage = threadPosts[i].getElementsByClassName("fileThumb");
+                    const postImage  = threadPosts[i].getElementsByClassName("fileThumb");
+
                     if(postImage.length) {
                         if(!postImage[0].href || postImage[0].href.match(/(\.webm$)|(\.pdf$)/i)) continue;
 
                         hgEntriesDrawn++;
 
-                        let thumb = postImage[0].getElementsByTagName("img")[0].src; // ToDO: Not used?
-                        let img = postImage[0].href; // ToDO: Wtf not using this either?
+                        //let thumb = postImage[0].getElementsByTagName("img")[0].src; // ToDO: Not used?
+                        //let img = postImage[0].href; // ToDO: Wtf not using this either?
                         let nom = threadPosts[i].getElementsByClassName("postMessage")[0].innerText.split('\n');
 
                         let female = false;
@@ -205,7 +205,6 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
             } catch(e) {
                 console.log("Exception encountered at i=" + i + ": " + e.toString());
             }
-			console.log(new Date().getTime() - start);
         }
 
         hgNumberTributes();
