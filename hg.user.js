@@ -3,7 +3,7 @@
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
 // @author      Virginia
-// @version     3.3.1
+// @version     3.3.3
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @include     /^(https?://)?boards\.4chan(nel)?\.org/.*/(res|thread)/.*$/
@@ -61,7 +61,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
                 if(hgForms[i][0].checked) {
                     hgForm.innerHTML = count <= hgReapingSize ? " <span style='color:white;'>(" + count + ")</span>" : " <span style='color:gray;'><i>(" + count + ")</i></span>";
                     hgForm.title = "Tribute #" + count;
-                    if(count > hgReapingSize) hgForm.title += " (Currently only " + hgReapingSize + " tributes are to be Reaped)";
+                    if(count > hgReapingSize) hgForm.title += " (Currently only " + hgReapingSize + " tributes are to be in the reaping)";
                     count++;
                 } else {
                     hgForm.innerHTML = "";
@@ -94,7 +94,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         const genderRegex = /(\([FM]\))|(\(Female\))|(\(Male\))/gi;
         const quoteRegex1 = /^(>>[0-9]+)(\s\(OP\))?/;
         const quoteRegex2 = /(>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?/g;
-        const quoteRegex  = /(^(>>[0-9]+)(\s\(OP\))?)|((>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?)/g; // ToDO: Try this combination out baby
+        const quoteRegex  = /(^(>>[0-9]+)(\s\(OP\))?)|((>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?)/g; // ToDO: Try this combination out, baby
 
         let recover = false;
 
