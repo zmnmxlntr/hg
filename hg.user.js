@@ -3,7 +3,7 @@
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
 // @author      Virginia
-// @version     3.3.1
+// @version     3.3.2
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @include     /^(https?://)?boards\.4chan(nel)?\.org/.*/(res|thread)/.*$/
@@ -23,6 +23,7 @@
  - Retain page position when pressing draw keyboard shortcut
  - Async/thread?
  - Review unused stuff
+ - Display genders on finalized reaping page
  - Finish placing class names etc. into variables
  - Implement data binding to simplify option values and displays and reduce room for error
  - Make a CSS file or section
@@ -112,16 +113,16 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
                         if(optDetectGender === true) { // ToDO: Can't remember if I was doing this later in the loop for an actual reason, should probably investigate
                             for(let k = 0; k < nom.length; k++) {
                                 // ToDO: Search for (F) in filename, avoid (F) found in quotes and etc.
-								// ToDO: Avoid (F) found in quotes, etc.
+                                // ToDO: Avoid (F) found in quotes, etc.
                                 //if(nom[k][0] != '>')
-								//if(!nom[k].match(/^>/)
+                                //if(!nom[k].match(/^>/)
                                 if(nom[k].match(/(\(F\))|(\(Female\))/gi)) {
                                     female = true;
                                 }
                             }
                         }
 
-                        // Generate default tribute name
+                        // Generate default tribute name:
                         let j = 0;
                         // Don't overwrite existing tributes as there's no reason to and their names might have been edited.
                         // ToDO: Might want to make these combined checks in opposite order?
@@ -141,7 +142,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
                             nom = nom.substring(0, hgNameMaxLength - 1);
                         }
                         /*
-						// ToDO: does not seem to work
+                        // ToDO: does not seem to work
                         //if(nom.length > 15 && nom.match(/\s/g) === null) {
                             if(nom.length >= hgNameMaxLength - 1) {
                                 nom[hgNameMaxLength - 1] = ' ';
@@ -352,15 +353,18 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     //== Element Creation Wrappers ===================================================================================//
     //================================================================================================================//
 
-    function hgCreateElement_Div(className, style=null) {
+    function hgCreateElement_Div(className, style=null, innerHTML=null) {
         const hgElement_div = document.createElement("div");
 
         hgElement_div.className = className;
         if(style) hgElement_div.style = style; // ToDO: This is shit. Does style assignment append instead of overwrite? If so, we can lose the check.
+        if(innerHTML) hgElement_div.innerHTML = innerHTML; // ToDO: So is this. Are the checks even necessary?
 
         return hgElement_div;
     }
 
+
+    // ToDO: Do away with the Name field? We don't seem to be using it.
     function hgCreateElement_Select(id, name, title, onchange) {
         const hgElement_select = document.createElement("select");
 
@@ -418,7 +422,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     //== Tributes known to be grills =================================================================================//
     //================================================================================================================//
 
-	// ToDO: Put this in a fucking hash map or BST or something you neanderthal
+    // ToDO: Put this in a fucking hash map or BST or something you neanderthal
     const grills = [
         "megumi", "megumin", "sakuya", "unlucky girl", "unfortunate girl", "guild girl", "queen boo", "madotsuki",
         "hedenia", "reimu", "dorothy haze", "lain", "rebecca", "marin", "alien queen", "frisk", "kaokuma", "sayori",
@@ -488,7 +492,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     hgSettings_div.appendChild( // ToDO: Make it to where we can execute without refreshing upon enabling
         hgCreateElement_Checkbox(
             "hgOptions-detectGender",
-            "For example, if a player wishes to enter a female tribute they would type \"Name (F)\" or \"Name (Female)\" (without quotation marks, where \"Name\" is the desired entry name of the tribute)",
+            "For example, if a player wishes to enter a female tribute they would type <i>Name (F)</i> or <i>Name (Female)</i>, where <i>Name</i> is the desired entry name of the tribute",
             "Scan tribute posts for gender specifiers and automatically select them<br>",
             function() { GM_setValue("options_detectGender", document.getElementById("hgOptions-detectGender").checked); }
         )
@@ -496,15 +500,12 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
     // ToDO: Can we instead pass to the function the element as we already have it above? Doubt it, but worth looking into.
     const hgUpcoming_btn      = hgCreateElement_Button("Upcoming", "Upcoming features and changes", function() { hgHidePanel("hgOptions-panel"); hgHidePanel("hgChangelog-panel"); hgTogglePanel("hgUpcoming-panel"); });
-    const hgUpcoming_div      = hgCreateElement_Div("hgUpcoming-panel", "display:none;");
-    hgUpcoming_div.innerHTML  = "Upcoming features and changes:<br>&nbsp;- Customize keybinds<br>&nbsp;- Retain edited forms through page refreshes<br>&nbsp;- Reset forms to original<br>&nbsp;- Retain page position when drawing new forms<br>&nbsp;- Safely relax input validation to be equally permissive to the simulator's back end<br>&nbsp;- Additional code refactoring for the sake of maintainability and readability (not that you care)<br><br>For bugs/suggestions/questions/feedback, contact me on Discord: ZMNMXLNTR#6271<br>Alternatively, submit an issue to the <a href='https://github.com/zmnmxlntr/hg' target='_blank'>repository</a>.";
+    const hgUpcoming_div      = hgCreateElement_Div("hgUpcoming-panel", "display:none;", "Upcoming features and changes:<br>&nbsp;- Customize keybinds<br>&nbsp;- Retain edited forms through page refreshes<br>&nbsp;- Reset forms to original<br>&nbsp;- Retain page position when drawing new forms<br>&nbsp;- Safely relax input validation to be equally permissive to the simulator's back end<br>&nbsp;- Additional code refactoring for the sake of maintainability and readability (not that you care)<br><br>For bugs/suggestions/questions/feedback, contact me on Discord: ZMNMXLNTR#6271<br>Alternatively, submit an issue to the <a href='https://github.com/zmnmxlntr/hg' target='_blank'>repository</a>.");
 
     // ToDO: Same note as above.
     const hgChangelog_btn     = hgCreateElement_Button("Changelog", "A log of recent changes per version", function() { hgHidePanel("hgOptions-panel"); hgHidePanel("hgUpcoming-panel"); hgTogglePanel("hgChangelog-panel"); });
-    const hgChangelog_div     = hgCreateElement_Div("hgChangelog-panel", "display:none;");
-    hgChangelog_div.innerHTML = "3.3.0:<br>&nbsp;- Discovered the existence of event.preventDefault (friendly reminder that I am not a web developer), so now Chrome users can use the F1 key without opening a help page. Rejoice! For legacy reasons, F4 will continue to invoke Draw<br>&nbsp;- Fixed an issue where the Load button on the Reaping page wouldn't default to the correct location, and then removed the option entirely as the original location is nonsensical<br>&nbsp;- Moved a bunch of half-finished functionality to a dev branch to allow for an easier update release process (yes, it is indeed revolting that I didn't do this from the beginning)<br>&nbsp;- Further cleanup/restructuring to eventually make this project less of a pain to update<br>&nbsp;- This log!<br><br>As for what hasn't changed: I'm not dead, just transient. Your old pal Virginia will drop by soon&trade; to catch up.<br><br>P.S., I discovered that the script works on the mobile Firefox browser. I bet it works on the mobile Chrome browser too, but I haven't tried it myself. Neat!<br>P.P.S., As a reminder, you can specify your character's gender in your post, and it will be set automatically if the host is using the script! Just include (F) or (M) anywhere in your post.";
+    const hgChangelog_div     = hgCreateElement_Div("hgChangelog-panel", "display:none;", "3.3.0:<br>&nbsp;- Discovered the existence of event.preventDefault (friendly reminder that I am not a web developer), so now Chrome users can use the F1 key without opening a help page. Rejoice! For legacy reasons, F4 will continue to invoke Draw<br>&nbsp;- Fixed an issue where the Load button on the Reaping page wouldn't default to the correct location, and then removed the option entirely as the original location is nonsensical<br>&nbsp;- Moved a bunch of half-finished functionality to a dev branch to allow for an easier update release process (yes, it is indeed revolting that I didn't do this from the beginning)<br>&nbsp;- Further cleanup/restructuring to eventually make this project less of a pain to update<br>&nbsp;- This log!<br><br>As for what hasn't changed: I'm not dead, just transient. Your old pal Virginia will drop by soon&trade; to catch up.<br><br>P.S., I discovered that the script works on the mobile Firefox browser. I bet it works on the mobile Chrome browser too, but I haven't tried it myself. Neat!<br>P.P.S., As a reminder, you can specify your character's gender in your post, and it will be set automatically if the host is using the script! Just include (F) or (M) anywhere in your post.");
 
-    // ToDO: Do away with the Name field? We don't seem to be using it.
     // Control: "Select" type element for number of tributes to be saved
     const hgTributes_select = hgCreateElement_Select("hgTribsNo", "tributes", "Number of tributes", function() { hgNumberTributes(); GM_setValue("options_lastSize", document.getElementById("hgTribsNo").value); });
     hgTributes_select.appendChild(hgCreateElement_Option("hg-t24", "24"));
@@ -517,7 +518,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     hgCtrls_div.appendChild(hgCreateElement_Button("Draw", "Draw the entry forms", function() { hgDraw(); window.scrollTo(0, document.body.scrollHeight); }));
     hgCtrls_div.appendChild(hgCreateElement_Button("Hide", "Hide the entry forms", hgHide));
     hgCtrls_div.appendChild(hgCreateElement_Button("Save", "Save the entries", hgSave));
-    hgCtrls_div.appendChild(hgCreateElement_Button("Deselect All", "Deselect all tribute entry form checkboxes", hgDeselect));
+    hgCtrls_div.appendChild(hgCreateElement_Button("Deselect All", "Deselect all tribute entry form checkboxes", function() { if(confirm("Deselect all tribute entry checkboxes?")) hgDeselect(); }));
     hgCtrls_div.appendChild(hgTributes_select);
     hgCtrls_div.appendChild(hgCreateElement_Button("Reaping", "Open the reaping page on Brantsteele's website in a new tab", function() { window.open("https://brantsteele.net/hungergames/reaping.php"); }));
     hgCtrls_div.appendChild(hgSettings_btn);
@@ -574,23 +575,19 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
             inputs[i + 2].value = inputs[i].value = noms[j];
             inputs[i + 3].value = inputs[i + 1].value = imgs[j];
         }
-
         // Blank any entry forms that do not yet have a corresponding saved value
         for(null; i < inputs.length && j < capacity; i += 4, j++) {
             inputs[i + 3].value = inputs[i + 2].value = inputs[i + 1].value = inputs[i].value = "";
         }
-
         // ToDO: Also check while i < genders.length? Seems to work fine without this check though, so remove similar check from previous loop?
         // Assign genders to all saved tributes
         for(i = 1, j = 0; i < hgReapingSize * 3 + 1 && j < hgReapingSize && j < capacity && j < imgs.length - 1; i += 3, j++) {
             genders[i].value = gens[j];
         }
-
         // Set gender to '?' for any positions that have not yet been filled
         for(null; i < genders.length && j < capacity; i += 3, j++) {
             genders[i].value = '?';
         }
-
         // Set dead tribute images to BW if enabled
         if(optGreyDead === true) {
             for(i = 2, j = 0; i < inputs.length && j < hgReapingSize && j < capacity && j < imgs.length - 1; i += 4, j++) {
