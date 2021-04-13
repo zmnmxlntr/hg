@@ -3,7 +3,7 @@
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
 // @author      Virginia
-// @version     3.3.3
+// @version     3.3.4
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @include     /^(https?://)?boards\.4chan(nel)?\.org/.*/(res|thread)/.*$/
@@ -11,6 +11,21 @@
 // @grant       GM_setValue
 // @grant       GM_getValue
 // ==/UserScript==
+
+// Copyright ZMNMXLNTR 2017-2021
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /* eslint no-multi-spaces:off */
 
@@ -33,7 +48,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     var hgReapingSize = 24;
     var hgEntriesDrawn = 0;
 
-    // ToDO: Insufficiently descriptive to the point of sometimes being misleading
+    // ToDO: Fix insufficiently descriptive to the point of sometimes being misleading
     // Tribute form elements
     const class_hgForm      = "hg-form";
     const class_hgCheckbox  = "hg-checkbox";
@@ -321,13 +336,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     // Show or hide options panel
     function hgTogglePanel(panel) {
         const hgOptions_elementStyle = document.getElementsByClassName(panel)[0].style;
-
-        if(hgOptions_elementStyle.display === "none") {
-            hgOptions_elementStyle.display = "block";
-        } else {
-            hgOptions_elementStyle.display = "none";
-        }
-
+        hgOptions_elementStyle.display = hgOptions_elementStyle.display === "none" ? "block" : "none";
         window.scrollTo(0, document.body.scrollHeight);
     }
 
@@ -499,12 +508,12 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     );
 
     // ToDO: Can we instead pass to the function the element as we already have it above? Doubt it, but worth looking into.
-    const hgUpcoming_btn      = hgCreateElement_Button("Upcoming", "Upcoming features and changes", function() { hgHidePanel("hgOptions-panel"); hgHidePanel("hgChangelog-panel"); hgTogglePanel("hgUpcoming-panel"); });
-    const hgUpcoming_div      = hgCreateElement_Div("hgUpcoming-panel", "display:none;", "Upcoming features and changes:<br>&nbsp;- Customize keybinds<br>&nbsp;- Retain edited forms through page refreshes<br>&nbsp;- Reset forms to original<br>&nbsp;- Retain page position when drawing new forms<br>&nbsp;- Safely relax input validation to be equally permissive to the simulator's back end<br>&nbsp;- Additional code refactoring for the sake of maintainability and readability (not that you care)<br><br>For bugs/suggestions/questions/feedback, contact me on Discord: ZMNMXLNTR#6271<br>Alternatively, submit an issue to the <a href='https://github.com/zmnmxlntr/hg' target='_blank'>repository</a>.");
+    const hgUpcoming_btn = hgCreateElement_Button("Upcoming", "Upcoming features and changes", function() { hgHidePanel("hgOptions-panel"); hgHidePanel("hgChangelog-panel"); hgTogglePanel("hgUpcoming-panel"); });
+    const hgUpcoming_div = hgCreateElement_Div("hgUpcoming-panel", "display:none;", "Upcoming features and changes:<br>&nbsp;- Customize keybinds<br>&nbsp;- Retain edited forms through page refreshes<br>&nbsp;- Reset forms to original<br>&nbsp;- Retain page position when drawing new forms<br>&nbsp;- Safely relax input validation to be equally permissive to the simulator's back end<br>&nbsp;- Additional code refactoring for the sake of maintainability and readability (not that you care)<br><br>For bugs/suggestions/questions/feedback, contact me on Discord: ZMNMXLNTR#6271<br>Alternatively, submit an issue to the <a href='https://github.com/zmnmxlntr/hg' target='_blank'>repository</a>.");
 
     // ToDO: Same note as above.
-    const hgChangelog_btn     = hgCreateElement_Button("Changelog", "A log of recent changes per version", function() { hgHidePanel("hgOptions-panel"); hgHidePanel("hgUpcoming-panel"); hgTogglePanel("hgChangelog-panel"); });
-    const hgChangelog_div     = hgCreateElement_Div("hgChangelog-panel", "display:none;", "3.3.0:<br>&nbsp;- Discovered the existence of event.preventDefault (friendly reminder that I am not a web developer), so now Chrome users can use the F1 key without opening a help page. Rejoice! For legacy reasons, F4 will continue to invoke Draw<br>&nbsp;- Fixed an issue where the Load button on the Reaping page wouldn't default to the correct location, and then removed the option entirely as the original location is nonsensical<br>&nbsp;- Moved a bunch of half-finished functionality to a dev branch to allow for an easier update release process (yes, it is indeed revolting that I didn't do this from the beginning)<br>&nbsp;- Further cleanup/restructuring to eventually make this project less of a pain to update<br>&nbsp;- This log!<br><br>As for what hasn't changed: I'm not dead, just transient. Your old pal Virginia will drop by soon&trade; to catch up.<br><br>P.S., I discovered that the script works on the mobile Firefox browser. I bet it works on the mobile Chrome browser too, but I haven't tried it myself. Neat!<br>P.P.S., As a reminder, you can specify your character's gender in your post, and it will be set automatically if the host is using the script! Just include (F) or (M) anywhere in your post.");
+    const hgChangelog_btn = hgCreateElement_Button("Changelog", "A log of recent changes per version", function() { hgHidePanel("hgOptions-panel"); hgHidePanel("hgUpcoming-panel"); hgTogglePanel("hgChangelog-panel"); });
+    const hgChangelog_div = hgCreateElement_Div("hgChangelog-panel", "display:none;", "3.3.0:<br>&nbsp;- Discovered the existence of event.preventDefault (friendly reminder that I am not a web developer), so now Chrome users can use the F1 key without opening a help page. Rejoice! For legacy reasons, F4 will continue to invoke Draw<br>&nbsp;- Fixed an issue where the Load button on the Reaping page wouldn't default to the correct location, and then removed the option entirely as the original location is nonsensical<br>&nbsp;- Moved a bunch of half-finished functionality to a dev branch to allow for an easier update release process (yes, it is indeed revolting that I didn't do this from the beginning)<br>&nbsp;- Further cleanup/restructuring to eventually make this project less of a pain to update<br>&nbsp;- This log!<br><br>As for what hasn't changed: I'm not dead, just transient. Your old pal Virginia will drop by soon&trade; to catch up.<br><br>P.S., I discovered that the script works on the mobile Firefox browser. I bet it works on the mobile Chrome browser too, but I haven't tried it myself. Neat!<br>P.P.S., As a reminder, you can specify your character's gender in your post, and it will be set automatically if the host is using the script! Just include (F) or (M) anywhere in your post.");
 
     // Control: "Select" type element for number of tributes to be saved
     const hgTributes_select = hgCreateElement_Select("hgTribsNo", "tributes", "Number of tributes", function() { hgNumberTributes(); GM_setValue("options_lastSize", document.getElementById("hgTribsNo").value); });
@@ -579,6 +588,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         for(null; i < inputs.length && j < capacity; i += 4, j++) {
             inputs[i + 3].value = inputs[i + 2].value = inputs[i + 1].value = inputs[i].value = "";
         }
+
         // ToDO: Also check while i < genders.length? Seems to work fine without this check though, so remove similar check from previous loop?
         // Assign genders to all saved tributes
         for(i = 1, j = 0; i < hgReapingSize * 3 + 1 && j < hgReapingSize && j < capacity && j < imgs.length - 1; i += 3, j++) {
@@ -588,6 +598,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         for(null; i < genders.length && j < capacity; i += 3, j++) {
             genders[i].value = '?';
         }
+
         // Set dead tribute images to BW if enabled
         if(optGreyDead === true) {
             for(i = 2, j = 0; i < inputs.length && j < hgReapingSize && j < capacity && j < imgs.length - 1; i += 4, j++) {
@@ -611,7 +622,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
     // Default values of Season Name and Logo URL fields
     const hgDefaultSeasonName = document.getElementsByName("seasonname")[0].value;
-    const hgDefaultLogoUrl = document.getElementsByName("logourl")[0].value;
+    const hgDefaultLogoUrl    = document.getElementsByName("logourl")[0].value;
 
     // Button to load tribute data into simulator
     document.getElementsByClassName("personalHG")[0].prepend(hgCreateElement_Button("Load", "Load them tributes", hgLoad, null, "position:absolute;"));
