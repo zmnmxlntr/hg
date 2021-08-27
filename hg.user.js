@@ -3,7 +3,7 @@
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
 // @author      Virginia
-// @version     3.3.5
+// @version     3.3.6
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @include     /^(https?://)?boards\.4chan(nel)?\.org/.*/(res|thread)/.*$/
@@ -204,7 +204,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
                         hgFemale_radio.className = class_hgGender;
                         hgFemale_radio.value = "F";
                         hgFemale_radio.title = "Female";
-                        optDetectGender === true && (female === true || grills.includes(nom.toLowerCase())) ? hgFemale_radio.checked = true : hgMale_radio.checked = true;
+                        optDetectGender === true && (female === true || nom.toLowerCase() in grills) ? hgFemale_radio.checked = true : hgMale_radio.checked = true;
 
                         // Tribute form that contains previous elements
                         const hgForm_form = document.createElement('form');
@@ -432,12 +432,12 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     //== Tributes known to be grills =================================================================================//
     //================================================================================================================//
 
-    // ToDO: Put this in a fucking hash map or BST or something you neanderthal
-    const grills = [
-        "megumi", "megumin", "sakuya", "unlucky girl", "unfortunate girl", "guild girl", "queen boo", "madotsuki",
-        "hedenia", "reimu", "dorothy haze", "lain", "rebecca", "marin", "alien queen", "frisk", "kaokuma", "sayori",
-        "dog tier jade", "dragon cunt", "X-23", "haruhi", "mao mao"
-    ];
+    const grills = {
+        "megumi":'', "megumin":'', "sakuya":'', "unlucky girl":'', "unfortunate girl":'', "guild girl":'',
+        "queen boo":'', "madotsuki":'', "hedenia":'', "reimu":'', "dorothy haze":'', "lain":'', "rebecca":'',
+        "marin":'', "alien queen":'', "frisk":'', "kaokuma":'', "sayori":'', "dog tier jade":'', "dragon cunt":'',
+        "X-23":'', "haruhi":'', "mao mao":''
+    };
 
     //================================================================================================================//
     //== Options and Settings Creation ===============================================================================//
