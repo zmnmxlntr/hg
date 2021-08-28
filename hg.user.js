@@ -3,7 +3,7 @@
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
 // @author      Virginia
-// @version     3.3.6
+// @version     3.4.0
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @include     /^(https?://)?boards\.4chan(nel)?\.org/.*/(res|thread)/.*$/
@@ -416,14 +416,15 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         if(element_function) hgElement_checkbox.onchange = function() { element_function(); };
 
         // Text immediately following and describing aforementioned checkbox
-        const hgElement_innerSpan = document.createElement("span");
-        hgElement_innerSpan.innerHTML = element_text;
-        hgElement_innerSpan.title = element_title;
+        const hgElement_label = document.createElement("label");
+        hgElement_label.innerHTML = element_text;
+        hgElement_label.title = element_title;
+        hgElement_label.setAttribute("for", element_id);
 
         // Span in which the checkbox and its text are contained
         const hgElement_outerSpan = document.createElement("span");
         hgElement_outerSpan.appendChild(hgElement_checkbox);
-        hgElement_outerSpan.appendChild(hgElement_innerSpan);
+        hgElement_outerSpan.appendChild(hgElement_label);
 
         return hgElement_outerSpan;
     }
@@ -510,11 +511,11 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
     // ToDO: Can we instead pass to the function the element as we already have it above? Doubt it, but worth looking into.
     const hgUpcoming_btn = hgCreateElement_Button("Upcoming", "Upcoming features and changes", function() { hgHidePanel("hgOptions-panel"); hgHidePanel("hgChangelog-panel"); hgTogglePanel("hgUpcoming-panel"); });
-    const hgUpcoming_div = hgCreateElement_Div("hgUpcoming-panel", "display:none;", "Upcoming features and changes:<br>&nbsp;- Customize keybinds<br>&nbsp;- Retain edited forms through page refreshes<br>&nbsp;- Reset forms to original<br>&nbsp;- Retain page position when drawing new forms<br>&nbsp;- Safely relax input validation to be equally permissive to the simulator's back end<br>&nbsp;- Additional code refactoring for the sake of maintainability and readability (not that you care)<br><br>For bugs/suggestions/questions/feedback, contact me on Discord: ZMNMXLNTR#6271<br>Alternatively, submit an issue to the <a href='https://github.com/zmnmxlntr/hg' target='_blank'>repository</a>.");
+    const hgUpcoming_div = hgCreateElement_Div("hgUpcoming-panel", "display:none;", "<br>Upcoming features and changes:<br>&nbsp;- Customize keybinds<br>&nbsp;- Retain edited forms through page refreshes<br>&nbsp;- Reset forms to original<br>&nbsp;- Retain page position when drawing new forms<br>&nbsp;- Safely relax input validation to be equally permissive to the simulator's back end<br>&nbsp;- Additional code refactoring for the sake of maintainability and readability (not that you care)<br><br>For bugs/suggestions/questions/feedback, contact me on Discord: ZMNMXLNTR#6271<br>Alternatively, submit an issue to the <a href='https://github.com/zmnmxlntr/hg' target='_blank'>repository</a>.");
 
     // ToDO: Same note as above.
     const hgChangelog_btn = hgCreateElement_Button("Changelog", "A log of recent changes per version", function() { hgHidePanel("hgOptions-panel"); hgHidePanel("hgUpcoming-panel"); hgTogglePanel("hgChangelog-panel"); });
-    const hgChangelog_div = hgCreateElement_Div("hgChangelog-panel", "display:none;", "3.3.0:<br>&nbsp;- Discovered the existence of event.preventDefault (friendly reminder that I am not a web developer), so now Chrome users can use the F1 key without opening a help page. Rejoice! For legacy reasons, F4 will continue to invoke Draw<br>&nbsp;- Fixed an issue where the Load button on the Reaping page wouldn't default to the correct location, and then removed the option entirely as the original location is nonsensical<br>&nbsp;- Moved a bunch of half-finished functionality to a dev branch to allow for an easier update release process (yes, it is indeed revolting that I didn't do this from the beginning)<br>&nbsp;- Further cleanup/restructuring to eventually make this project less of a pain to update<br>&nbsp;- This log!<br><br>As for what hasn't changed: I'm not dead, just transient. Your old pal Virginia will drop by soon&trade; to catch up.<br><br>P.S., I discovered that the script works on the mobile Firefox browser. I bet it works on the mobile Chrome browser too, but I haven't tried it myself. Neat!<br>P.P.S., As a reminder, you can specify your character's gender in your post, and it will be set automatically if the host is using the script! Just include (F) or (M) anywhere in your post.");
+    const hgChangelog_div = hgCreateElement_Div("hgChangelog-panel", "display:none;", "<br>3.4.0:<br>&nbsp;- You can now click an setting's text to toggle it.<br>3.3.6:<br>&nbsp;- Remembered I made a changelog.<br>&nbsp;- Made automatic gender checking infinitely more efficient.<br>3.3.0:<br>&nbsp;- Discovered the existence of event.preventDefault (friendly reminder that I am not a web developer), so now Chrome users can use the F1 key without opening a help page. Rejoice! For legacy reasons, F4 will continue to invoke Draw.<br>&nbsp;- Fixed an issue where the Load button on the Reaping page wouldn't default to the correct location, and then removed the option entirely as the original location is nonsensical.<br>&nbsp;- Moved a bunch of half-finished functionality to a dev branch to allow for an easier update release process (yes, it is indeed revolting that I didn't do this from the beginning).<br>&nbsp;- Further cleanup/restructuring to eventually make this project less of a pain to update.<br>&nbsp;- This log!<br><br>As for what hasn't changed: I'm not dead, just transient. I'm online approximately twice a year.<br><br>P.S., I discovered that the script works on the mobile Firefox browser. I bet it works on the mobile Chrome browser too, but I haven't tried it myself. Neat!<br>P.P.S., As a reminder, you can specify your character's gender in your post, and it will be set automatically if the host is using the script! Just include (F) or (M) anywhere in your post.");
 
     // Control: "Select" type element for number of tributes to be saved
     const hgTributes_select = hgCreateElement_Select("hgTribsNo", "tributes", "Number of tributes", function() { hgNumberTributes(); GM_setValue("options_lastSize", document.getElementById("hgTribsNo").value); });
