@@ -20,7 +20,7 @@ Doesn't seem to work on Safari. If you can't bear using a superior browser, let 
 #
 
 # Usage
-To draw input fields, press F1 (or F4 for Chrome plebs) or scroll to the bottom of the page and click "Draw". To hide input fields, press F2 (they will not be lost, only hidden). Works nicely alongside automatic page updates - just press F1 (or F4) or click the "Draw" button again to add input fields to new posts (previously existing ones will not be lost/overwritten). Only posts with images will have input fields drawn.
+To draw input fields, press F1 or scroll to the bottom of the page and click "Draw". To hide input fields, press F2 (they will not be lost, only hidden). Works nicely alongside automatic page updates - just press F1 (or F4) or click the "Draw" button again to add input fields to new posts (previously existing ones will not be lost/overwritten). Only posts with images will have input fields drawn.
 
 All tributes are selected by default; to exclude a post as a tribute, deselect the checkbox in the top-left corner of its post. Tribute name text fields generate what the script thinks the poster is going for, strips invalid characters, and truncates to the maximum length of characters. To change a tribute's name, simply edit the text field. The radio buttons to the right of the text field are for selecting the tribute's gender, which defaults to male.
 
