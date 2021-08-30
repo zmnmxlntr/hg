@@ -3,7 +3,7 @@
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
 // @author      Virginia
-// @version     3.4.1
+// @version     3.4.0
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @include     /^(https?://)?boards\.4chan(nel)?\.org/.*/(res|thread)/.*$/
@@ -43,8 +43,6 @@
  - Finish placing class names etc. into variables
  - Implement data binding to simplify option values and displays and reduce room for error
  - Make a CSS file or section
- - Make sure element is rendered/not deleted or hidden before selecting as tribute to avoid posts filtered by 4chan X aren't "invisibly" selected
- - Ask /b/, /trash/, Discords and whatever communities there might be if they'd be interested in having the script scrape tributes' names from filename if post is empty (tricky to safeguard against spam)
 */
 
 if(window.location.hostname === "boards.4chan.org" || window.location.hostname === "boards.4channel.org") {
@@ -183,6 +181,9 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
                         hgEntry_checkbox.style = "display:inline!important;";
                         hgEntry_checkbox.onchange = hgNumberTributes;
                         if((optSkipEmpty === true && nom === "") === false) hgEntry_checkbox.checked = true;
+                        // ToDO: Untested alternative to the repition directly above
+                        //const hgEntry_checkbox2 = hgCreateElement_Checkbox(undefined, "Image #" + hgEntriesDrawn, undefined, hgNumberTributes);
+                        //if((optSkipEmpty === true && nom === "") === false) hgEntry_checkbox2.checked = true;
 
                         // Text input field for tribute name
                         const hgName_text = document.createElement('input');
@@ -212,11 +213,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
                         const hgForm_form = document.createElement('form');
                         hgForm_form.className = class_hgForm;
                         //hgForm_form.setAttribute("postNumber", postNumber); // ToDO: Use this somewhere to make things more efficient? Or just access this info through parent.id
-                        hgForm_form.appendChild(hgEntry_checkbox);
-                        hgForm_form.appendChild(hgName_text);
-                        hgForm_form.appendChild(hgMale_radio);
-                        hgForm_form.appendChild(hgFemale_radio);
-                        hgForm_form.appendChild(hgNumber_span);
+                        [hgEntry_checkbox, hgName_text, hgMale_radio, hgFemale_radio, hgNumber_span].forEach(function(value) { hgForm_form.appendChild(value); });
 
                         threadPosts[i].prepend(hgForm_form);
                     }
@@ -246,9 +243,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
             window.scrollTo(0, document.body.scrollHeight);
         }
 
-        let nomsStr = "";
-        let gensStr = "";
-        let imgsStr = "";
+        let nomsStr = "", gensStr = "", imgsStr = "";
 
         // ToDO: Separate into three loops
         const optFullImgs = GM_getValue("options_fullImages", true);
@@ -415,7 +410,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         hgElement_checkbox.id = element_id;
         hgElement_checkbox.title = element_title;
         hgElement_checkbox.style = "display:inline!important;";
-        if(element_function) hgElement_checkbox.onchange = function() { element_function(); };
+        if(element_function) hgElement_checkbox.onchange = function() { element_function(); }; // ToDO: I forget, do I HAVE to declare an anyonymous function in thiscase? Can't I just set it to the function I'm calling?
 
         // Text immediately following and describing aforementioned checkbox
         const hgElement_label = document.createElement("label");
@@ -429,6 +424,34 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         hgElement_outerSpan.appendChild(hgElement_label);
 
         return hgElement_outerSpan;
+    }
+
+    // ToDO: Insane experimental science
+    function hgCreateElement_Checkbox2(element_id, element_title, element_text, element_function) {
+        // Checkbox element accompanied by following text element
+        const hgElement_checkbox = document.createElement("input");
+        hgElement_checkbox.type = "checkbox";
+        hgElement_checkbox.id = element_id;
+        hgElement_checkbox.title = element_title;
+        hgElement_checkbox.style = "display:inline!important;";
+        if(element_function) hgElement_checkbox.onchange = function() { element_function(); }; // ToDO: I forget, do I HAVE to declare an anyonymous function in thiscase? Can't I just set it to the function I'm calling?
+
+        // Text immediately following and describing aforementioned checkbox
+        if(element_text) {
+            const hgElement_label = document.createElement("label");
+            hgElement_label.innerHTML = element_text;
+            hgElement_label.title = element_title;
+            hgElement_label.setAttribute("for", element_id);
+
+            // Span in which the checkbox and its text are contained
+            const hgElement_outerSpan = document.createElement("span");
+            hgElement_outerSpan.appendChild(hgElement_checkbox);
+            hgElement_outerSpan.appendChild(hgElement_label);
+
+            return hgElement_outerSpan;
+        }
+
+        return hgElement_checkbox;
     }
 
     //================================================================================================================//
@@ -532,14 +555,9 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     hgCtrls_div.appendChild(hgCreateElement_Button("Hide", "Hide the entry forms", hgHide));
     hgCtrls_div.appendChild(hgCreateElement_Button("Save", "Save the entries", hgSave));
     hgCtrls_div.appendChild(hgCreateElement_Button("Deselect All", "Deselect all tribute entry form checkboxes", function() { if(confirm("Deselect all tribute entry checkboxes?")) hgDeselect(); }));
-    hgCtrls_div.appendChild(hgTributes_select);
+    hgCtrls_div.appendChild(hgTributes_select); // ToDO: Modify hgCreateElement_Select to accept dict of option IDs/values to facilitate inline-creation
     hgCtrls_div.appendChild(hgCreateElement_Button("Reaping", "Open the reaping page on Brantsteele's website in a new tab", function() { window.open("https://brantsteele.net/hungergames/reaping.php"); }));
-    hgCtrls_div.appendChild(hgSettings_btn);
-    hgCtrls_div.appendChild(hgUpcoming_btn);
-    hgCtrls_div.appendChild(hgChangelog_btn);
-    hgCtrls_div.appendChild(hgSettings_div);
-    hgCtrls_div.appendChild(hgUpcoming_div);
-    hgCtrls_div.appendChild(hgChangelog_div);
+    [hgSettings_btn, hgUpcoming_btn, hgChangelog_btn, hgSettings_div, hgUpcoming_div, hgChangelog_div].forEach(function(value) { hgCtrls_div.appendChild(value); });
 
     document.getElementsByTagName("body")[0].appendChild(hgCtrls_div);
 

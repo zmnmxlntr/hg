@@ -7,7 +7,6 @@ Works in Firefox, Chrome/Chromium, and Opera, with or without 4chan X. Not teste
 ### Firefox
 Install the [Tampermonkey](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/) extension, click **[here](https://github.com/zmnmxlntr/hg/raw/master/hg.user.js)**, then click "Install".
 <br/>*NOTE: It is recommended to use Tampermonkey rather than Greasemonkey, as the latter is currently bugged.*
-#
 
 ### Chrome/Chromium
 Install the [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en) extension, click **[here](https://github.com/zmnmxlntr/hg/raw/master/hg.user.js)**, then click "Install".
