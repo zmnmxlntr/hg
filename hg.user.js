@@ -3,7 +3,7 @@
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
 // @author      Virginia
-// @version     3.4.1
+// @version     3.4.2
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @include     /^(https?://)?boards\.4chan(nel)?\.org/.*/(res|thread)/.*$/
@@ -45,6 +45,7 @@
  - Make a CSS file or section
  - Make sure element is rendered/not deleted or hidden before selecting as tribute to avoid posts filtered by 4chan X aren't "invisibly" selected
  - Ask /b/, /trash/, Discords and whatever communities there might be if they'd be interested in having the script scrape tributes' names from filename if post is empty (tricky to safeguard against spam)
+ - Allow users to create a local list of grills
 */
 
 if(window.location.hostname === "boards.4chan.org" || window.location.hostname === "boards.4channel.org") {
@@ -436,10 +437,14 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     //================================================================================================================//
 
     const grills = {
-        "megumi":'', "megumin":'', "sakuya":'', "unlucky girl":'', "unfortunate girl":'', "guild girl":'',
-        "queen boo":'', "madotsuki":'', "hedenia":'', "reimu":'', "dorothy haze":'', "lain":'', "rebecca":'',
-        "marin":'', "alien queen":'', "frisk":'', "kaokuma":'', "sayori":'', "dog tier jade":'', "dragon cunt":'',
-        "x-23":'', "haruhi":'', "mao mao":''
+        "2b":'', "6":'', "a":'', "alien queen":'', "ami mizuno":'', "anal avenger's daughter":'', "angelica":'', "angry zelda":'', "arcoic":'', "awoo girl":'', "bismarck":'', "blitz the bun":'', "bonby":'', "bronya zaychik":'',
+        "buddy":'', "calcium":'', "catra":'', "charlotte":'', "chiaki nanami":'', "chinatsu":'', "cindy":'', "cute":'', "devilica":'', "devilman lady":'', "dog tier jade":'', "dorothy haze":'', "dragon cunt":'', "dragon cunt":'',
+        "edra glamcock":'', "edra":''"elf":'', "elvina":'', "emmy":'', "ena":'', "exusiai":'', "fat chick":'', "frank girl":'', "frankie foster":'', "frankie":'', "frisk":'', "goblin":'', "gravel":'', "guild girl":'', "gwen":'',
+        "harley quinn":'', "haruhi":'', "hat kid":'', "hatsune miku":'', "hedenia":'', "hestia":'', "homeless girl":'', "ida":'', "ifrit":'', "jennette mccurdy ":'', "jenny":'', "kaokuma":'', "kiana kaslana":'', "kino":'',
+        "kizuna ai":'', "klee":'', "kurohime":'', "kuroko":'', "la":'', "lain":'', "lammy":'', "lavie":'', "liz":'', "lona":'', "mabel":'', "madotsuki":'', "mae borrowski":'', "mae":'', "maga girl":'', "mao mao":'',
+        "marie antoinette":'', "marin":'', "megumi":'', "megumin":'', "merry":'', "miku":'', "motifa":'', "nil sunna":'', "nitori kawashiro":'', "nutella girl":'', "okku":'', "platinum":'', "princess zelda":'', "psycho chan":'',
+        "queen boo":'', "rap(e)":'', "rape snake":'', "rebecca":'', "reimu":'', "relm":'', "sailor mercury":'', "sakuya":'', "sayori":'', "scully":'', "senko san":'', "serena":'', "six":'', "skeleton":'', "sophia":'', "suzumi":'',
+        "sword":'', "teleporter":'', "tsuyu":'', "ty lee":'', "unfortunate girl":'', "unlucky girl":'', "utharu":'', "veruca salt":'', "vex":'', "wendy":'', "x-23":'', "zelda":''
     };
 
     //================================================================================================================//
