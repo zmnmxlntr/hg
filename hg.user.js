@@ -438,13 +438,13 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
     const grills = {
         "2b":'', "6":'', "a":'', "alien queen":'', "ami mizuno":'', "anal avenger's daughter":'', "angelica":'', "angry zelda":'', "arcoic":'', "awoo girl":'', "bismarck":'', "blitz the bun":'', "bonby":'', "bronya zaychik":'',
-        "buddy":'', "calcium":'', "catra":'', "charlotte":'', "chiaki nanami":'', "chinatsu":'', "cindy":'', "cute":'', "devilica":'', "devilman lady":'', "dog tier jade":'', "dorothy haze":'', "dragon cunt":'', "dragon cunt":'',
-        "edra glamcock":'', "edra":''"elf":'', "elvina":'', "emmy":'', "ena":'', "exusiai":'', "fat chick":'', "frank girl":'', "frankie foster":'', "frankie":'', "frisk":'', "goblin":'', "gravel":'', "guild girl":'', "gwen":'',
-        "harley quinn":'', "haruhi":'', "hat kid":'', "hatsune miku":'', "hedenia":'', "hestia":'', "homeless girl":'', "ida":'', "ifrit":'', "jennette mccurdy ":'', "jenny":'', "kaokuma":'', "kiana kaslana":'', "kino":'',
-        "kizuna ai":'', "klee":'', "kurohime":'', "kuroko":'', "la":'', "lain":'', "lammy":'', "lavie":'', "liz":'', "lona":'', "mabel":'', "madotsuki":'', "mae borrowski":'', "mae":'', "maga girl":'', "mao mao":'',
-        "marie antoinette":'', "marin":'', "megumi":'', "megumin":'', "merry":'', "miku":'', "motifa":'', "nil sunna":'', "nitori kawashiro":'', "nutella girl":'', "okku":'', "platinum":'', "princess zelda":'', "psycho chan":'',
-        "queen boo":'', "rap(e)":'', "rape snake":'', "rebecca":'', "reimu":'', "relm":'', "sailor mercury":'', "sakuya":'', "sayori":'', "scully":'', "senko san":'', "serena":'', "six":'', "skeleton":'', "sophia":'', "suzumi":'',
-        "sword":'', "teleporter":'', "tsuyu":'', "ty lee":'', "unfortunate girl":'', "unlucky girl":'', "utharu":'', "veruca salt":'', "vex":'', "wendy":'', "x-23":'', "zelda":''
+        "buddy":'', "calcium":'', "catra":'', "charlotte":'', "chiaki nanami":'', "chinatsu":'', "cindy":'', "cute":'', "devilica":'', "devilman lady":'', "dog tier jade":'', "dorothy haze":'', "dragon cunt":'', "edra glamcock":'',
+        "edra":'', "elf":'', "elvina":'', "emmy":'', "ena":'', "exusiai":'', "fat chick":'', "frank girl":'', "frankie foster":'', "frankie":'', "frisk":'', "goblin":'', "gravel":'', "guild girl":'', "gwen":'', "harley quinn":'',
+        "haruhi":'', "hat kid":'', "hatsune miku":'', "hedenia":'', "hestia":'', "homeless girl":'', "ida":'', "ifrit":'', "jennette mccurdy ":'', "jenny":'', "kaokuma":'', "kiana kaslana":'', "kino":'', "kizuna ai":'', "klee":'',
+        "kurohime":'', "kuroko":'', "la":'', "lain":'', "lammy":'', "lavie":'', "liz":'', "lona":'', "mabel":'', "madotsuki":'', "mae borrowski":'', "mae":'', "maga girl":'', "mao mao":'', "marie antoinette":'', "marin":'', "megumi":'',
+        "megumin":'', "merry":'', "miku":'', "motifa":'', "nil sunna":'', "nitori kawashiro":'', "nutella girl":'', "okku":'', "platinum":'', "princess zelda":'', "psycho chan":'', "queen boo":'', "rap(e)":'', "rape snake":'',
+        "rebecca":'', "reimu":'', "relm":'', "sailor mercury":'', "sakuya":'', "sayori":'', "scully":'', "senko san":'', "serena":'', "six":'', "skeleton":'', "sophia":'', "suzumi":'', "sword":'', "teleporter":'', "tsuyu":'',
+        "ty lee":'', "unfortunate girl":'', "unlucky girl":'', "utharu":'', "veruca salt":'', "vex":'', "wendy":'', "x-23":'', "zelda":''
     };
 
     //================================================================================================================//
