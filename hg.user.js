@@ -444,7 +444,8 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         "kurohime":'', "kuroko":'', "la":'', "lain":'', "lammy":'', "lavie":'', "liz":'', "lona":'', "mabel":'', "madotsuki":'', "mae borrowski":'', "mae":'', "maga girl":'', "mao mao":'', "marie antoinette":'', "marin":'', "megumi":'',
         "megumin":'', "merry":'', "miku":'', "motifa":'', "nil sunna":'', "nitori kawashiro":'', "nutella girl":'', "okku":'', "platinum":'', "princess zelda":'', "psycho chan":'', "queen boo":'', "rap(e)":'', "rape snake":'',
         "rebecca":'', "reimu":'', "relm":'', "sailor mercury":'', "sakuya":'', "sayori":'', "scully":'', "senko san":'', "serena":'', "six":'', "skeleton":'', "sophia":'', "suzumi":'', "sword":'', "teleporter":'', "tsuyu":'',
-        "ty lee":'', "unfortunate girl":'', "unlucky girl":'', "utharu":'', "veruca salt":'', "vex":'', "wendy":'', "x-23":'', "zelda":''
+        "ty lee":'', "unfortunate girl":'', "unlucky girl":'', "utharu":'', "veruca salt":'', "vex":'', "wendy":'', "x-23":'', "zelda":'', "dog-tier jade": '', "jennette mccurdy": '', "index": '', "samsung sam": 'cindy', "psycho-chan": '',
+        "warspite": '', "loone": ''
     };
 
     //================================================================================================================//
