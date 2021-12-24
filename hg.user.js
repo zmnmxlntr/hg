@@ -6,7 +6,7 @@
 // @version     3.4.3
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
-// @iconURL   https://github.com/zmnmxlntr/hg/raw/master/icon.png
+// @iconURL     https://github.com/zmnmxlntr/hg/raw/master/icon.png
 // @include     /^(https?://)?boards\.4chan(nel)?\.org/.*/(res|thread)/.*$/
 // @include     /^(https?://)?(www\.)?brantsteele\.net/hungergames/(edit|personal)\.php$/
 // @grant       GM_setValue
