@@ -3,14 +3,30 @@
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
 // @author      Virginia
-// @version     3.3.3
+// @version     3.4.3
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
+// @iconURL     https://github.com/zmnmxlntr/hg/raw/master/icon.png
 // @include     /^(https?://)?boards\.4chan(nel)?\.org/.*/(res|thread)/.*$/
 // @include     /^(https?://)?(www\.)?brantsteele\.net/hungergames/(edit|personal)\.php$/
 // @grant       GM_setValue
 // @grant       GM_getValue
 // ==/UserScript==
+
+// Copyright ZMNMXLNTR 2017-2021
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /* eslint no-multi-spaces:off */
 
@@ -27,6 +43,9 @@
  - Finish placing class names etc. into variables
  - Implement data binding to simplify option values and displays and reduce room for error
  - Make a CSS file or section
+ - Make sure element is rendered/not deleted or hidden before selecting as tribute to avoid posts filtered by 4chan X aren't "invisibly" selected
+ - Ask /b/, /trash/, Discords and whatever communities there might be if they'd be interested in having the script scrape tributes' names from filename if post is empty (tricky to safeguard against spam)
+ - Allow users to create a local list of grills
 */
 
 if(window.location.hostname === "boards.4chan.org" || window.location.hostname === "boards.4channel.org") {
@@ -36,7 +55,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     // Autosave timer
     var timer;
 
-    // ToDO: Insufficiently descriptive to the point of sometimes being misleading
+    // ToDO: Insufficiently descriptive to the point of sometimes being misleading; fix
     // Tribute form elements
     const class_hgForm      = "hg-form";
     const class_hgCheckbox  = "hg-checkbox";
@@ -132,7 +151,6 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
                         //let thumb = postImage[0].getElementsByTagName("img")[0].src; // ToDO: Not used?
                         //let img = postImage[0].href; // ToDO: Wtf not using this either?
                         let nom = threadPosts[i].getElementsByClassName("postMessage")[0].innerText.split('\n');
-
                         let female = false;
 
                         // ToDO: Think more about this when you're not drunk.
@@ -353,12 +371,16 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     //================================================================================================================//
 
     document.onkeydown = function(key) {
+        let hgAtPageBottom = false;
+
         key = key || window.event;
 
         switch(key.keyCode) {
             case 112:
             case 115:
+                hgAtPageBottom = window.innerHeight + window.pageYOffset >= document.body.offsetHeight;
                 hgDraw();
+                if(hgAtPageBottom === true) window.scrollTo(0, document.body.scrollHeight);
                 break;
             case 113:
                 hgHide();
@@ -427,13 +449,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     // Show or hide options panel
     function hgTogglePanel(panel) {
         const hgOptions_elementStyle = document.getElementsByClassName(panel)[0].style;
-
-        if(hgOptions_elementStyle.display === "none") {
-            hgOptions_elementStyle.display = "block";
-        } else {
-            hgOptions_elementStyle.display = "none";
-        }
-
+        hgOptions_elementStyle.display = hgOptions_elementStyle.display === "none" ? "block" : "none";
         window.scrollTo(0, document.body.scrollHeight);
     }
 
@@ -512,14 +528,15 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         if(element_function) hgElement_checkbox.onchange = function() { element_function(); };
 
         // Text immediately following and describing aforementioned checkbox
-        const hgElement_innerSpan = document.createElement("span");
-        hgElement_innerSpan.innerHTML = element_text;
-        hgElement_innerSpan.title = element_title;
+        const hgElement_label = document.createElement("label");
+        hgElement_label.innerHTML = element_text;
+        hgElement_label.title = element_title;
+        hgElement_label.setAttribute("for", element_id); // ToDO: Remember what this was for
 
         // Span in which the checkbox and its text are contained
         const hgElement_outerSpan = document.createElement("span");
         hgElement_outerSpan.appendChild(hgElement_checkbox);
-        hgElement_outerSpan.appendChild(hgElement_innerSpan);
+        hgElement_outerSpan.appendChild(hgElement_label);
 
         return hgElement_outerSpan;
     }
@@ -528,12 +545,19 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     //== Tributes known to be grills =================================================================================//
     //================================================================================================================//
 
-    // ToDO: Put this in a fucking hash map or BST or something you neanderthal
-    const grills = [
-        "megumi", "megumin", "sakuya", "unlucky girl", "unfortunate girl", "guild girl", "queen boo", "madotsuki",
-        "hedenia", "reimu", "dorothy haze", "lain", "rebecca", "marin", "alien queen", "frisk", "kaokuma", "sayori",
-        "dog tier jade", "dragon cunt", "X-23", "haruhi", "mao mao"
+    const grills_dict = [], grills_array = [
+        '2b', '6', 'a', 'alien queen', 'ami mizuno', 'anal avengers daughter', 'angelica', 'angry zelda', 'arcoic', 'awoo girl', 'bismarck', 'blitz the bun', 'bonby', 'bronya zaychik', 'buddy',
+        'calcium', 'catra', 'charlotte', 'cherri', 'chiaki nanami', 'chinatsu', 'cindy', 'cute', 'devilica', 'devilman lady', 'dog tier jade', 'dog-tier jade', 'dorothy haze', 'dragon cunt', 'edra',
+        'edra glamcock', 'elf', 'elvina', 'emmy', 'ena', 'exusiai', 'fat chick', 'frank girl', 'frankie', 'frankie foster', 'frisk', 'goblin', 'gravel', 'guild girl', 'gwen', 'harley quinn', 'haruhi',
+        'hat kid', 'hatsune miku', 'hedenia', 'hestia', 'homeless girl', 'ida', 'ifrit', 'index', 'jennette mccurdy', 'jennette mccurdy ', 'jenny', 'kaokuma', 'kiana kaslana', 'kino', 'kizuna ai',
+        'klee', 'kurohime', 'kuroko', 'la', 'lain', 'lammy', 'lavie', 'liz', 'lona', 'loone', 'mabel', 'madotsuki', 'mae', 'mae borrowski', 'maga girl', 'mao mao', 'marie antoinette', 'marin',
+        'megumi', 'megumin', 'merry', 'miku', 'miranda cosgrove', 'motifa', 'nil sunna', 'nitori kawashiro', 'nobu', 'nutella girl', 'okku', 'platinum', 'princess zelda', 'psycho chan', 'psycho-chan',
+        'queen boo', 'rap(e)', 'rape snake', 'rebecca', 'reimu', 'relm', 'sailor mercury', 'sakuya', 'samsung sam', 'sayori', 'scully', 'senko san', 'serena', 'six', 'skeleton', 'sophia', 'suzumi',
+        'sword', 'teleporter', 'tsuyu', 'ty lee', 'unfortunate girl', 'unlucky girl', 'utharu', 'veruca salt', 'vex', 'warspite', 'wendy', 'x-23', 'zelda'
     ];
+    for(let i = 0; i < grills_array.length; i++) {
+        grills_dict[grills_array[i]] = '';
+    }
 
     //================================================================================================================//
     //== Options and Settings Creation ===============================================================================//
@@ -606,11 +630,11 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
 
     // ToDO: Can we instead pass to the function the element as we already have it above? Doubt it, but worth looking into.
     const hgUpcoming_btn      = hgCreateElement_Button("Upcoming", "Upcoming features and changes", function() { hgHidePanel("hgOptions-panel"); hgHidePanel("hgChangelog-panel"); hgTogglePanel("hgUpcoming-panel"); });
-    const hgUpcoming_div      = hgCreateElement_Div("hgUpcoming-panel", "display:none;", "Upcoming features and changes:<br>&nbsp;- Customize keybinds<br>&nbsp;- Retain edited forms through page refreshes<br>&nbsp;- Reset forms to original<br>&nbsp;- Retain page position when drawing new forms<br>&nbsp;- Safely relax input validation to be equally permissive to the simulator's back end<br>&nbsp;- Additional code refactoring for the sake of maintainability and readability (not that you care)<br><br>For bugs/suggestions/questions/feedback, contact me on Discord: ZMNMXLNTR#6271<br>Alternatively, submit an issue to the <a href='https://github.com/zmnmxlntr/hg' target='_blank'>repository</a>.");
+    const hgUpcoming_div = hgCreateElement_Div("hgUpcoming-panel", "display:none;", "<br>Upcoming features and changes:<br>&nbsp;- Add support for Murder Games and the new version of Brantsteele's simulator<br>&nbsp;- Add locally modifiable list of autogrills<br>&nbsp;- Customize keybinds<br>&nbsp;- Retain edited forms through page refreshes<br>&nbsp;- Reset forms to original<br>&nbsp;- Retain page position when drawing new forms<br>&nbsp;- Safely relax input validation to be equally permissive to the simulator's back end<br>&nbsp;- Additional code refactoring for the sake of maintainability and readability (not that you care)<br><br>For bugs/suggestions/questions/feedback, contact me on Discord: ZMNMXLNTR#6271<br>Alternatively, submit an issue to the <a href='https://github.com/zmnmxlntr/hg' target='_blank'>repository</a>.");
 
     // ToDO: Same note as above.
     const hgChangelog_btn     = hgCreateElement_Button("Changelog", "A log of recent changes per version", function() { hgHidePanel("hgOptions-panel"); hgHidePanel("hgUpcoming-panel"); hgTogglePanel("hgChangelog-panel"); });
-    const hgChangelog_div     = hgCreateElement_Div("hgChangelog-panel", "display:none;", "3.3.0:<br>&nbsp;- Discovered the existence of event.preventDefault (friendly reminder that I am not a web developer), so now Chrome users can use the F1 key without opening a help page. Rejoice! For legacy reasons, F4 will continue to invoke Draw<br>&nbsp;- Fixed an issue where the Load button on the Reaping page wouldn't default to the correct location, and then removed the option entirely as the original location is nonsensical<br>&nbsp;- Moved a bunch of half-finished functionality to a dev branch to allow for an easier update release process (yes, it is indeed revolting that I didn't do this from the beginning)<br>&nbsp;- Further cleanup/restructuring to eventually make this project less of a pain to update<br>&nbsp;- This log!<br><br>As for what hasn't changed: I'm not dead, just transient. Your old pal Virginia will drop by soon&trade; to catch up.<br><br>P.S., I discovered that the script works on the mobile Firefox browser. I bet it works on the mobile Chrome browser too, but I haven't tried it myself. Neat!<br>P.P.S., As a reminder, you can specify your character's gender in your post, and it will be set automatically if the host is using the script! Just include (F) or (M) anywhere in your post.");
+    const hgChangelog_div = hgCreateElement_Div("hgChangelog-panel", "display:none;", "<br>3.4.0:<br>&nbsp;- You can now click an setting's text to toggle it.<br>3.3.6:<br>&nbsp;- Remembered I made a changelog.<br>&nbsp;- Made automatic gender checking infinitely more efficient.<br>3.3.0:<br>&nbsp;- Discovered the existence of event.preventDefault (friendly reminder that I am not a web developer), so now Chrome users can use the F1 key without opening a help page. Rejoice! For legacy reasons, F4 will continue to invoke Draw.<br>&nbsp;- Fixed an issue where the Load button on the Reaping page wouldn't default to the correct location, and then removed the option entirely as the original location is nonsensical.<br>&nbsp;- Moved a bunch of half-finished functionality to a dev branch to allow for an easier update release process (yes, it is indeed revolting that I didn't do this from the beginning).<br>&nbsp;- Further cleanup/restructuring to eventually make this project less of a pain to update.<br>&nbsp;- This log!<br><br>As for what hasn't changed: I'm not dead, just transient. I'm online approximately twice a year.<br><br>P.S., I discovered that the script works on the mobile Firefox browser. I bet it works on the mobile Chrome browser too, but I haven't tried it myself. Neat!<br>P.P.S., As a reminder, you can specify your character's gender in your post, and it will be set automatically if the host is using the script! Just include (F) or (M) anywhere in your post.");
 
     // Control: "Select" type element for number of tributes to be saved
     const hgTributes_select = hgCreateElement_Select("hgTribsNo", "tributes", "Number of tributes", function() { hgNumberTributes(); GM_setValue("options_lastSize", document.getElementById("hgTribsNo").value); });
@@ -638,6 +662,21 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     document.getElementsByTagName("body")[0].appendChild(hgCtrls_div);
 
     hgLoadOptions();
+
+    // 
+    let hgPostCount = document.getElementsByClassName("hg-form");
+    function hgCheckForNew() {
+        const tributeForms = document.getElementsByClassName("hg-form");
+        if(tributeForms.length !== 0 && tributeForms[0].hidden === false) {
+            let hgNewPostCount = document.querySelectorAll('div.replyContainer:not(.noFile)').length;
+            if(hgNewPostCount !== hgPostCount) {
+                hgPostCount = hgNewPostCount;
+                hgDraw();
+            }
+        }
+        hgCheckForNewTimer = setTimeout(hgCheckForNew, 100);
+    };
+    var hgCheckForNewTimer = setTimeout(hgCheckForNew, 100);
 } else if(window.location.hostname === "brantsteele.net" || window.location.hostname === "www.brantsteele.net") {
     // Apparently we can use whatever fucking name we want, there is no back end validation
     unsafeWindow.validateForm = function() {
@@ -686,6 +725,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         for(null; i < inputs.length && j < capacity; i += 4, j++) {
             inputs[i + 3].value = inputs[i + 2].value = inputs[i + 1].value = inputs[i].value = "";
         }
+
         // ToDO: Also check while i < genders.length? Seems to work fine without this check though, so remove similar check from previous loop?
         // Assign genders to all saved tributes
         for(i = 1, j = 0; i < hgReapingSize * 3 + 1 && j < hgReapingSize && j < capacity && j < imgs.length - 1; i += 3, j++) {
@@ -695,6 +735,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         for(null; i < genders.length && j < capacity; i += 3, j++) {
             genders[i].value = '?';
         }
+
         // Set dead tribute images to BW if enabled
         if(optGreyDead === true) {
             for(i = 2, j = 0; i < inputs.length && j < hgReapingSize && j < capacity && j < imgs.length - 1; i += 4, j++) {
