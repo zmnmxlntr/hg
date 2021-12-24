@@ -447,7 +447,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         'sword', 'teleporter', 'tsuyu', 'ty lee', 'unfortunate girl', 'unlucky girl', 'utharu', 'veruca salt', 'vex', 'warspite', 'wendy', 'x-23', 'zelda'
     ];
     for(let i = 0; i < grills_array.length; i++) {
-        grills_dict[grills_array[i]] = 'ya';
+        grills_dict[grills_array[i]] = '';
     }
 
     //================================================================================================================//
