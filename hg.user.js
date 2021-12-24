@@ -52,7 +52,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     var hgReapingSize = 24;
     var hgEntriesDrawn = 0;
 
-    // ToDO: Fix insufficiently descriptive to the point of sometimes being misleading
+    // ToDO: Insufficiently descriptive to the point of sometimes being misleading; fix
     // Tribute form elements
     const class_hgForm      = "hg-form";
     const class_hgCheckbox  = "hg-checkbox";
@@ -125,7 +125,6 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
                         //let thumb = postImage[0].getElementsByTagName("img")[0].src; // ToDO: Not used?
                         //let img = postImage[0].href; // ToDO: Wtf not using this either?
                         let nom = threadPosts[i].getElementsByClassName("postMessage")[0].innerText.split('\n');
-
                         let female = false;
 
                         // ToDO: Think more about this when you're not drunk.
@@ -422,7 +421,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         const hgElement_label = document.createElement("label");
         hgElement_label.innerHTML = element_text;
         hgElement_label.title = element_title;
-        hgElement_label.setAttribute("for", element_id);
+        hgElement_label.setAttribute("for", element_id); // ToDO: Remember what this was for
 
         // Span in which the checkbox and its text are contained
         const hgElement_outerSpan = document.createElement("span");
