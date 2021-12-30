@@ -3,7 +3,7 @@
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
 // @author      Virginia
-// @version     3.4.4
+// @version     3.5.0
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @iconURL     https://github.com/zmnmxlntr/hg/raw/master/icon.png
@@ -103,11 +103,11 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         const optUnlimitLength = GM_getValue("options_unlimitLength", true);
 
         // ToDO: Relax form validation, combine quote regexes
-        const validRegex  = /[^a-zA-Z0-9úóãíáéêç.,:'\-\s]+/g;
-        const genderRegex = /(\([FM]\))|(\(Female\))|(\(Male\))/gi;
-        const quoteRegex1 = /^(>>[0-9]+)(\s\(OP\))?/;
-        const quoteRegex2 = /(>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?/g;
-        const quoteRegex  = /(^(>>[0-9]+)(\s\(OP\))?)|((>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?)/g; // ToDO: Try this combination out, baby
+        const invalidRegex = /<+/g;
+        const genderRegex  = /(\([FM]\))|(\(Female\))|(\(Male\))/gi;
+        const quoteRegex1  = /^(>>[0-9]+)(\s\(OP\))?/;
+        const quoteRegex2  = /(>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?/g;
+        const quoteRegex   = /(^(>>[0-9]+)(\s\(OP\))?)|((>>[0-9]+)(\s?\(You\))?(\s?\(OP\))?)/g; // ToDO: Try this combination out, baby
 
         // ToDO: Find escape codes for fancy characters in the regex.
         const threadPosts = document.getElementsByClassName("post reply");
@@ -150,9 +150,9 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
                         // Strip gender identifiers, quotes, and invalid characters from names.
                         // ToDO: if(j < nom.length)??? that doesn't seem right, why does this work?
                         if(j < nom.length) {
-                            nom = nom[j].replace(genderRegex, '').replace(validRegex, '').trim();
+                            nom = nom[j].replace(genderRegex, '').replace(invalidRegex, '').trim();
                         } else {
-                            nom = nom.join(' ').replace(genderRegex, '').replace(quoteRegex2, '').replace(validRegex, '').trim();
+                            nom = nom.join(' ').replace(genderRegex, '').replace(quoteRegex2, '').replace(invalidRegex, '').trim();
                         }
                         // ToDO: Not sure if this is still necessary, or perhaps now implemented in a stupid way.
                         // ToDO: Ensure this use of hgNameMaxLength doesn't result in one-off errors
