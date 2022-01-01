@@ -3,7 +3,7 @@
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
 // @author      Virginia
-// @version     3.5.0
+// @version     3.5.1
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @iconURL     https://github.com/zmnmxlntr/hg/raw/master/icon.png
@@ -443,7 +443,8 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         'klee', 'kurohime', 'kuroko', 'la', 'lain', 'lammy', 'lavie', 'liz', 'lona', 'loone', 'mabel', 'madotsuki', 'mae', 'mae borrowski', 'maga girl', 'mao mao', 'marie antoinette', 'marin',
         'megumi', 'megumin', 'merry', 'miku', 'miranda cosgrove', 'motifa', 'nil sunna', 'nitori kawashiro', 'nobu', 'nutella girl', 'okku', 'platinum', 'princess zelda', 'psycho chan', 'psycho-chan',
         'queen boo', 'rap(e)', 'rape snake', 'rebecca', 'reimu', 'relm', 'sailor mercury', 'sakuya', 'samsung sam', 'sayori', 'scully', 'senko san', 'serena', 'six', 'skeleton', 'sophia', 'suzumi',
-        'sword', 'teleporter', 'tsuyu', 'ty lee', 'unfortunate girl', 'unlucky girl', 'utharu', 'veruca salt', 'vex', 'warspite', 'wendy', 'x-23', 'zelda'
+        'sword', 'teleporter', 'tsuyu', 'ty lee', 'unfortunate girl', 'unlucky girl', 'utharu', 'veruca salt', 'vex', 'warspite', 'wendy', 'x-23', 'zelda', 'marceline the vampire queen', 'maomao',
+        'loona'
     ];
     for(let i = 0; i < grills_array.length; i++) {
         grills_dict[grills_array[i]] = '';
