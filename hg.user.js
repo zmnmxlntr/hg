@@ -395,6 +395,8 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
         window.event.preventDefault();
     };
 
+    // ToDO: Instead of timer/onkeydown, use the 'change' handler
+
     function hgOnKeyDown() {
         clearTimeout(timer);
     }
