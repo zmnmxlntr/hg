@@ -3,7 +3,7 @@
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
 // @author      Virginia
-// @version     3.5.2
+// @version     3.6.0
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @iconURL     https://github.com/zmnmxlntr/hg/raw/master/icon.png
@@ -543,6 +543,7 @@ if(window.location.hostname === "boards.4chan.org" || window.location.hostname =
     hgCtrls_div.appendChild(hgCreateElement_Button("Deselect All", "Deselect all tribute entry form checkboxes", function() { if(confirm("Deselect all tribute entry checkboxes?")) hgDeselect(); }));
     hgCtrls_div.appendChild(hgTributes_select);
     hgCtrls_div.appendChild(hgCreateElement_Button("Reaping", "Open the reaping page on Brantsteele's website in a new tab", function() { window.open("https://brantsteele.net/hungergames/reaping.php"); }));
+    hgCtrls_div.appendChild(hgCreateElement_Button("Tools", "Open the HG Tools site in a new tab", function() { window.open("https://hgtools.neocities.org"); }));
     hgCtrls_div.appendChild(hgSettings_btn);
     hgCtrls_div.appendChild(hgUpcoming_btn);
     hgCtrls_div.appendChild(hgChangelog_btn);
