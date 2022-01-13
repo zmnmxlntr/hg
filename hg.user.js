@@ -46,6 +46,7 @@
  - Make sure element is rendered/not deleted or hidden before selecting as tribute to avoid posts filtered by 4chan X aren't "invisibly" selected
  - Ask /b/, /trash/, Discords and whatever communities there might be if they'd be interested in having the script scrape tributes' names from filename if post is empty (tricky to safeguard against spam)
  - Allow users to create a local list of grills
+ - Account for filtered (hidden) posts and ignore them
 */
 
 if(window.location.hostname === "boards.4chan.org" || window.location.hostname === "boards.4channel.org") {
