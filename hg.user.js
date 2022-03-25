@@ -31,24 +31,29 @@
 /* eslint no-multi-spaces:off */
 
 /* ToDo:
- - Should those @include regexes end with a forward slash, or should the intermediate forward slashes be escaped? Not sure what's going on there but I guess it works
+ - Must those @include regexes end with a forward slash, or should the intermediate forward slashes be escaped? Not sure what's going on there but I guess it works
  - Finish nomenclature changes
  - Remove "number of tributes" setting and simply save 48 and load as many as needed on reaping page
  - Add automatic form saving and reset button
  - Automatically draw entry forms for new entries upon page update done in-pace by extensions if draw is shown
+   - Make use of GM's unsafeWindow to allow hooking for auto-updating draw upon loading of new tributes by 4chan X or 4chan's native JS extension
  - Retain page position when pressing draw keyboard shortcut
  - Async/thread?
  - Review unused stuff
  - Display genders on finalized reaping page
- - Finish placing class names etc. into variables
+ - Finish placing class names and etcetera into variables
  - Implement data binding to simplify option values and displays and reduce room for error
+   - Make use of GM_addValueChangeListener to simplify settings storage and retrieval, and possibly to add autoload functionality to the reaping page and simplify persistence across refreshes.
  - Make a CSS file or section
+   - Make use of GM_addStyle to recreate the custom CSS tool natively
  - Make sure element is rendered/not deleted or hidden before selecting as tribute to avoid posts filtered by 4chan X aren't "invisibly" selected
  - Ask /b/, /trash/, Discords and whatever communities there might be if they'd be interested in having the script scrape tributes' names from filename if post is empty (tricky to safeguard against spam)
  - Allow users to create a local list of grills
- - Account for filtered (hidden) posts and ignore them
  - Store values in JSON; use .stringify() and .parse()
- - Additional functionality to detect grills anywhere in string for sufficiently unique names
+ - Additional functionality to detect grills anywhere in string for sufficiently unique names using regex
+ - Make use of GM_addElement to replace current custom wrappers
+ - Make use of GM_xmlhttpRequest to recreate EventManager and possibly Autocropper natively
+ - Possibly use GM_setClipboard to simplify upcoming support of MurderGames simulator
 */
 
 (function() {
