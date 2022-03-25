@@ -3,7 +3,7 @@
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
 // @author      Virginia
-// @version     3.7.1
+// @version     3.7.2
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @iconURL     https://github.com/zmnmxlntr/hg/raw/master/icon.png
@@ -245,7 +245,7 @@
 
             hgSize();
 
-            const tributeForms = document.getElementsByClassName(class_hgForm);
+            let tributeForms = document.getElementsByClassName(class_hgForm);
 
             // Invoke hgDraw automatically if it has not yet been evoked and the user attempts to invoke hgSave
             if(tributeForms.length === 0) {
