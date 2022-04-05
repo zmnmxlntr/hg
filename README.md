@@ -6,7 +6,6 @@ Works in Firefox, Chrome/Chromium, and Opera, with or without 4chan X. Not teste
 # Installation
 ### Firefox
 Install the [Tampermonkey](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/) extension, click **[here](https://github.com/zmnmxlntr/hg/raw/master/hg.user.js)**, then click "Install".
-<br/>*NOTE: It is recommended to use Tampermonkey rather than Greasemonkey, as the latter is currently bugged.*
 
 ### Chrome/Chromium
 Install the [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en) extension, click **[here](https://github.com/zmnmxlntr/hg/raw/master/hg.user.js)**, then click "Install".
@@ -25,7 +24,7 @@ All tributes are selected by default; to exclude a post as a tribute, deselect t
 
 To save the tributes, scroll to the bottom of the page and use the radio buttons to select the number of tributes to be entered. There is no need to deselect excess tributes; they will be ignored. Press the "Save" button.
 
-On the Brantsteele Hunger Games simulator's "Edit Cast" page, press the "Load" button at the top-left corner of the page.
+On the Brantsteele Hunger Games simulator's "Edit Cast" page, press the "Load" button at the top-left corner of the page or to the top-left of the tribute forms, depending on which option you have set.
 
 Alternatively, just watch this gif:
 
