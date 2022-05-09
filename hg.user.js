@@ -3,7 +3,7 @@
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
 // @author      Virginia
-// @version     3.7.2
+// @version     3.7.3
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @iconURL     https://github.com/zmnmxlntr/hg/raw/master/icon.png
@@ -442,7 +442,7 @@
             'megumi', 'megumin', 'merry', 'miku', 'miranda cosgrove', 'motifa', 'nil sunna', 'nitori kawashiro', 'nobu', 'nutella girl', 'okku', 'platinum', 'princess zelda', 'psycho chan', 'psycho-chan',
             'queen boo', 'rap(e)', 'rape snake', 'rebecca', 'reimu', 'relm', 'sailor mercury', 'sakuya', 'samsung sam', 'sayori', 'scully', 'senko san', 'serena', 'six', 'skeleton', 'sophia', 'suzumi',
             'sword', 'teleporter', 'tsuyu', 'ty lee', 'unfortunate girl', 'unlucky girl', 'utharu', 'veruca salt', 'vex', 'warspite', 'wendy', 'x-23', 'zelda', 'marceline the vampire queen', 'maomao',
-            'loona', 'loonacity', 'hop', 'marceline the vampire queen', 'marcy', 'roxy glamcock', 'ranma', 'vanellope von schweetz', 'glamcock chica', 'teto', 'erkle', 'sylphi'
+            'loona', 'loonacity', 'hop', 'marceline the vampire queen', 'marcy', 'roxy glamcock', 'ranma', 'vanellope von schweetz', 'glamcock chica', 'teto', 'erkle', 'sylphi', 'rose lalonde', 'roxy glamcock'
         ];
         for(let i = 0; i < grills_array.length; i++) {
             grills_dict[grills_array[i]] = '';
