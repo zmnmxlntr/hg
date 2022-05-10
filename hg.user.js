@@ -3,7 +3,7 @@
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
 // @author      Virginia
-// @version     3.7.3
+// @version     3.7.4
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @updateURL   https://github.com/zmnmxlntr/hg/raw/master/hg.user.js
 // @iconURL     https://github.com/zmnmxlntr/hg/raw/master/icon.png
@@ -438,7 +438,7 @@
             'calcium', 'catra', 'charlotte', 'cherri', 'chiaki nanami', 'chinatsu', 'cindy', 'cute', 'devilica', 'devilman lady', 'dog tier jade', 'dog-tier jade', 'dorothy haze', 'dragon cunt', 'edra',
             'edra glamcock', 'elf', 'elvina', 'emmy', 'ena', 'exusiai', 'fat chick', 'frank girl', 'frankie', 'frankie foster', 'frisk', 'goblin', 'gravel', 'guild girl', 'gwen', 'harley quinn', 'haruhi',
             'hat kid', 'hatsune miku', 'hedenia', 'hestia', 'homeless girl', 'ida', 'ifrit', 'index', 'jennette mccurdy', 'jennette mccurdy ', 'jenny', 'kaokuma', 'kiana kaslana', 'kino', 'kizuna ai',
-            'klee', 'kurohime', 'kuroko', 'la', 'lain', 'lammy', 'lavie', 'liz', 'lona', 'loone', 'mabel', 'madotsuki', 'mae', 'mae borrowski', 'maga girl', 'mao mao', 'marie antoinette', 'marin',
+            'klee', 'kurohime', 'kuroko', 'la', 'lain', 'lammy', 'lavie', 'liz', 'loona', 'loone', 'mabel', 'madotsuki', 'mae', 'mae borrowski', 'maga girl', 'mao mao', 'marie antoinette', 'marin',
             'megumi', 'megumin', 'merry', 'miku', 'miranda cosgrove', 'motifa', 'nil sunna', 'nitori kawashiro', 'nobu', 'nutella girl', 'okku', 'platinum', 'princess zelda', 'psycho chan', 'psycho-chan',
             'queen boo', 'rap(e)', 'rape snake', 'rebecca', 'reimu', 'relm', 'sailor mercury', 'sakuya', 'samsung sam', 'sayori', 'scully', 'senko san', 'serena', 'six', 'skeleton', 'sophia', 'suzumi',
             'sword', 'teleporter', 'tsuyu', 'ty lee', 'unfortunate girl', 'unlucky girl', 'utharu', 'veruca salt', 'vex', 'warspite', 'wendy', 'x-23', 'zelda', 'marceline the vampire queen', 'maomao',
