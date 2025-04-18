@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name        Virginia's Hunger Games Script
+// @name        Virginia's Hunger Games Script - Alt
 // @description Hunger Games hosting made easy
 // @namespace   https://github.com/zmnmxlntr
 // @author      Virginia
