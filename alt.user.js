@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Virginia's Hunger Games Script - Alt
 // @description Hunger Games hosting made easy
-// @namespace   https://github.com/zmnmxlntr
+// @namespace   https://github.com/zmnmxlntr/hg/alt
 // @author      Virginia
 // @version     3.7.4
 // @downloadURL https://github.com/zmnmxlntr/hg/raw/refs/heads/alt/alt.user.js
